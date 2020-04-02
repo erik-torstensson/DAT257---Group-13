@@ -1,0 +1,17 @@
+Project Scope:
+
+External stakeholder: Kim Lantto är Utvecklingsledare Digital service / Development Leader Digital Services för göteborg stad.
+
+Projektet som presenterats är en relativt enkel idé som bygger på öppen data(http://data.goteborg.se/ParkingService/v2.1/help) som tillhandahålls av Göteborgs stad. Detta är öppen data kring när och var städning kommer att ske samt även tillgängliga parkeringsplatser som kommer vara till användning för projektet.
+
+Tanken är att förmedla när stadens gator kommer att städas och möjligheten att få anpassad information när användarens gata städas så att denne kan flytta sin bil under tiden. Detta ger värde till stadens bilförare som parkerar på gatan med parkeringsabonnemang då de har möjlighet att flytta bilen innan städning. Bilar som är felparkerade under sändningstid erhåller en böter på cirka 800kr vilket kan undvikas med hjälp av vår tjänst. Vi hoppas också att detta kommer underlätta städarbetet för Göteborgs stad då felparkerade bilar förhoppningsvis minskar. Med hjälp av annan öppen data om tillgängliga parkeringsplatser i staden kan även rekommendationer ges om vart en parkerad bil kan flyttas under städtiden. 
+
+Denna tjänst är tänkt att presenteras i form av en app eller möjligtvis en kalenderprenumeration. Användaren skall kunna ange sin information angående parkeringsabonnemang eller gatan där denne parkerar och sedan få notiser innan planerade städningar kommer att ske. Det är även tänk att tjänsten skulle kunna tillhandahålla förslag på var användaren kan flytta sin bil under städningen, detta skulle kunna var möjligt om tjänsten presenteras som en app.
+
+MVP:
+Interface där man kan ange sin gata.
+Presentation av schema för städning på sin gata.
+Notissystem som varnar när ens gata skall städas.
+
+Possible features:
+Rekommendation av tillgängliga parkeringsplatser under tiden gatan städas.
