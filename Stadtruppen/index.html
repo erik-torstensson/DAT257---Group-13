@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<root xmlns:i="http://www.w3.org/2001/XMLSchema-instance"> </root>
+<html lang="en">
+  <head>
+    <title>Hello!</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- import the webpage's javascript file -->
+    <script src="/script.js" defer></script>
+  </head>
+  <body>
+  
+    
+    <!--
+<?php
+    $Gata = "";
+  
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $Gata = test_input($_POST["Gata"]);
+  
+function test_input($data) {
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
+  }
+?>
+    -->
+    <form name="post" onsubmit = "return search()">
+      
+      <label for="Gata"> Gata:</label><br />
+      <input type="text" id="Gata" name="Gatunamn" /><br />
+      <input type="submit">
+    
+    </form>
+    
+    <br />
+    Button to data source
+    <button onclick="openwin()">Try it</button>
+
+    <h1>Hello there!</h1>
+
+    <p>
+      I'm
+      <del
+        >your cool new webpage. Made with
+        <a href="https://glitch.com">Glitch</a>!</del
+      >
+      <mark>General Grievous</mark>
+    </p>
+    Resultat:
+    <div id="result">
+    </div>
+    
+    
+    <!--
+    <?php
+echo $Gata
+    ?>
+    -->
+    <!-- include the Glitch button to show what the webpage is about and
+          to make it easier for folks to view source and remix -->
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>
