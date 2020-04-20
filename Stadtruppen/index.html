@@ -1,72 +1,54 @@
 <!DOCTYPE html>
 <root xmlns:i="http://www.w3.org/2001/XMLSchema-instance"> </root>
 <html lang="en">
-  <head>
-    <title>Hello!</title>
+<head>
+  <title>Hello!</title>
 
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="/style.css" />
+  <!-- import the webpage's stylesheet -->
+  <link rel="stylesheet" href="/style.css" />
 
-    <!-- import the webpage's javascript file -->
-    <script src="/script.js" defer></script>
-  </head>
-  <body>
-  
-    
-    <!--
-<?php
-    $Gata = "";
-  
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $Gata = test_input($_POST["Gata"]);
-  
-function test_input($data) {
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
-  }
-?>
-    -->
-    <form name="post" onsubmit = "return search()">
-      
-      <label for="Gata"> Gata:</label><br />
-      <input type="text" id="Gata" name="Gatunamn" /><br />
-      <input type="submit">
-    
-    </form>
-    
-    <br />
-    Button to data source
-    <button onclick="openwin()">Try it</button>
+  <!-- import the webpage's javascript file -->
+  <script src="jQuery.js"></script>
+  <script src="/script.js" defer></script>
 
-    <h1>Hello there!</h1>
 
-    <p>
-      I'm
-      <del
-        >your cool new webpage. Made with
-        <a href="https://glitch.com">Glitch</a>!</del
-      >
-      <mark>General Grievous</mark>
-    </p>
-    Resultat:
-    <div id="result">
-    </div>
-    
-    
-    <!--
-    <?php
-echo $Gata
-    ?>
-    -->
-    <!-- include the Glitch button to show what the webpage is about and
-          to make it easier for folks to view source and remix -->
-    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
-    <script src="https://button.glitch.me/button.js"></script>
-  </body>
+
+</head>
+<h1>Stadtruppens stora städsök</h1>
+<body>
+<p>
+  Skriv in din gata i textfältet så kommer information med städtider för den gatan. Informationen hämtas från öppen data
+  tillhandahållen av Göteborgs stad.
+</p>
+
+<form name="Input" onsubmit="return search()" autocomplete="off">
+  <label for="inputGata">
+    <small><b>Skriv in din gata här:</b></small></label
+  ><br />
+  <!-- test  autocomplete--> <div class="autocomplete" style="width:300px;">
+  <input type="text" id="inputGata" name="Gatunamn" /><br />
+  <!-- test  autocomplete--> </div>
+  <input type="submit" id="skicka" />
+</form>
+<div id="result"></div>
+
+<br />
+
+Button to data source
+<button onclick="openwin()">Try it</button>
+<!-- include the Glitch button to show what the webpage is about and
+      to make it easier for folks to view source and remix -->
+<br />
+Exempel kalender test för Andra Långgatan:
+<a target="_blank" href="https://calendar.google.com/event?action=TEMPLATE&amp;tmeid=M3J0NnJpZW11cDd1ZjdjcHNoOHQ0cjh2Z21fMjAyMDA0MTNUMDYwMDAwWiBzdGFkdHJ1cHBlbjFAbQ&amp;tmsrc=stadtruppen1%40gmail.com"><img border="0" src="https://www.google.com/calendar/images/ext/gc_button1_sv.gif"></a>
+</body>
+<div class="wrap">
+  <div class="bg_area">
+    <div class="bg01 clearfix"></div>
+  </div>
+</div>
 </html>
