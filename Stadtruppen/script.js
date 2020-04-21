@@ -102,19 +102,19 @@ function initGoogleMaps(){
   document.head.appendChild(script); // Append the 'script' element to 'head'
 }
 
-function getMapByLatitude(x,y){
+function getMapByLatitude(x,y) {
     // Attach your callback function to the `window` object
-  window.initMap = function() {
-   var map = new google.maps.Map(document.getElementById('map'), {
+    window.initMap = function () {
+        var map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: x, lng: y},
             zoom: 16
-          });
-  var marker = new google.maps.Marker({
-    position: {lat: x, lng: y},
-    map: map })
-  };
-
-
+        });
+        var marker = new google.maps.Marker({
+            position: {lat: x, lng: y},
+            map: map
+        })
+    };
+}
 
 function openwin() {
   window.open(
