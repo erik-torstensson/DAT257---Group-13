@@ -32,12 +32,12 @@ function getStreetNames(){
    for (var i = 0; i < allitems.length; i++) {
      var street = doc.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
      var lastStreet;
-     
+
      if(lastStreet != street){
         allStreetNames.push(street);
         lastStreet = street;
       }
-     
+
    }
   return allStreetNames;
 }
@@ -47,7 +47,7 @@ function getStreetNames(){
 
 function search() {
     var input = document.Input["Gatunamn"].value;
-    var coolset = new Set(); 
+    var coolset = new Set();
 
     //document.getElementById("result").innerHTML += "Antal gator i datan: "+allitems.length+"<br>";
 
@@ -55,19 +55,25 @@ function search() {
       var temp = doc.getElementsByTagName("ActivePeriodText")[i].firstChild
         .nodeValue;
       var gata = doc.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
-      
-  
+
+
       if (input === gata) {
         coolset.add(temp);
         console.log(coolset);
-      
-        
+
+        //get lat and long to see google maps
+        var x = parseFloat(doc.getElementsByTagName("Lat")[i].firstChild.nodeValue);
+        var y = parseFloat(doc.getElementsByTagName("Long")[i].firstChild.nodeValue);
+        initGoogleMaps();
+        getMapByLatitude(x,y);
+
+
         //document.getElementById("result").innerHTML += gata + "<br>";
         //document.getElementById("result").innerHTML += temp + "<br>";
       }
     }
-    
-    
+
+
     if(coolset.size === 1){
           document.getElementById("result").innerHTML += input + " städas:" + "<br>";
           document.getElementById("result").innerHTML += Array.from(coolset)[0] + "<br>";
@@ -87,6 +93,27 @@ function search() {
 
 
 
+function initGoogleMaps(){
+  // Create the script tag, set the appropriate attributes
+  var script = document.createElement('script');
+  script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyC0e2gcKhtLn8kThQtPInG0--CDuxwBXgE&callback=initMap';
+  script.defer = true;
+  script.async = true;
+  document.head.appendChild(script); // Append the 'script' element to 'head'
+}
+
+function getMapByLatitude(x,y){
+    // Attach your callback function to the `window` object
+  window.initMap = function() {
+   var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: x, lng: y},
+            zoom: 16
+          });
+  var marker = new google.maps.Marker({
+    position: {lat: x, lng: y},
+    map: map })
+  };
+
 
 
 function openwin() {
@@ -99,12 +126,15 @@ function openwin() {
 
 
 
+
+
+
 //initilaze when document is ready
 function init(){
 //jQuery(document).ready(function(){ //se överst i dokumentet, blir detta samma sak nu?
 	var width = $(window).width(),
 		height = $(window).height();
-  
+
 	//bg
 	var bg_num = 0;
 	function bg01(item){
