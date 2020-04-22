@@ -43,7 +43,8 @@ function getStreetNames(){
 }
 
 
-
+initGoogleMaps();
+initGothenburgMap(57.708870,11.974560);
 
 function search() {
     var input = document.Input["Gatunamn"].value;
@@ -100,6 +101,20 @@ function initGoogleMaps(){
   script.defer = true;
   script.async = true;
   document.head.appendChild(script); // Append the 'script' element to 'head'
+}
+
+function initGothenburgMap(x,y) {
+    // Attach your callback function to the `window` object
+    window.initMap = function () {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: x, lng: y},
+            zoom: 12
+        });
+        var marker = new google.maps.Marker({
+            position: {lat: x, lng: y},
+            map: map
+        })
+    };
 }
 
 function getMapByLatitude(x,y) {
