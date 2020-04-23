@@ -2,30 +2,30 @@
 
 **What is:** 
 
-Under min utbildning i IT-programmet har jag deltagit i flertalet projekt som utfÃ¶rts pÃ¥ olika sÃ¤tt. 
-Det har gett mig en kÃ¤nsla fÃ¶r hur effektivt samarbete ser hur och jag kÃ¤nner att jag kan hÃ¥lla ihop en grupp pÃ¥ ett bra sÃ¤tt. 
-Jag kÃ¤nner mig dock vÃ¤ldigt ovan med Scrum. Det Ã¤r bara en term jag kÃ¤nner till. 
-Jag saknar ocksÃ¥ kunskaper kring affÃ¤rsmodeller och vÃ¤rdeskapande. 
-Jag kÃ¤nner inte mina gruppmedlemmar sÃ¤rskilt vÃ¤l Ã¤nnu. Mina IT-kunskaper behÃ¶ver slipning.
+Under min utbildning i IT-programmet har jag deltagit i flertalet projekt som utförts på olika sätt. 
+Det har gett mig en känsla för hur effektivt samarbete ser hur och jag känner att jag kan hålla ihop en grupp på ett bra sätt. 
+Jag känner mig dock väldigt ovan med Scrum. Det är bara en term jag känner till. 
+Jag saknar också kunskaper kring affärsmodeller och värdeskapande. 
+Jag känner inte mina gruppmedlemmar särskilt väl ännu. Mina IT-kunskaper behöver slipning.
 
 **What might or should be:**
 
-Det jag vill kunna gÃ¶ra fÃ¶r mitt lag Ã¤r att kunna svara pÃ¥ frÃ¥gor gÃ¤llande saker som git och kodskrivande. 
-Tekniska aspekter helt enkelt. Jag vill vara lÃ¤ttillgÃ¤nglig och smidig att arbeta med. 
-Jag vill lÃ¤ra kÃ¤nna och vara bekvÃ¤m med mina gruppmedlemmar. Vill verkligen ta hjÃ¤lp av mina gruppmedlemmar frÃ¥n I fÃ¶r att lÃ¤ra mig mer om de affÃ¤rsinriktade aspekterna av projektet. 
-En av mina fÃ¶rsta mÃ¥lsÃ¤ttningar Ã¤r att lÃ¤ra kÃ¤nna gruppen samt grotta ner mig i allt som har med Scrum och agil utveckling att gÃ¶ra. 
-Jag vill Ã¤ven undersÃ¶ka olika KPI:er sÃ¥ att jag kan forma en Ã¥sikt kring vad som skulle kunna vara nyttigt fÃ¶r projektet.
+Det jag vill kunna göra för mitt lag är att kunna svara på frågor gällande saker som git och kodskrivande. 
+Tekniska aspekter helt enkelt. Jag vill vara lättillgänglig och smidig att arbeta med. 
+Jag vill lära känna och vara bekväm med mina gruppmedlemmar. Vill verkligen ta hjälp av mina gruppmedlemmar från I för att lära mig mer om de affärsinriktade aspekterna av projektet. 
+En av mina första målsättningar är att lära känna gruppen samt grotta ner mig i allt som har med Scrum och agil utveckling att göra. 
+Jag vill även undersöka olika KPI:er så att jag kan forma en åsikt kring vad som skulle kunna vara nyttigt för projektet.
 
 **Feedback designed to reduce the gap:**
 
-FÃ¶r att komma igÃ¥ng pÃ¥ bÃ¤sta sÃ¤tt gÃ¤ller det att ta vara pÃ¥ de tillfÃ¤llen vi alla arbetar tillsammans eller hÃ¥ller mÃ¶ten. 
-Det Ã¤r viktigt att vi diskuterar och delar med oss av vÃ¥ra olika kunskaper. 
-Jag vill aktivt lÃ¤ra kÃ¤nna mina gruppmedlemmar och fÃ¶rsÃ¶ka bidra Ã¤ven inom omrÃ¥den dÃ¤r jag inte Ã¤r lika sjÃ¤lvsÃ¤ker. 
-Vi mÃ¥ste kunna lita pÃ¥ varandra och vÃ¥ga frÃ¥ga om hjÃ¤lp. 
-Jag kÃ¤nner att jag kan bidra genom att vara konstant uppdaterad pÃ¥ kursmaterial samt att hÃ¥lla ordning pÃ¥ fÃ¶rÃ¤ndringar och/eller framsteg i vÃ¥r kod.
-Det Ã¤r viktigt att lÃ¤sa igenom det material vi fÃ¥tt tillgÃ¥ng till, men Ã¤ven ta hjÃ¤lp frÃ¥n andra hÃ¥ll. 
-Jag behÃ¶ver ocksÃ¥ tala lite extra med mina klasskamrater frÃ¥n IT sÃ¥ att vi kan vara till god hjÃ¤lp fÃ¶r vÃ¥ra gruppmedlemmar frÃ¥n I. 
-FÃ¶r att kunna vara sÃ¥ hjÃ¤lpsam som mÃ¶jligt mÃ¥ste jag definitivt repetera saker frÃ¥n tidigare kurser. Versionkontroll och Git behÃ¶ver proriteras.
+För att komma igång på bästa sätt gäller det att ta vara på de tillfällen vi alla arbetar tillsammans eller håller möten. 
+Det är viktigt att vi diskuterar och delar med oss av våra olika kunskaper. 
+Jag vill aktivt lära känna mina gruppmedlemmar och försöka bidra även inom områden där jag inte är lika självsäker. 
+Vi måste kunna lita på varandra och våga fråga om hjälp. 
+Jag känner att jag kan bidra genom att vara konstant uppdaterad på kursmaterial samt att hålla ordning på förändringar och/eller framsteg i vår kod.
+Det är viktigt att läsa igenom det material vi fått tillgång till, men även ta hjälp från andra håll. 
+Jag behöver också tala lite extra med mina klasskamrater från IT så att vi kan vara till god hjälp för våra gruppmedlemmar från I. 
+För att kunna vara så hjälpsam som möjligt måste jag definitivt repetera saker från tidigare kurser. Versionkontroll och Git behöver proriteras.
 
 ----------------
 
@@ -34,24 +34,49 @@ FÃ¶r att kunna vara sÃ¥ hjÃ¤lpsam som mÃ¶jligt mÃ¥ste jag definitivt repetera sa
 
 **What is:**
 
-Under denna vecka har gruppen snackat ihop sig lite mer och vi jobbar ganska bra tillsammans. Ett projekt Ã¤r bestÃ¤mt, men vi har inte kommit igÃ¥ng pÃ¥ riktigt Ã¤nnu. Ett mÃ¶te med extern intressent hÃ¶lls under fredagen, dÃ¤r jag tyvÃ¤rr inte kunde deltaga pÃ¥ grund av Ã¤ndrad tid. MÃ¶tet var dock lyckat och jag blev underrÃ¤ttad av mina gruppmedlemmar med en gÃ¥ng. Projektet gÃ¥r ut pÃ¥ att utveckla en applikation dÃ¤r en anvÃ¤ndare fÃ¥r en notis nÃ¤r stÃ¤dning skall utfÃ¶ras pÃ¥ en gata dÃ¤r man har sin bil parkerad. FÃ¶rvÃ¤ntningen Ã¤r att ett sÃ¥dant notissystem ska minska antalet bÃ¶tfÃ¤llningar och gÃ¶ra det smidigare fÃ¶r stÃ¤dbolagen i GÃ¶teborgs stad.
+Under denna vecka har gruppen snackat ihop sig lite mer och vi jobbar ganska bra tillsammans. Ett projekt är bestämt, men vi har inte kommit igång på riktigt ännu. Ett möte med extern intressent hölls under fredagen, där jag tyvärr inte kunde deltaga på grund av ändrad tid. Mötet var dock lyckat och jag blev underrättad av mina gruppmedlemmar med en gång. Projektet går ut på att utveckla en applikation där en användare får en notis när städning skall utföras på en gata där man har sin bil parkerad. Förväntningen är att ett sådant notissystem ska minska antalet bötfällningar och göra det smidigare för städbolagen i Göteborgs stad.
 
-Min fÃ¶rstÃ¥else av Scrum har fÃ¶rbÃ¤ttrats och vi arbetar redan bÃ¤ttre nÃ¤r det kommer till uppdelning av vÃ¥ra uppgifter. Jag kÃ¤nner fortfarande inte helt hemma, men det gÃ¥r framÃ¥t. Att arbeta med user stories kÃ¤ndes till en bÃ¶rjan knepigt fÃ¶r oss alla. Jag har sjÃ¤lv inte lÃ¤st projektkursen inom IT Ã¤nnu, sÃ¥ en del saker Ã¤r nya fÃ¶r mig ocksÃ¥. Jag har talat lite med mina medlemmar frÃ¥n IT gÃ¤llande programmeringssprÃ¥k samt dokumentering av kod. Vi har hjÃ¤lpt vÃ¥ra gruppmedlemmar frÃ¥n I lite lÃ¤tt med hur vi hanterar Github pÃ¥ ett bra sÃ¤tt. Vi behÃ¶ver dock gÃ¥ igenom detta ytterligare.
+Min förståelse av Scrum har förbättrats och vi arbetar redan bättre när det kommer till uppdelning av våra uppgifter. Jag känner fortfarande inte helt hemma, men det går framåt. Att arbeta med user stories kändes till en början knepigt för oss alla. Jag har själv inte läst projektkursen inom IT ännu, så en del saker är nya för mig också. Jag har talat lite med mina medlemmar från IT gällande programmeringsspråk samt dokumentering av kod. Vi har hjälpt våra gruppmedlemmar från I lite lätt med hur vi hanterar Github på ett bra sätt. Vi behöver dock gå igenom detta ytterligare.
 
-Jag har lÃ¤rt mig saker om hur man arbetar med business model canvas frÃ¥n min gruppmedlemmar frÃ¥n I, vilket jag Ã¤r mycket tacksam fÃ¶r. Det har gett mig en liten insikt i affÃ¤rsaspekterna av projektet. Jag har Ã¤ven kunnat bidraga till utformningen av modellen, vilket kÃ¤nns vÃ¤ldigt bra. 
+Jag har lärt mig saker om hur man arbetar med business model canvas från min gruppmedlemmar från I, vilket jag är mycket tacksam för. Det har gett mig en liten insikt i affärsaspekterna av projektet. Jag har även kunnat bidraga till utformningen av modellen, vilket känns väldigt bra. 
 
-I Ã¶vrigt har kommunikationen i gruppen fungerat vÃ¤ldigt bra. Vi har arbetat tillsammans och hÃ¥llit mÃ¶te tvÃ¥ gÃ¥nger under veckans gÃ¥ng. Utformningen av project scope gick smidigt och alla kunde bidraga med idÃ©er.
+I övrigt har kommunikationen i gruppen fungerat väldigt bra. Vi har arbetat tillsammans och hållit möte två gånger under veckans gång. Utformningen av project scope gick smidigt och alla kunde bidraga med idéer.
 
 **What it might or should be:**
 
-NÃ¤sta del av projektet kommer att fortsÃ¤tta med behandling av bland annat user stories. Vi mÃ¥ste som grupp komma fram med riktigt bra user stories som kan hjÃ¤lpa oss att utveckla en sÃ¥dan bra produkt som mÃ¶jligt. Jag mÃ¥ste bÃ¶rja bekanta mig mer med Scrum boards (som vi anvÃ¤nder Trello fÃ¶r). Som jag skrev ovan behÃ¶vs en genomgÃ¥ng av Github, versionshantering och kodande. Alla mÃ¥ste vara bekvÃ¤ma att pÃ¥ nÃ¥got sÃ¤tt bidraga till produkten, sÃ¥ dÃ¤rfÃ¶r mÃ¥ste vi skapa en tydlig arbetsprocess. FÃ¶r att vi ska kunna ha en sÃ¥ smidig process som mÃ¶jligt mÃ¥ste vi ha bra user stories som sedan kan brytas ner i lÃ¤ttfÃ¶rstÃ¥dda tasks. Vi mÃ¥ste alla vara fÃ¶rberedda pÃ¥ vad en sprint innebÃ¤r och vad som krÃ¤vs av oss fÃ¶r att klara av dessa utan att kÃ¤nna alldeles fÃ¶r mycket stress. Jag behÃ¶ver alltsÃ¥ ha tillrÃ¤ckligt med kunskap inom mitt omrÃ¥de fÃ¶r att enkelt hjÃ¤lpa mina gruppmedlemmar om nÃ¥gon skulle fasta i ett visst moment.
+Nästa del av projektet kommer att fortsätta med behandling av bland annat user stories. Vi måste som grupp komma fram med riktigt bra user stories som kan hjälpa oss att utveckla en sådan bra produkt som möjligt. Jag måste börja bekanta mig mer med Scrum boards (som vi använder Trello för). Som jag skrev ovan behövs en genomgång av Github, versionshantering och kodande. Alla måste vara bekväma att på något sätt bidraga till produkten, så därför måste vi skapa en tydlig arbetsprocess. För att vi ska kunna ha en så smidig process som möjligt måste vi ha bra user stories som sedan kan brytas ner i lättförstådda tasks. Vi måste alla vara förberedda på vad en sprint innebär och vad som krävs av oss för att klara av dessa utan att känna alldeles för mycket stress. Jag behöver alltså ha tillräckligt med kunskap inom mitt område för att enkelt hjälpa mina gruppmedlemmar om någon skulle fasta i ett visst moment.
 
-I Ã¶vrigt vill jag lÃ¤ra mig Ã¤nnu mer frÃ¥n mina gruppmedlemmar frÃ¥n I gÃ¤llande affÃ¤rsaspekterna. Det Ã¤r viktigt att jag kan se saker frÃ¥n intressentens sida tydligare.
+I övrigt vill jag lära mig ännu mer från mina gruppmedlemmar från I gällande affärsaspekterna. Det är viktigt att jag kan se saker från intressentens sida tydligare.
 
 **Feedback designed to reduce the gap:**
 
-FÃ¶r att skapa sÃ¥ bra user stories som mÃ¶jligt behÃ¶ver jag gÃ¥ igenom det material som vi har fÃ¥tt, samt Ã¶va och ta fram flera olika alternativ.  I nÃ¤sta vecka skall jag lÃ¤gga prioritet pÃ¥ att ta fram sÃ¥dana user stories och bÃ¶rja ta vara pÃ¥ vÃ¥ra Scrum boards. Mindre tasks Ã¤r lÃ¤ttare att genomfÃ¶ra. I samband med detta ska vi frÃ¥n IT ha en genomgÃ¥ng av Github och vilka alternativ man har nÃ¤r det kommer till att bidraga till repot. Jag tÃ¤nker att jag och mina gruppmedlemmar frÃ¥n IT behÃ¶ver sÃ¤tta oss och diskutera strukturen av applikationen och vilken/vilka modeller vi tÃ¤nker fungerar bÃ¤st. Jag ska fortsÃ¤tta med att fila pÃ¥ mina kunskaper om git, Java, Scrum och liknande aspekter under kommande vecka.
+För att skapa så bra user stories som möjligt behöver jag gå igenom det material som vi har fått, samt öva och ta fram flera olika alternativ.  I nästa vecka skall jag lägga prioritet på att ta fram sådana user stories och börja ta vara på våra Scrum boards. Mindre tasks är lättare att genomföra. I samband med detta ska vi från IT ha en genomgång av Github och vilka alternativ man har när det kommer till att bidraga till repot. Jag tänker att jag och mina gruppmedlemmar från IT behöver sätta oss och diskutera strukturen av applikationen och vilken/vilka modeller vi tänker fungerar bäst. Jag ska fortsätta med att fila på mina kunskaper om git, Java, Scrum och liknande aspekter under kommande vecka.
 
-FÃ¶r att vi ska kunna hjÃ¤lpa varandra Ã¤r fortfarande nyckeln Ã¶ppen kommunikation. Om vi har frÃ¥gor, sÃ¥ stÃ¤ller vi dessa. Ju mer vi diskuterar med varandra, desto lÃ¤ttare blir det att fÃ¶rstÃ¥. Det viktiga Ã¤r att vi kan arbeta tillsammans pÃ¥ ett smidigt sÃ¤tt och kan ta fram en produkt som ger det vÃ¤rde intressenten fÃ¶rvÃ¤ntar sig.
+För att vi ska kunna hjälpa varandra är fortfarande nyckeln öppen kommunikation. Om vi har frågor, så ställer vi dessa. Ju mer vi diskuterar med varandra, desto lättare blir det att förstå. Det viktiga är att vi kan arbeta tillsammans på ett smidigt sätt och kan ta fram en produkt som ger det värde intressenten förväntar sig.
 
-Vi behÃ¶ver meddela vÃ¥ra intressenter sÃ¥ fort vi har kritiska funderingar eller viktiga uppdateringar.
+Vi behöver meddela våra intressenter så fort vi har kritiska funderingar eller viktiga uppdateringar.
+
+----------------
+
+# Vecka 3:
+
+
+**What is:**
+
+Påsken var lite avslappnad och kommunikationen har varit lite sviktande av olika anledningar. Själv var jag sjuk under påskveckan vilket gjorde att jag missade en del av måndagsmötet. Utöver detta har arbetet kommit igång ordentligt. Vi har samarbetat för att få en någorlunda fungerade prototyp. Arbetet inom gruppen har flytit på ganska bra. Jag har arbetat mycket med att implementera kalenderfunktioner i vår applikation och känner att jag hjälpt till att förklara för andra i gruppen hur vi kan få det att fungera. Dock har vi inte riktigt kommit igång med Sprint-tänket känner jag. Vi samarbetar och delar upp arbetsuppgifter, men vi har inga utvalda roller eller liknande. Det saknas lite struktur.
+
+Det känns väldigt lugnt i gruppen trots detta, men jag känner att vi behöver komma igång med en ordenlig arbetsprocess för att kunna klara av kursen på ett lämpligt sätt.
+
+I samband med att produktutvecklingen startade skiftade vi snabbt till utveckling i JavaScript/CSS/HTML. Har läst på mycket och gått igenom många tutorials gällande detta, men behöver läsa på mer, eftersom jag inte känner mig extremt bekväm med det.
+
+Jag känner att min förståelse kring Scrum och agil utveckling har förbättrats rejält, men det behöver implementeras på rätt sätt.
+
+**What it might or should be:**
+
+Jag känner att vi som grupp behöver arbeta mer som ett team, med roller och bättre utformade user stories/tasks. Inför första team-reflektionen insåg vi att vi inte genomfört en ordentlig Sprint review och att vi inte riktigt har koll på våra KPIer. Detta måste vi snacka ihop oss om och strukturera på ett bättre sätt. Det behövs ordentligt dokumentation av våra framsteg och kod.
+
+Arbetet med koden och snacket i gruppen går som sagt bra, men vi behöver implementera en mer strukturerad agil utvecklingsmiljö. Jag behöver ta mer initiativ känner jag.
+
+**Feedback designed to reduce the gap:**
+
+Under team-reflektionen har vi verkligen kunnat diskutera vad vi saknar i vårt arbete. 
