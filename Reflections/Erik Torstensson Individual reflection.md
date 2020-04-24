@@ -15,3 +15,12 @@ Lika förra veckan så har jag samma lärademål och jag har samma mål för att
 Eftersom vi inte ännu har någon direkt erfarenhet kring Scrum än så är mina strategier för att lära andra likadana som förra veckan, lika så ser den aktuella situationen likadan ut.
 
 I förhållande till Scrum har vi inte gjort några direkta framsteg ännu men vi har disskuterat vad vi vill göra, hur vi skall göra, och vad vi ska göra i nästa steg. I framtiden kommer detta bli tydligare och jag kommer att kunna bidra mer direkt till scrumprocessen. I förhållande till resterande arbete har jag vart med och tagit fram en beskrivning på projektet, en Business model canvas och vart med och bokat möte med vår stakeholder. Jag hoppas kunna bidra lika mycket i tiden som kommer och detta skall jag göra genom att hela tiden veta vad som skall göras och därifrån ta initiativ på hur det skall göras.
+
+# Week 3
+Kring scrum och Agile programming har jag samma mål som tidigare. Nu när projektet dragit igång på riktigt har det ställt mer krav på kunskap om programvara och programmeringsspråk. Jag har tidigare inte arbetat i github eller med html, css, eller javascript som vi nu använt. Under sprintens gång har jag lärt mig mycket men jag har som mål att lära mig mer om detta. Detta skall ske genom att lyssna på de andra medlemmarnas kunskaper, leta upp guider och användabara tips på nätet samt experimentera och koda mycket på egen hand. Hittills har detta gått bra.
+
+Det kan kännas svårt för mig att lära resten av gruppen när det kommer till mjukvara och språk då flertalet från IT utbildningar är mer kunniga i detta område. Däremot har vi från Industriell ekonomi hjälp varandra mycket då vi sitter i samma sits. Att utveckla detta arbetsätt och tänka över vad jag kan lära resten av gruppen skall bidra till bättre informationsutbyte.
+
+Vi har börjat planera sprints och genomföra sprints och det inkulderar att skriva user stories, använda git och ha sprint reviews. Jag har bidragit till alla dessa delar så gott jag kan och ämnar göra det i samma utsträckning i framtiden. I gruppen har vi disskuterat hur vi skall använda oss av scrum masters och det kan vara ett sätt att arbeta ännu bättre med scrum.
+
+Den första sprinten och den pågående sprinten har vart välfördelad mellan gruppens medlemmar och jag har bidragit med kodning till projektets hemsida och bakomliggande funktioner. Jag vill fortsätta bidra på samma sätt resterande sprintar och kommer bland annat att läsa på och lära mig programmeringsspråken bättre för att uppnå detta.
