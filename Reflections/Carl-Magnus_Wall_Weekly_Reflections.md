@@ -69,14 +69,22 @@ Det känns väldigt lugnt i gruppen trots detta, men jag känner att vi behöver kom
 
 I samband med att produktutvecklingen startade skiftade vi snabbt till utveckling i JavaScript/CSS/HTML. Har läst på mycket och gått igenom många tutorials gällande detta, men behöver läsa på mer, eftersom jag inte känner mig extremt bekväm med det.
 
-Jag känner att min förståelse kring Scrum och agil utveckling har förbättrats rejält, men det behöver implementeras på rätt sätt.
+Jag känner att min förståelse kring Scrum och agil utveckling har förbättrats rejält, men det behöver implementeras på rätt sätt. Under handledning fick vi rådet att jobba mer på våra user stories och tasks, vilket känns rimligt.
+
+Under fredagen deltog jag i möte med representanter från Parkering Göteborg. Mötet gav oss väldigt mycket mer insikt i bolagets utmaningar och hur vi bör fortsätta arbeta framåt. Detta var mycket givande och jag känner mig ganska taggad nu när det finns en mycket tydligare målsättning.
 
 **What it might or should be:**
 
 Jag känner att vi som grupp behöver arbeta mer som ett team, med roller och bättre utformade user stories/tasks. Inför första team-reflektionen insåg vi att vi inte genomfört en ordentlig Sprint review och att vi inte riktigt har koll på våra KPIer. Detta måste vi snacka ihop oss om och strukturera på ett bättre sätt. Det behövs ordentligt dokumentation av våra framsteg och kod.
 
-Arbetet med koden och snacket i gruppen går som sagt bra, men vi behöver implementera en mer strukturerad agil utvecklingsmiljö. Jag behöver ta mer initiativ känner jag.
+Arbetet med koden och snacket i gruppen går som sagt bra, men vi behöver implementera en mer strukturerad agil utvecklingsmetod. Jag behöver ta mer initiativ känner jag.
+
+Nu när vi fått ytterligare information från våra intressenter behöver vi verkligen styra upp gruppdynamiken lite bättre.
 
 **Feedback designed to reduce the gap:**
 
-Under team-reflektionen har vi verkligen kunnat diskutera vad vi saknar i vårt arbete. 
+Under team-reflektionen har vi verkligen kunnat diskutera vad vi saknar i vårt arbete. Efter handledning nästkommande måndag, bör vi strukturera om arbetet något. Alla måste få tydliga uppgifter, så att vi inte sitter och gör ungefär samma saker. Tydliga roller och tydliga enkla uppgifter kommer att lägga stressen på en mer behaglig nivå för oss alla.
+
+Mötet under fredagen har gett oss ett tydligare mål och kommer hjälpa oss framåt.
+
+Jag kommer fokusera på att grotta ner mig i kvalitetsrelaterade KPIer under helgen, så att vi kan ha lite tydligare riktlinjer framöver. Jag kommer även att fördjupa mig i JavaScript/HTML/CSS för att förbättra mina frontend-kunskaper.
