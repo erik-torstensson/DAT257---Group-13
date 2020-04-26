@@ -287,8 +287,8 @@ function search() {
       var info = extract(i);
       activeCleaningInfo.push(info);
 
-     // initGoogleMaps();
-      //getMapByLatitude(info.x, info.y);
+      initGoogleMaps();
+      getMapByLatitude(info.x, info.y);
     }
   }
 
@@ -403,7 +403,7 @@ function extract(i) {
   document.addEventListener("click", function(e) {
     closeAllLists(e.target);
   });
-}
+
 
 name = "google-signin-client_id";
 content =
