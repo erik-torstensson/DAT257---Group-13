@@ -246,10 +246,6 @@ p2 {
   font-size: 100px;
 }
 
-
-
-
-
 /*Test autocomplete*/
 
 .autocomplete {
@@ -264,6 +260,13 @@ input {
   font-size: 16px;
   border-radius: 4px;
    
+}
+input[type=button] {
+  border: 1px solid transparent;
+  background-color: DodgerBlue;
+  color: #fff;
+  padding: 8px;
+  font-size: 12px;
 }
 input[type=text] {
   background-color: #f1f1f1;

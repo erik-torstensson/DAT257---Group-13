@@ -69,52 +69,6 @@ function getAllLocations() {
 initGoogleMaps();
 initGothenburgMap(getAllLocations());
 
-function search() {
-    var input = document.Input["Gatunamn"].value;
-    var coolset = new Set();
-
-    //document.getElementById("result").innerHTML += "Antal gator i datan: "+allitems.length+"<br>";
-
-    for (var i = 0; i < allitems.length; i++) {
-      var temp = doc.getElementsByTagName("ActivePeriodText")[i].firstChild
-        .nodeValue;
-      var gata = doc.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
-
-        var x = parseFloat(doc.getElementsByTagName("Lat")[i].firstChild.nodeValue);
-        var y = parseFloat(doc.getElementsByTagName("Long")[i].firstChild.nodeValue);
-
-      if (input === gata) {
-        coolset.add(temp);
-        console.log(coolset);
-
-        //get lat and long to see google maps
-        initGoogleMaps();
-        getMapByLatitude(x,y);
-
-
-        //document.getElementById("result").innerHTML += gata + "<br>";
-        //document.getElementById("result").innerHTML += temp + "<br>";
-      }
-    }
-
-
-    if(coolset.size === 1){
-          document.getElementById("result").innerHTML += input + " städas:" + "<br>";
-          document.getElementById("result").innerHTML += Array.from(coolset)[0] + "<br>";
-    }
-    else if(coolset.size>1){
-      document.getElementById("result").innerHTML += "Ojdå, det finns många tider för "+ input +"."+ "<br>";
-      for(var i=0; i < coolset.size; i++) {
-      document.getElementById("result").innerHTML += Array.from(coolset)[i] + "<br>";
-      }
-      document.getElementById("result").innerHTML += "För mer information om din gata kontakta parkering göteborg" + "<br>";
-    }
-    else {
-      document.getElementById("result").innerHTML += ""+ input +" kan inte hittas i datan."+ "<br>";
-    }
-  return false;
-}
-
 
 
 function initGoogleMaps(){
@@ -320,4 +274,267 @@ function autocomplete(inp,arr) {
 document.addEventListener("click", function (e) {
     closeAllLists(e.target);
 });
+}
+
+
+//Creating an array, used to store info from the same (active) streetname but potentially different attributes.
+var activeCleaningInfo = new Array();
+
+function search() {
+  activeCleaningInfo = [];
+  var input = document.Input["Gatunamn"].value;
+
+  //Looping through the open data provided by GBG
+  for (var i = 0; i < allitems.length; i++) {
+    var temp = doc.getElementsByTagName("ActivePeriodText")[i].firstChild
+      .nodeValue;
+    var gata = doc.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
+
+    //In the loop, if the input matches "gata" extract data + initiate map
+    if (input === gata) {
+      var info = extract(i);
+      activeCleaningInfo.push(info);
+
+      initGoogleMaps();
+      getMapByLatitude(info.x, info.y);
+    }
+  }
+
+  if (activeCleaningInfo.length > 0) {
+    document.getElementById("result").innerHTML += input + " städas:" + "<br>";
+    for (var i = 0; i < activeCleaningInfo.length; i++) {
+      document.getElementById("result").innerHTML +=
+        activeCleaningInfo[i].infoText +
+        "Vid koordinaterna:  " +
+        activeCleaningInfo[i].x +
+        ", " +
+        activeCleaningInfo[i].y;
+
+      var inputTag = document.createElement("div");
+      inputTag.innerHTML =
+        "<input type = 'button' value = 'Lägg till!' onClick = 'createAnEvent(activeCleaningInfo[" +
+        i +
+        "].startTime, activeCleaningInfo[" +
+        i +
+        "].endTime, activeCleaningInfo[" +
+        i +
+        "].x, activeCleaningInfo[" +
+        i +
+        "].y, activeCleaningInfo[" +
+        i +
+        "].endDate, activeCleaningInfo[" +
+        i +
+        "].oddEven)'>";
+
+      document.getElementById("result").appendChild(inputTag);
+      document.getElementById("result").innerHTML += "<br>";
+    }
+    document.getElementById("result").innerHTML +=
+      "För mer information om din gata kontakta parkering göteborg" + "<br>";
+    //document.getElementById("add").style.display = "block";
+  } else {
+    document.getElementById("result").innerHTML +=
+      "" + input + " kan inte hittas i datan." + "<br>";
+  }
+  console.log(activeCleaningInfo[0].oddEven);
+  return false;
+}
+
+/*starttime = start of next cleaning period,
+ endtime = end of next cleaning period,
+ x = lat,
+ y = long
+ oddEven = value of 1 or 2 depend on weekly (1) or bi-weekly (2) ,
+ enddate = end of entire cleaning period */
+function extract(i) {
+  var info = {
+    streetName: "",
+    infoText: "",
+    startTime: "",
+    endTime: "",
+    x: "",
+    y: "",
+    oddEven: "",
+    endDate: ""
+  };
+
+  //streetName
+  info.streetName = doc.getElementsByTagName("StreetName")[
+    i
+  ].firstChild.nodeValue;
+  //infoText
+  info.infoText = doc.getElementsByTagName("ActivePeriodText")[
+    i
+  ].firstChild.nodeValue;
+  //startTime
+  info.startTime = doc.getElementsByTagName("CurrentPeriodStart")[
+    i
+  ].firstChild.nodeValue;
+  //endTime
+  info.endTime = doc.getElementsByTagName("CurrentPeriodEnd")[
+    i
+  ].firstChild.nodeValue;
+  //x
+  info.x = parseFloat(doc.getElementsByTagName("Lat")[i].firstChild.nodeValue);
+  //y
+  info.y = parseFloat(doc.getElementsByTagName("Long")[i].firstChild.nodeValue);
+  //oddEven
+  info.oddEven = 2;
+  if (
+    typeof doc.getElementsByTagName("OnlyEvenWeeks")[i] == "undefined" &&
+    typeof doc.getElementsByTagName("OnlyOddWeeks")[i] == "undefined"
+  ) {
+    info.oddEven = 1;
+  }
+
+  var eMonth = doc.getElementsByTagName("EndMonth")[i].firstChild.nodeValue;
+  var eDay = doc.getElementsByTagName("EndDay")[i].firstChild.nodeValue;
+  if (eMonth < 10) {
+    eMonth = "0" + eMonth;
+  }
+  if (eDay < 10) {
+    eDay = "0" + eDay;
+  }
+  //endDate
+  info.endDate =
+    doc
+      .getElementsByTagName("CurrentPeriodEnd")
+      [i].firstChild.nodeValue.substring(0, 4) +
+    eMonth +
+    eDay +
+    "T000000Z";
+
+  return info;
+}
+
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function(e) {
+    closeAllLists(e.target);
+  });
+
+
+name = "google-signin-client_id";
+content =
+  "739088881240-10g8629mucg31r7bqt0k94oen66ei1ba.apps.googleusercontent.com";
+
+// Client ID and API key from the Developer Console
+var CLIENT_ID =
+  "739088881240-10g8629mucg31r7bqt0k94oen66ei1ba.apps.googleusercontent.com";
+var API_KEY = "AIzaSyBwcVcI3o9LXxE1vLaek-pX0-Ns75CV0v0";
+
+// Array of API discovery doc URLs for APIs used by the quickstart
+var DISCOVERY_DOCS = [
+  "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"
+];
+
+// Authorization scopes required by the API; multiple scopes can be
+// included, separated by spaces.
+var SCOPES = "https://www.googleapis.com/auth/calendar";
+
+var authorizeButton = document.getElementById("authorize_button");
+var signoutButton = document.getElementById("signout_button");
+
+/**
+ *  On load, called to load the auth2 library and API client library.
+ */
+function handleClientLoad() {
+  gapi.load("client:auth2", initClient);
+}
+
+/**
+ *  Initializes the API client library and sets up sign-in state
+ *  listeners.
+ */
+function initClient() {
+  gapi.client.init({
+    apiKey: API_KEY,
+    clientId: CLIENT_ID,
+    discoveryDocs: DISCOVERY_DOCS,
+    scope: SCOPES
+  });
+}
+
+/**
+ *   Information about the signed in user.
+ */
+function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log("Name: " + profile.getName());
+  console.log("Image URL: " + profile.getImageUrl());
+  console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
+function signOut() {
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function() {
+    console.log("User signed out.");
+  });
+}
+
+/**
+ *  Sign in the user upon button click.
+ */
+function handleAuthClick(event) {
+  gapi.auth2.getAuthInstance().signIn();
+}
+
+/**
+ *  Sign out the user upon button click.
+ */
+function handleSignoutClick(event) {
+  gapi.auth2.getAuthInstance().signOut();
+}
+
+/**
+ * Append a pre element to the body containing the given message
+ * as its text node. Used to display the results of the API call.
+ *
+ * @param {string} message Text to be placed in pre element.
+ */
+function appendPre(message) {
+  var pre = document.getElementById("content");
+  var textContent = document.createTextNode(message + "\n");
+  pre.appendChild(textContent);
+}
+
+/*
+      Creating an event and insert it into to primary (logged in) user.
+      */
+
+function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
+  var event = {
+    summary: document.Input["Gatunamn"].value,
+    location: x + ", " + y,
+    description: ":-)",
+    start: {
+      dateTime: startTime,
+      timeZone: "Europe/Amsterdam"
+    },
+    end: {
+      dateTime: endTime,
+      timeZone: "Europe/Amsterdam"
+    },
+    recurrence: [
+      "RRULE:FREQ=WEEKLY;INTERVAL=" + oddEven + ";WKST=SU;UNTIL=" + endDate
+    ],
+    /*'attendees': [
+          {'email': 'erikt1234567@gmail.com'},
+        ],*/
+    reminders: {
+      useDefault: false,
+      overrides: [
+        { method: "email", minutes: 24 * 60 },
+        { method: "popup", minutes: 10 }
+      ]
+    }
+  };
+  console.log(event);
+  var request = gapi.client.calendar.events.insert({
+    calendarId: "primary",
+    resource: event
+  });
+  //console.log(request.created!=null);
+  request.execute(function(event) {
+    appendPre("Lagt till i kalendern! Länk: " + event.htmlLink);
+  });
 }
