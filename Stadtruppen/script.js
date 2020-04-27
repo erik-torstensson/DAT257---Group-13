@@ -1,57 +1,58 @@
 $(document).ready(init()); //initialize when document is ready
 
-// prints "hi" in the browser's dev tools console
-console.log("hi");
-
-var x = new XMLHttpRequest();
-x.open(
+//set up requests for data.gbg
+var cleaningZonesRequest = new XMLHttpRequest();
+cleaningZonesRequest.open(
   "GET",
   "https://data.goteborg.se/ParkingService/v2.1/CleaningZones/{ad12cf6a-f54c-4400-bf36-d5c95beb6095}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}",
   false //suggestion: have synchronious, we don't need to asynchrinious? we get the data within a second..
 );
-x.send();
+cleaningZonesRequest.send();
+var xml_cleaningZones = getXML_Response(cleaningZonesRequest);
+
+//put residentialParkingRequest here
 
 
+var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
 
-var doc = getXML_Response();
-var allitems = doc.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
+// activates autocomplete-function
+autocomplete(document.getElementById("inputGata"),getStreetNames()); //param: id of html-input, list of street names
 
-autocomplete(document.getElementById("inputGata"),getStreetNames());
-
-
-function getXML_Response(){
-  if (x.readyState == 4 && x.status == 200) {
-    doc = x.responseXML;
-    console.log(doc);
-    return doc;
+//get the response of the inserted request, if the request is done, without errors.
+function getXML_Response(request){
+  if (request.readyState == 4 && request.status == 200) {
+    response = request.responseXML;
+    console.log(response);
+    return response;
   }
 }
 
+//returns an array of all street names in xml_cleaningZones.
 function getStreetNames(){
   var allStreetNames = [];
-   for (var i = 0; i < allitems.length; i++) {
-     var street = doc.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
+   for (var i = 0; i < allCleaningZones.length; i++) {
+     var street = xml_cleaningZones.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
      var lastStreet;
 
-     if(lastStreet != street){
+     if(lastStreet != street){ //remove duplicates of street names
         allStreetNames.push(street);
         lastStreet = street;
       }
-
    }
   return allStreetNames;
 }
 
+//returns an array of all locations in xml_cleaningZones
 function getAllLocations() {
     var allLocations = [];
 
-    for (var i = 0; i < allitems.length; i++) {
-        var street = doc.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
-        var Lat = doc.getElementsByTagName("Lat")[i].firstChild.nodeValue;
-        var Lng = doc.getElementsByTagName("Long")[i].firstChild.nodeValue;
+    for (var i = 0; i < allCleaningZones.length; i++) {
+        var street = xml_cleaningZones.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
+        var Lat = xml_cleaningZones.getElementsByTagName("Lat")[i].firstChild.nodeValue;
+        var Lng = xml_cleaningZones.getElementsByTagName("Long")[i].firstChild.nodeValue;
         var lastStreet;
 
-        if(lastStreet !== street){
+        if(lastStreet !== street){ //TODO: visa istället alla zoner på en gata
             var x = [];
             x.push(street);
             x.push(Lat);
@@ -59,15 +60,13 @@ function getAllLocations() {
             allLocations.push(x);
             lastStreet = street;
         }
-
     }
-
     //console.log(allLocations);
     return allLocations;
 }
 
-initGoogleMaps();
-initGothenburgMap(getAllLocations());
+initGoogleMaps(); // initiate google maps
+initGothenburgMap(getAllLocations()); //initiate map over cleaning zones in Gothenburg
 
 
 
@@ -81,7 +80,6 @@ function initGoogleMaps(){
 }
 
 function initGothenburgMap(allLocations) {
-
     window.initMap = function () {
         var map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 57.708870, lng: 11.974560},
@@ -104,6 +102,7 @@ function initGothenburgMap(allLocations) {
     }
 }
 
+//change view on map (zooms in on the lat,long coordinates)
 function getMapByLatitude(x,y) {
     // Attach your callback function to the `window` object
     window.initMap = function () {
@@ -119,12 +118,16 @@ function getMapByLatitude(x,y) {
     };
 }
 
+
+//shows the xml file in browser
+//not using this?
 function openwin() {
   window.open(
     "http://data.goteborg.se/ParkingService/v2.1/CleaningZones/{ad12cf6a-f54c-4400-bf36-d5c95beb6095}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}"
   );
 }
 
+//reset the map
 function resetMap(){
   initGoogleMaps();
   initGothenburgMap(getAllLocations());
@@ -285,10 +288,10 @@ function search() {
   var input = document.Input["Gatunamn"].value;
 
   //Looping through the open data provided by GBG
-  for (var i = 0; i < allitems.length; i++) {
-    var temp = doc.getElementsByTagName("ActivePeriodText")[i].firstChild
+  for (var i = 0; i < allCleaningZones.length; i++) {
+    var temp = xml_cleaningZones.getElementsByTagName("ActivePeriodText")[i].firstChild
       .nodeValue;
-    var gata = doc.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
+    var gata = xml_cleaningZones.getElementsByTagName("StreetName")[i].firstChild.nodeValue;
 
     //In the loop, if the input matches "gata" extract data + initiate map
     if (input === gata) {
@@ -359,36 +362,36 @@ function extract(i) {
   };
 
   //streetName
-  info.streetName = doc.getElementsByTagName("StreetName")[
+  info.streetName = xml_cleaningZones.getElementsByTagName("StreetName")[
     i
   ].firstChild.nodeValue;
   //infoText
-  info.infoText = doc.getElementsByTagName("ActivePeriodText")[
+  info.infoText = xml_cleaningZones.getElementsByTagName("ActivePeriodText")[
     i
   ].firstChild.nodeValue;
   //startTime
-  info.startTime = doc.getElementsByTagName("CurrentPeriodStart")[
+  info.startTime = xml_cleaningZones.getElementsByTagName("CurrentPeriodStart")[
     i
   ].firstChild.nodeValue;
   //endTime
-  info.endTime = doc.getElementsByTagName("CurrentPeriodEnd")[
+  info.endTime = xml_cleaningZones.getElementsByTagName("CurrentPeriodEnd")[
     i
   ].firstChild.nodeValue;
   //x
-  info.x = parseFloat(doc.getElementsByTagName("Lat")[i].firstChild.nodeValue);
+  info.x = parseFloat(xml_cleaningZones.getElementsByTagName("Lat")[i].firstChild.nodeValue);
   //y
-  info.y = parseFloat(doc.getElementsByTagName("Long")[i].firstChild.nodeValue);
+  info.y = parseFloat(xml_cleaningZones.getElementsByTagName("Long")[i].firstChild.nodeValue);
   //oddEven
   info.oddEven = 2;
   if (
-    typeof doc.getElementsByTagName("OnlyEvenWeeks")[i] == "undefined" &&
-    typeof doc.getElementsByTagName("OnlyOddWeeks")[i] == "undefined"
+    typeof xml_cleaningZones.getElementsByTagName("OnlyEvenWeeks")[i] == "undefined" &&
+    typeof xml_cleaningZones.getElementsByTagName("OnlyOddWeeks")[i] == "undefined"
   ) {
     info.oddEven = 1;
   }
 
-  var eMonth = doc.getElementsByTagName("EndMonth")[i].firstChild.nodeValue;
-  var eDay = doc.getElementsByTagName("EndDay")[i].firstChild.nodeValue;
+  var eMonth = xml_cleaningZones.getElementsByTagName("EndMonth")[i].firstChild.nodeValue;
+  var eDay = xml_cleaningZones.getElementsByTagName("EndDay")[i].firstChild.nodeValue;
   if (eMonth < 10) {
     eMonth = "0" + eMonth;
   }
@@ -397,7 +400,7 @@ function extract(i) {
   }
   //endDate
   info.endDate =
-    doc
+    xml_cleaningZones
       .getElementsByTagName("CurrentPeriodEnd")
       [i].firstChild.nodeValue.substring(0, 4) +
     eMonth +
