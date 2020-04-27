@@ -85,9 +85,9 @@ function initGothenburgMap(allLocations) {
     window.initMap = function () {
         var map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 57.708870, lng: 11.974560},
-            zoom: 12
+            zoom: 13
         });
-
+        console.log(map.getCenter().toString());
         var marker, i;
         for (i = 0; i < allLocations.length; i++) {
             marker = new google.maps.Marker({
@@ -95,6 +95,10 @@ function initGothenburgMap(allLocations) {
                 map: map,
                 title: allLocations[i][0],
                 icon: "Resources/Parking.png"
+            });
+            marker.addListener('click', function() {
+              map.setZoom(16);
+              map.setCenter(this.getPosition())
             });
         }
     }
@@ -121,6 +125,10 @@ function openwin() {
   );
 }
 
+function resetMap(){
+  initGoogleMaps();
+  initGothenburgMap(getAllLocations());
+}
 
 
 
