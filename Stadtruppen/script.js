@@ -1,6 +1,7 @@
 $(document).ready(init()); //initialize when document is ready
 
 //set up requests for data.gbg
+//CleaningZones
 var cleaningZonesRequest = new XMLHttpRequest();
 cleaningZonesRequest.open(
   "GET",
@@ -10,13 +11,27 @@ cleaningZonesRequest.open(
 cleaningZonesRequest.send();
 var xml_cleaningZones = getXML_Response(cleaningZonesRequest);
 
-//put residentialParkingRequest here
+//residentialParkings
+var residentialParkingRequest = new XMLHttpRequest();
+residentialParkingRequest.open(
+  "GET",
+  "http://data.goteborg.se/ParkingService/v2.1/ResidentialParkings/{9ed683b1-845e-41d2-bc44-fc871065c08b}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}",
+  false //suggestion: have synchronious, we don't need to asynchrinious? we get the data within a second..
+);
+residentialParkingRequest.send();
+var xml_residentialParkings = getXML_Response(residentialParkingRequest);
+
 
 
 var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
 
 // activates autocomplete-function
 autocomplete(document.getElementById("inputGata"),getStreetNames()); //param: id of html-input, list of street names
+
+
+
+
+
 
 //get the response of the inserted request, if the request is done, without errors.
 function getXML_Response(request){
