@@ -24,10 +24,43 @@ var xml_residentialParkings = getXML_Response(residentialParkingRequest);
 
 
 var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
+var allResidentialParkings = xml_residentialParkings.getElementsByTagName("Name");
 
 // activates autocomplete-function
 autocomplete(document.getElementById("inputGata"),getStreetNames()); //param: id of html-input, list of street names
 
+
+//tillfällig kod, för att hitta matchande parkeringar.
+//Nedan plockar ut boendeparkeringar, som också finns i cleaningZones
+//matchar nu på koordnater men märkte att id numret är samma.
+var matchingCoordinates = new Array();
+for (var i = 0; i < allResidentialParkings.length; i++) {
+
+  var id_resPark = xml_residentialParkings.getElementsByTagName("Id")[i].firstChild.nodeValue;
+  var lat_resPark = xml_residentialParkings.getElementsByTagName("Lat")[i].firstChild.nodeValue;
+  var long_resPark = xml_residentialParkings.getElementsByTagName("Long")[i].firstChild.nodeValue;
+  var name_resPark = xml_residentialParkings.getElementsByTagName("Name")[i].firstChild.nodeValue;
+
+  for(var j=0; j<allCleaningZones.length; j++){
+    var id_cleaningZone = xml_cleaningZones.getElementsByTagName("Id")[j].firstChild.nodeValue;
+    var lat_cleaningZone = xml_cleaningZones.getElementsByTagName("Lat")[j].firstChild.nodeValue;
+    var long_cleaningZone = xml_cleaningZones.getElementsByTagName("Long")[j].firstChild.nodeValue;
+    var name_cleaningZone = xml_cleaningZones.getElementsByTagName("StreetName")[j].firstChild.nodeValue;
+
+    if(lat_resPark === lat_cleaningZone && long_resPark ===long_cleaningZone){
+      //console.log("match found: " + id_resPark + " " + name_resPark + " " + name_cleaningZone);
+      const match = {
+        id_resPark: id_resPark,
+        id_cleaningZone: id_cleaningZone,
+        street:name_resPark,
+        lat: lat_resPark,
+        long: long_resPark
+      };
+      matchingCoordinates.push(match);
+    }
+  }
+}
+console.log(matchingCoordinates);
 
 
 
