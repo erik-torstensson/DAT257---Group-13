@@ -119,7 +119,7 @@ function getAllLocations() {
 }
 
 initGoogleMaps(); // initiate google maps
-initGothenburgMap(getAllLocations()); //initiate map over cleaning zones in Gothenburg
+initGothenburgMap(residentialParkingWithCleaning); //initiate map over cleaning zones in Gothenburg
 
 function initGoogleMaps() {
   // Create the script tag, set the appropriate attributes
@@ -142,11 +142,11 @@ function initGothenburgMap(allLocations) {
     for (i = 0; i < allLocations.length; i++) {
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(
-          allLocations[i][1],
-          allLocations[i][2]
+          allLocations[i].info.x,
+          allLocations[i].info.y
         ),
         map: map,
-        title: allLocations[i][0],
+        title: allLocations[i].info.streetName,
         icon: "Resources/Parking.png"
       });
       marker.addListener("click", function() {
@@ -158,23 +158,30 @@ function initGothenburgMap(allLocations) {
 }
 
 //change view on map (zooms in on the lat,long coordinates)
-function getMapByLatitude(x, y) {
+function getMapByLatitude(list) {
   // Attach your callback function to the `window` object
   window.initMap = function() {
     var map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: x, lng: y },
+      center: { lat: list[0].x, lng: list[0].y },
       zoom: 16
     });
-    var marker = new google.maps.Marker({
-      position: { lat: x, lng: y },
-      map: map,
-      icon: "Resources/Parking.png"
-    });
+    var marker, i;
+    for (i = 0; i < list.length; i++) {
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(
+          list[i].x,
+          list[i].y
+        ),
+        map: map,
+        title: list[i].streetName,
+        icon: "Resources/Parking.png"
+      });
   };
+}
 }
 
 //shows the xml file in browser
-//not using this?
+//not using this? Free to remove - Author, but the "data scource" button will be gone for good!
 function openwin() {
   window.open(
     "http://data.goteborg.se/ParkingService/v2.1/CleaningZones/{ad12cf6a-f54c-4400-bf36-d5c95beb6095}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}"
@@ -184,7 +191,7 @@ function openwin() {
 //reset the map
 function resetMap() {
   initGoogleMaps();
-  initGothenburgMap(getAllLocations());
+  initGothenburgMap(residentialParkingWithCleaning);
 }
 
 //initilaze when document is ready
@@ -348,11 +355,12 @@ function search() {
       var info = residentialParkingWithCleaning[i].info;
       activeCleaningInfo.push(info);
 
-      //initGoogleMaps();
-      //getMapByLatitude(info.x, info.y);
+     // initGoogleMaps();
+      //getMapByLatitude(activeCleaningInfo);
     }
   }
-
+  initGoogleMaps();
+  getMapByLatitude(activeCleaningInfo);
   if (activeCleaningInfo.length > 0) {
     document.getElementById("result").innerHTML += input + " städas:" + "<br>";
     for (var i = 0; i < activeCleaningInfo.length; i++) {
@@ -479,7 +487,7 @@ function extractCleaningInfo(i) {
 }
 
 /*
-  Extracting information of residential parkings.
+  Extracting information of residential parkings. 
   streetName = the name of the street
   x = lat,
   y = long
