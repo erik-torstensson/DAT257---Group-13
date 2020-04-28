@@ -30,37 +30,31 @@ var allResidentialParkings = xml_residentialParkings.getElementsByTagName("Name"
 autocomplete(document.getElementById("inputGata"),getStreetNames()); //param: id of html-input, list of street names
 
 
-//tillfällig kod, för att hitta matchande parkeringar.
-//Nedan plockar ut boendeparkeringar, som också finns i cleaningZones
-//matchar nu på koordnater men märkte att id numret är samma.
-var matchingCoordinates = new Array();
-for (var i = 0; i < allResidentialParkings.length; i++) {
+/* tillfällig kod, gör till en funktion.
+//TODO: skriv en funktion som kollar om areaCode_resPark slutar på 'N' eller inte,
+ isåfall är det en nattparkering. Om N: får man bara stå där 18.00 till 09.00.
+*/
+var residentialParkingWithCleaning = new Array();
 
+for (var i = 0; i < allResidentialParkings.length; i++) {
   var id_resPark = xml_residentialParkings.getElementsByTagName("Id")[i].firstChild.nodeValue;
-  var lat_resPark = xml_residentialParkings.getElementsByTagName("Lat")[i].firstChild.nodeValue;
-  var long_resPark = xml_residentialParkings.getElementsByTagName("Long")[i].firstChild.nodeValue;
-  var name_resPark = xml_residentialParkings.getElementsByTagName("Name")[i].firstChild.nodeValue;
+  var areaCode_resPark = xml_residentialParkings.getElementsByTagName("ResidentialParkingArea")[i].firstChild.nodeValue;
 
   for(var j=0; j<allCleaningZones.length; j++){
     var id_cleaningZone = xml_cleaningZones.getElementsByTagName("Id")[j].firstChild.nodeValue;
-    var lat_cleaningZone = xml_cleaningZones.getElementsByTagName("Lat")[j].firstChild.nodeValue;
-    var long_cleaningZone = xml_cleaningZones.getElementsByTagName("Long")[j].firstChild.nodeValue;
-    var name_cleaningZone = xml_cleaningZones.getElementsByTagName("StreetName")[j].firstChild.nodeValue;
 
-    if(lat_resPark === lat_cleaningZone && long_resPark ===long_cleaningZone){
-      //console.log("match found: " + id_resPark + " " + name_resPark + " " + name_cleaningZone);
+    if(id_resPark === id_cleaningZone){
       const match = {
         id_resPark: id_resPark,
-        id_cleaningZone: id_cleaningZone,
-        street:name_resPark,
-        lat: lat_resPark,
-        long: long_resPark
+        code_resPark: areaCode_resPark,
+        //night_parking: true/false,
+        info: extract(j)
       };
-      matchingCoordinates.push(match);
+      residentialParkingWithCleaning.push(match);
     }
   }
 }
-console.log(matchingCoordinates);
+console.log(residentialParkingWithCleaning);
 
 
 
