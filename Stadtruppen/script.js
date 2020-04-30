@@ -2,6 +2,7 @@ $(document).ready(init()); //initialize when document is ready
 
 //set up requests for data.gbg
 var cleaningZonesRequest = new XMLHttpRequest();
+//cleaningZonesRequest.responseType = 'XML';
 cleaningZonesRequest.open(
   "GET",
   "https://data.goteborg.se/ParkingService/v2.1/CleaningZones/{ad12cf6a-f54c-4400-bf36-d5c95beb6095}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}",
@@ -10,10 +11,94 @@ cleaningZonesRequest.open(
 cleaningZonesRequest.send();
 var xml_cleaningZones = getXML_Response(cleaningZonesRequest);
 
+
 //put residentialParkingRequest here
 
 
 var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
+
+
+
+//-----**-------//
+const json_swedishDays = getJsonResponse('http://api.dryg.net/dagar/v2.1/2015');
+
+
+
+const date2 = new Date('2015-03-22T15:24:00');
+
+console.log(json_swedishDays.dagar)
+timeToLeaveNightParking(date2);
+
+function timeToLeaveNightParking(startDate){
+  startHour = startDate.getHours();
+  startMinute = startDate.getMinutes();
+  startDate = convertToDate(startDate); //converts to same format as json values
+
+  var timeLeft = {
+    days: 0,
+    hours: 0,
+    minutes: 0
+  };
+
+  for (var i=0; i<json_swedishDays.dagar.length; i++){ //search for startDate
+    if (json_swedishDays.dagar[i].datum === startDate){
+      console.log('found it' + json_swedishDays.dagar[i].datum);
+
+      if(isPublicSunday(i) && (startHour < 9)){ //if its a sunday before 09.00 it is more than a day left
+        timeLeft.days = nextWeekdayOrSaturday(i) - i; //
+        timeLeft.hours =
+
+      }
+
+      console.log(isPublicSunday);
+    }
+  }
+
+
+}
+
+function isPublicSunday(index){
+  keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
+  publicSundayKey = keys[3]; //3d key "röd dag:"
+  var isSunday = json_swedishDays.dagar[index][publicSundayKey];
+  console.log(isSunday);
+  if(isSunday ==="Ja" ||isSunday === "ja"){
+    return true;
+  }
+  return false;
+}
+
+function nextWeekdayOrSaturday(index){
+  console.log('input index: ' + index);
+var index = index + 1;
+while (json_swedishDays.dagar[index][publicSundayKey] === "Ja"){
+  index =index+1
+}
+console.log('output index: ' + index);
+return index;
+}
+
+/*converts a Date ('YYYY-MM-DDTHH:MM:SS' to 'YYYY-MM-DD')*/
+function convertToDate(date){
+  var year = date.getFullYear();
+  var month = "" + (date.getMonth() +1); //jan = 0
+  var day = "" + date.getDate();
+
+  if(month.length == 1){ //single number gets a zero before, example march '3' --> '03'
+    month = '0' + month;
+  }
+  if(day.length == 1){ //single number gets a zero before,
+    day = '0' + day;
+  }
+
+  var convertedDate = "" + year + "-" + month + "-" + day;
+  return convertedDate;
+}
+
+
+//-----**-------//
+
+
 
 // activates autocomplete-function
 autocomplete(document.getElementById("inputGata"),getStreetNames()); //param: id of html-input, list of street names
@@ -22,9 +107,22 @@ autocomplete(document.getElementById("inputGata"),getStreetNames()); //param: id
 function getXML_Response(request){
   if (request.readyState == 4 && request.status == 200) {
     response = request.responseXML;
-    console.log(response);
+    //console.log(response);
     return response;
   }
+}
+
+/*sends request to url and return the response in JSON*/
+function getJsonResponse(url) {
+  var response;
+  var req = new XMLHttpRequest();
+  req.overrideMimeType("application/json");
+  req.open('GET', url, false);
+  req.onload  = function() {
+     response = JSON.parse(req.responseText);
+  };
+  req.send(null);
+  return response;
 }
 
 //returns an array of all street names in xml_cleaningZones.
