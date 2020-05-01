@@ -19,63 +19,100 @@ var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // 
 
 
 
-//-----**-------//
-const json_swedishDays = getJsonResponse('http://api.dryg.net/dagar/v2.1/2015');
+//-----START: feature-SeePublicHoldiays-------//
+var today = new Date(Date.now());
+var year = today.getFullYear();
+const json_swedishDays = getJsonResponse('http://api.dryg.net/dagar/v2.1/' + year);
 
+//var dateToMove = timeToLeaveNightParking(today); //test
+//console.log(dateToMove); //test
 
-
-const date2 = new Date('2015-03-22T15:24:00');
-
-console.log(json_swedishDays.dagar)
-timeToLeaveNightParking(date2);
-
+/*
+returns a Date object, of next time this night parking is prohibited
+returns -1 if parking is prohibited at the moment
+*/
 function timeToLeaveNightParking(startDate){
-  startHour = startDate.getHours();
-  startMinute = startDate.getMinutes();
-  startDate = convertToDate(startDate); //converts to same format as json values
-
-  var timeLeft = {
-    days: 0,
-    hours: 0,
-    minutes: 0
-  };
+  var startHour = startDate.getHours();
+  var startDate = convertToDate(startDate); //converts to same format as in the json object
+  var dateToMove= new Date();
 
   for (var i=0; i<json_swedishDays.dagar.length; i++){ //search for startDate
     if (json_swedishDays.dagar[i].datum === startDate){
-      console.log('found it' + json_swedishDays.dagar[i].datum);
-
-      if(isPublicSunday(i) && (startHour < 9)){ //if its a sunday before 09.00 it is more than a day left
-        timeLeft.days = nextWeekdayOrSaturday(i) - i; //
-        timeLeft.hours =
-
+      if(isPublicSunday(i)){ //SUNDAY
+        dateToMove =nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
+        return dateToMove;
       }
-
-      console.log(isPublicSunday);
+      else if (isPublicSaturday(i)){ // SATURDAY (day before red day)
+          if(startHour < 9){ //before 09:00
+            dateToMove = setDateTo_0900(startDate); //today at 9.00
+            return dateToMove;
+          }
+          else if(startHour >= 9 && startHour < 15){ //parking prohibited
+            return (-1)
+          }
+          else if (startHour >= 15){
+            dateToMove = nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
+            return dateToMove;
+          }
+      }
+      else { //its a WEEKDAY
+          if(startHour < 9){
+            dateToMove = setDateTo_0900(startDate); //today at 09.00
+            return dateToMove;
+          }
+          else if (startHour >= 9 && startHour < 18){ //parking prohibited
+            return (-1) //??? hur visar vi p-förbud?
+          }
+          else if (startHour >= 18){
+            const ONE_DAY_MS = 24*60*60*1000;
+            var tommorrow = new Date(startDate);
+            tommorrow.setTime(tommorrow.getTime() + ONE_DAY_MS); //today + one day
+            dateToMove = setDateTo_0900(tommorrow); //at 09:00
+            return dateToMove;
+          }
+      }
     }
   }
-
-
+  return -1;
 }
+
 
 function isPublicSunday(index){
   keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
   publicSundayKey = keys[3]; //3d key "röd dag:"
   var isSunday = json_swedishDays.dagar[index][publicSundayKey];
-  console.log(isSunday);
   if(isSunday ==="Ja" ||isSunday === "ja"){
     return true;
   }
   return false;
 }
 
-function nextWeekdayOrSaturday(index){
-  console.log('input index: ' + index);
-var index = index + 1;
-while (json_swedishDays.dagar[index][publicSundayKey] === "Ja"){
-  index =index+1
+
+function isPublicSaturday(index){ //public Saturday = day before a public sunday/red day.
+  var isSaturday = isPublicSunday(index + 1); //if its 'red day' tommorrow
+  return isSaturday;
 }
-console.log('output index: ' + index);
-return index;
+
+/* returns a Date object of next "not sunday" */
+function nextWeekdayOrSaturdayAtNine(index){
+  var index = index + 1; //start to search at next day after "input date"
+  while (json_swedishDays.dagar[index][publicSundayKey] === "Ja"){ //increase index while public sunday
+    index =index+1
+  }
+  var nextWeekdayOrSaturdayDate = new Date(json_swedishDays.dagar[index].datum);
+  nextWeekdayOrSaturdayDate.setHours(9); // both weekdays and saturdays has parking restriction after 09.00
+  return nextWeekdayOrSaturdayDate;
+}
+
+/*
+returns a new Date, with same YYMMDD as input, but changed time to 09:00:00
+*/
+function setDateTo_0900(date){
+  var dateNine = new Date(date);
+  dateNine.setHours(9);
+  dateNine.setMinutes(0);
+  dateNine.setMinutes(0);
+  return dateNine;
 }
 
 /*converts a Date ('YYYY-MM-DDTHH:MM:SS' to 'YYYY-MM-DD')*/
@@ -90,13 +127,11 @@ function convertToDate(date){
   if(day.length == 1){ //single number gets a zero before,
     day = '0' + day;
   }
-
   var convertedDate = "" + year + "-" + month + "-" + day;
   return convertedDate;
 }
 
-
-//-----**-------//
+//-----END: feature-SeePublicHoldiays-------//
 
 
 
