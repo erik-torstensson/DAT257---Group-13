@@ -162,7 +162,7 @@ function initGothenburgMap(allLocations) {
 
       marker.addListener('click', function () {
         closeOtherInfo();
-        infowindow.open(marker.get('map'), marker);
+        infowindow.open(this.get('map'), this);
         InforObj[0] = infowindow;
         map.setZoom(16);
         map.setCenter(this.getPosition());
