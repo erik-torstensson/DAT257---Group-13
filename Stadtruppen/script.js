@@ -151,10 +151,22 @@ function initGothenburgMap(allLocations) {
         title: allLocations[i].info.streetName,
         icon: "Resources/Parking.png"
       });
-
       var contentString = '<h1>' + allLocations[i].info.streetName + '</h1>' +
-          '<h3>Antal platser: __</h3>' + '<div><h3> Du får parkera här :</h3></div>'+
-          '<div><h3>' + allLocations[i].info.infoText + '</h3></div>';
+      '<h3>Antal platser: __</h3>' + '<h3> Du får parkera här :</h3>'+
+      '<h3>' + allLocations[i].info.infoText + '</h3>';
+      
+      if(allLocations[i].info.infoText != null && 
+        allLocations[i].info.startTime != null &&
+        allLocations[i].info.endTime != null &&
+        allLocations[i].info.endDate != null &&
+        allLocations[i].info.oddEven != null){
+          contentString +=
+          "<button onclick='createAnEvent( "+allLocations[i].info.startTime + "," 
+          + allLocations[i].info.endTime + ", " + allLocations[i].info.x +", " 
+          + allLocations[i].info.y + ", "+allLocations[i].info.endDate + ", " 
+          + allLocations[i].info.oddEven + ")'> Lägg till! </button>";
+      }
+          //onclick = 'createAnEvent(activeCleaningInfo[0].startTime, activeCleaningInfo[0].endTime, activeCleaningInfo[0].x, activeCleaningInfo[0].y, activeCleaningInfo[0].endDate, activeCleaningInfo[0].oddEven)
 
       const infowindow = new google.maps.InfoWindow({
         content: contentString,
