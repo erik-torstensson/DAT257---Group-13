@@ -132,29 +132,55 @@ function initGoogleMaps() {
 }
 
 function initGothenburgMap(allLocations) {
-  window.initMap = function() {
+  window.initMap = function (listener) {
+
     var map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: 57.70887, lng: 11.97456 },
+      center: {lat: 57.70887, lng: 11.97456},
       zoom: 13
     });
-    console.log(map.getCenter().toString());
+    var InforObj = [];
     var marker, i;
     for (i = 0; i < allLocations.length; i++) {
+
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(
-          allLocations[i].info.x,
-          allLocations[i].info.y
+            allLocations[i].info.x,
+            allLocations[i].info.y
         ),
         map: map,
         title: allLocations[i].info.streetName,
         icon: "Resources/Parking.png"
       });
-      marker.addListener("click", function() {
+
+      var contentString = '<h1>' + allLocations[i].info.streetName + '</h1>' +
+          '<h3>Antal platser: __</h3>' + '<div><h3> Du får parkera här :</h3></div>'+
+          '<div><h3>' + allLocations[i].info.infoText + '</h3></div>';
+
+      const infowindow = new google.maps.InfoWindow({
+        content: contentString,
+      });
+
+      marker.addListener('click', function () {
+        closeOtherInfo();
+        infowindow.open(marker.get('map'), marker);
+        InforObj[0] = infowindow;
         map.setZoom(16);
         map.setCenter(this.getPosition());
       });
     }
-  };
+
+    function closeOtherInfo() {
+      if (InforObj.length > 0) {
+        /* detach the info-window from the marker ... undocumented in the API docs */
+        InforObj[0].set("marker", null);
+        /* and close it */
+        InforObj[0].close();
+        /* blank the array */
+        InforObj.length = 0;
+      }
+    };
+
+  }
 }
 
 //change view on map (zooms in on the lat,long coordinates)
