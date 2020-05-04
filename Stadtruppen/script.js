@@ -22,7 +22,7 @@ var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // 
 //-----START: feature-SeePublicHoldiays-------//
 var today = new Date(Date.now());
 var year = today.getFullYear();
-const json_swedishDays = getJsonResponse('http://api.dryg.net/dagar/v2.1/' + year);
+const json_swedishDays = getJsonResponse('https://api.dryg.net/dagar/v2.1/' + year);
 
 //var dateToMove = timeToLeaveNightParking(today); //test
 //console.log(dateToMove); //test
