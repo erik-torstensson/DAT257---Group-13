@@ -132,29 +132,67 @@ function initGoogleMaps() {
 }
 
 function initGothenburgMap(allLocations) {
-  window.initMap = function() {
+  window.initMap = function (listener) {
+
     var map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: 57.70887, lng: 11.97456 },
+      center: {lat: 57.70887, lng: 11.97456},
       zoom: 13
     });
-    console.log(map.getCenter().toString());
+    var InforObj = [];
     var marker, i;
     for (i = 0; i < allLocations.length; i++) {
+
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(
-          allLocations[i].info.x,
-          allLocations[i].info.y
+            allLocations[i].info.x,
+            allLocations[i].info.y
         ),
         map: map,
         title: allLocations[i].info.streetName,
         icon: "Resources/Parking.png"
       });
-      marker.addListener("click", function() {
+      var contentString = '<h1>' + allLocations[i].info.streetName + '</h1>' +
+      '<h3>Antal platser: __</h3>' + '<h3> Du får parkera här :</h3>'+
+      '<h3>' + allLocations[i].info.infoText + '</h3>';
+      
+      if(allLocations[i].info.infoText != null && 
+        allLocations[i].info.startTime != null &&
+        allLocations[i].info.endTime != null &&
+        allLocations[i].info.endDate != null &&
+        allLocations[i].info.oddEven != null){
+          contentString +=
+          "<button onclick='createAnEvent( "+allLocations[i].info.startTime + "," 
+          + allLocations[i].info.endTime + ", " + allLocations[i].info.x +", " 
+          + allLocations[i].info.y + ", "+allLocations[i].info.endDate + ", " 
+          + allLocations[i].info.oddEven + ")'> Lägg till! </button>";
+      }
+          //onclick = 'createAnEvent(activeCleaningInfo[0].startTime, activeCleaningInfo[0].endTime, activeCleaningInfo[0].x, activeCleaningInfo[0].y, activeCleaningInfo[0].endDate, activeCleaningInfo[0].oddEven)
+
+      const infowindow = new google.maps.InfoWindow({
+        content: contentString,
+      });
+
+      marker.addListener('click', function () {
+        closeOtherInfo();
+        infowindow.open(this.get('map'), this);
+        InforObj[0] = infowindow;
         map.setZoom(16);
         map.setCenter(this.getPosition());
       });
     }
-  };
+
+    function closeOtherInfo() {
+      if (InforObj.length > 0) {
+        /* detach the info-window from the marker ... undocumented in the API docs */
+        InforObj[0].set("marker", null);
+        /* and close it */
+        InforObj[0].close();
+        /* blank the array */
+        InforObj.length = 0;
+      }
+    };
+
+  }
 }
 
 //change view on map (zooms in on the lat,long coordinates)
