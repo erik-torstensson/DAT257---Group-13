@@ -3,6 +3,7 @@ $(document).ready(init()); //initialize when document is ready
 //set up requests for data.gbg
 //CleaningZones
 var cleaningZonesRequest = new XMLHttpRequest();
+//cleaningZonesRequest.responseType = 'XML';
 cleaningZonesRequest.open(
   "GET",
   "https://data.goteborg.se/ParkingService/v2.1/CleaningZones/{ad12cf6a-f54c-4400-bf36-d5c95beb6095}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}",
@@ -21,11 +22,130 @@ residentialParkingRequest.open(
 residentialParkingRequest.send();
 var xml_residentialParkings = getXML_Response(residentialParkingRequest);
 
+
 var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
 var allResidentialParkings = xml_residentialParkings.getElementsByTagName(
   "Name"
 );
 var residentialParkingWithCleaning = fetchResidentialParkingInfo();
+
+
+
+//-----START: feature-SeePublicHoldiays-------//
+var today = new Date(Date.now());
+var year = today.getFullYear();
+const json_swedishDays = getJsonResponse('https://api.dryg.net/dagar/v2.1/' + year);
+
+//var dateToMove = timeToLeaveNightParking(today); //test
+//console.log(dateToMove); //test
+
+/*
+returns a Date object, of next time this night parking is prohibited
+returns -1 if parking is prohibited at the moment
+*/
+function timeToLeaveNightParking(startDate){
+  var startHour = startDate.getHours();
+  var startDate = convertToDate(startDate); //converts to same format as in the json object
+  var dateToMove= new Date();
+
+  for (var i=0; i<json_swedishDays.dagar.length; i++){ //search for startDate
+    if (json_swedishDays.dagar[i].datum === startDate){
+      if(isPublicSunday(i)){ //SUNDAY
+        dateToMove =nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
+        return dateToMove;
+      }
+      else if (isPublicSaturday(i)){ // SATURDAY (day before red day)
+          if(startHour < 9){ //before 09:00
+            dateToMove = setDateTo_0900(startDate); //today at 9.00
+            return dateToMove;
+          }
+          else if(startHour >= 9 && startHour < 15){ //parking prohibited
+            return (-1)
+          }
+          else if (startHour >= 15){
+            dateToMove = nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
+            return dateToMove;
+          }
+      }
+      else { //its a WEEKDAY
+          if(startHour < 9){
+            dateToMove = setDateTo_0900(startDate); //today at 09.00
+            return dateToMove;
+          }
+          else if (startHour >= 9 && startHour < 18){ //parking prohibited
+            return (-1) //??? hur visar vi p-förbud?
+          }
+          else if (startHour >= 18){
+            const ONE_DAY_MS = 24*60*60*1000;
+            var tommorrow = new Date(startDate);
+            tommorrow.setTime(tommorrow.getTime() + ONE_DAY_MS); //today + one day
+            dateToMove = setDateTo_0900(tommorrow); //at 09:00
+            return dateToMove;
+          }
+      }
+    }
+  }
+  return -1;
+}
+
+
+function isPublicSunday(index){
+  keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
+  publicSundayKey = keys[3]; //3d key "röd dag:"
+  var isSunday = json_swedishDays.dagar[index][publicSundayKey];
+  if(isSunday ==="Ja" ||isSunday === "ja"){
+    return true;
+  }
+  return false;
+}
+
+
+function isPublicSaturday(index){ //public Saturday = day before a public sunday/red day.
+  var isSaturday = isPublicSunday(index + 1); //if its 'red day' tommorrow
+  return isSaturday;
+}
+
+/* returns a Date object of next "not sunday" */
+function nextWeekdayOrSaturdayAtNine(index){
+  var index = index + 1; //start to search at next day after "input date"
+  while (json_swedishDays.dagar[index][publicSundayKey] === "Ja"){ //increase index while public sunday
+    index =index+1
+  }
+  var nextWeekdayOrSaturdayDate = new Date(json_swedishDays.dagar[index].datum);
+  nextWeekdayOrSaturdayDate.setHours(9); // both weekdays and saturdays has parking restriction after 09.00
+  return nextWeekdayOrSaturdayDate;
+}
+
+/*
+returns a new Date, with same YYMMDD as input, but changed time to 09:00:00
+*/
+function setDateTo_0900(date){
+  var dateNine = new Date(date);
+  dateNine.setHours(9);
+  dateNine.setMinutes(0);
+  dateNine.setMinutes(0);
+  return dateNine;
+}
+
+/*converts a Date ('YYYY-MM-DDTHH:MM:SS' to 'YYYY-MM-DD')*/
+function convertToDate(date){
+  var year = date.getFullYear();
+  var month = "" + (date.getMonth() +1); //jan = 0
+  var day = "" + date.getDate();
+
+  if(month.length == 1){ //single number gets a zero before, example march '3' --> '03'
+    month = '0' + month;
+  }
+  if(day.length == 1){ //single number gets a zero before,
+    day = '0' + day;
+  }
+  var convertedDate = "" + year + "-" + month + "-" + day;
+  return convertedDate;
+}
+
+//-----END: feature-SeePublicHoldiays-------//
+
+
 
 // activates autocomplete-function
 autocomplete(document.getElementById("inputGata"), getStreetNames()); //param: id of html-input, list of street names
@@ -70,9 +190,22 @@ function fetchResidentialParkingInfo() {
 function getXML_Response(request) {
   if (request.readyState == 4 && request.status == 200) {
     response = request.responseXML;
-    console.log(response);
+    //console.log(response);
     return response;
   }
+}
+
+/*sends request to url and return the response in JSON*/
+function getJsonResponse(url) {
+  var response;
+  var req = new XMLHttpRequest();
+  req.overrideMimeType("application/json");
+  req.open('GET', url, false);
+  req.onload  = function() {
+     response = JSON.parse(req.responseText);
+  };
+  req.send(null);
+  return response;
 }
 
 //returns an array of all street names in xml_cleaningZones.
