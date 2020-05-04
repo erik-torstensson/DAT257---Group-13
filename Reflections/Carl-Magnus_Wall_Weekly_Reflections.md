@@ -1,5 +1,6 @@
 # Vecka 1:
 
+
 **What is:** 
 
 Under min utbildning i IT-programmet har jag deltagit i flertalet projekt som utförts på olika sätt. 
@@ -88,3 +89,36 @@ Under team-reflektionen har vi verkligen kunnat diskutera vad vi saknar i vårt a
 Mötet under fredagen har gett oss ett tydligare mål och kommer hjälpa oss framåt.
 
 Jag kommer fokusera på att grotta ner mig i kvalitetsrelaterade KPIer under helgen, så att vi kan ha lite tydligare riktlinjer framöver. Jag kommer även att fördjupa mig i JavaScript/HTML/CSS för att förbättra mina frontend-kunskaper.
+
+----------------
+
+# Vecka 4:
+
+
+**What is:**
+
+Arbetet har gått framåt i ganska jämn takt. Sedan mötet veckan innan har projektet fått en ordentlig rikting. Det har gjort det lite lättare att skapa tydliga tasks utifrån våra user stories. Jag har själv haft väldigt svårt att koncentrera mig denna sprint dock. Mest på grund av tentaplugg. Utöver detta har jag inte känt mig särskilt stressad. Handledning under måndagen gav oss en liten fläkt gällande den agila utvecklingsmetoden. Vi har bestämt att ha en ny scrum master varje vecka, så att alla kan får pröva på detta. Under torsdagen hade vi ett nytt möte med Kim Lantto från Göteborg Stad. Mötet gick väldigt bra och Kims idéer gällande vår applikation överensstämde väl med våra egna tankar. Han lyfte även fram vikten av hur vi utvecklar applikationen och hur vi bör dela upp projektet.
+
+Jag känner att vi alla är vana vid att arbeta på ett visst sätt, där alla gör sitt bästa, men vi måste ta till oss scrum ännu mer. Jag känner att vi alla rör oss framåt dock, vilket är bra. Jag och Julia har informerat våra gruppmedlemmar om planen efter mötet med våra kontakter på Parkering Göteborg. Jag har kunnat hjälpa till att styra arbetet mot det nya målet, det vill säga en app som informerar om parkeringsstatus för en viss boendeparkeringsplats. Jag har även kunnat arbeta med funktionalitet gällande boendeparkeringsdata i vår kod. Strukturerade stora delar av vår teamreflektion.
+
+Vi har börjat diskutera KPIer lite mer ordentligt och bokfört bland annat stressnivåer. Det krävs lite mer arbete här från min sida känner jag. Jag vill kunna utnyttja våra KPIer och försöka sätta de mål som utmärkts.
+
+Kodningen känns bättre varje vecka, men det krävs alltid mer kunskaper inom detta. Jag vill kunna mer.
+
+**What it might or should be: **
+
+Optimalt borde vi alltid ha tydliga arbetsuppgifter och kommunicera väl när vi behöver hjälp. Vi borde också arbeta tydligare med KPIer för att kunna arbeta så effektivt som möjligt. Vi har haft fler standup meetings och diskuterat mer med varandra, men det kan bli bättre. Vi har en tuff sprint framför oss och vi kommer behöva lägga ner mer tid på projektet än tidigare känner jag. Det är extra viktigt att vi utnyttjar våra KPIer framöver. Arbetet från distans har fungerat bra hittills, men det är lite svårt ibland. Jag känner dock att vi fungerar bra tillsammans. Jag känner mig lugn och vet att vi kan bara bli bättre.
+
+Varje sprint har inletts med ett bättre och bättre möte, men det är fortfarande en utmaning att jobba på "rätt" sätt. Nu när vi har en scrum master varje vecka känner jag att vi är på rätt spår.
+
+Vi måste alla ha koll på hur vi arbetar med KPIer och vi måste alla ha koll på våra arbetsuppgifter. Jag var väldigt upptagen med plugg inför en tenta under veckan, vilket gjorde att jag inte kände mig så hjälpsam som jag velat vara. Med bättre kommunikation och arbetsfördelning hade jag kunnat få gjort mer.
+
+**Feedback designed to reduce the gap: **
+
+Jag känner att vi bör implementera tydligare roller. Just nu delar vi upp arbete i själva kodutvecklingen, men det finns flera områden som vi också måste arbeta med. Att ha någon arbetar aktivt med vår scrum board/user stories/tasks, arbetar med den grafiska designen eller bara aktivt och noggrant dokumenterar utveckling, skulle vara otroligt hjälpsamt i längden. Vi bör alla vara tydliga och ärliga i hur våra individuella scheman ser i ut i kommande sprints för att på ett lätt sätt kunna fördela arbetsuppgifter.
+
+I veckan kände jag att jag hade behövt vara tydligare med vad jag behövde lägga lite extra tid på. Jag tänker ta upp mitt schema under kommande möte för att lättare kunna kartlägga det jag kan klara av i nästa sprint. Fler standup meetings skulle verkligen vara bra för oss alla.
+
+Vi måste fortsätta tala aktivt om våra valda KPIer för att öka effektiviteten ytterligare. Det är inget fel att någon är lite mer upptagen och inte klarar av lika mycket som någon annan under en vecka. Så länge vi kan dela upp arbetsbördan och sätta rimliga mål kan alla bidraga på sitt eget sätt. Alla behöver inte nöta kod varje vecka om det känns jobbigt ett stressigt. Jag ska försöka tänka lite extra på detta framöver och tala med mina gruppmedlemmar mer om det.
+
+Det blir mindre förvirring och mindre stress desto tydligare våra uppgifter är. Jobbar vi med detta kommer vi kunna flyta på ännu bättre. Jag måste avsätta mer av min tid till att läsa på om kodspråken och lära mig fler effektiva kodknep. Jag behöver blir mer effektiv. Då blir det även lättare för mig att vara till hjälp för de andra i gruppen.
