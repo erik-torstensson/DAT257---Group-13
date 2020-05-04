@@ -3,7 +3,6 @@ $(document).ready(init()); //initialize when document is ready
 //set up requests for data.gbg
 //CleaningZones
 var cleaningZonesRequest = new XMLHttpRequest();
-//cleaningZonesRequest.responseType = 'XML';
 cleaningZonesRequest.open(
   "GET",
   "https://data.goteborg.se/ParkingService/v2.1/CleaningZones/{ad12cf6a-f54c-4400-bf36-d5c95beb6095}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}",
@@ -22,12 +21,10 @@ residentialParkingRequest.open(
 residentialParkingRequest.send();
 var xml_residentialParkings = getXML_Response(residentialParkingRequest);
 
-
 var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
 var allResidentialParkings = xml_residentialParkings.getElementsByTagName(
   "Name"
 );
-var residentialParkingWithCleaning = fetchResidentialParkingInfo();
 
 
 
@@ -36,8 +33,11 @@ var today = new Date(Date.now());
 var year = today.getFullYear();
 const json_swedishDays = getJsonResponse('https://api.dryg.net/dagar/v2.1/' + year);
 
-//var dateToMove = timeToLeaveNightParking(today); //test
+var dateToMove = timeToLeaveNightParking(today); //test
 //console.log(dateToMove); //test
+
+
+var residentialParkingWithCleaning = fetchResidentialParkingInfo();
 
 /*
 returns a Date object, of next time this night parking is prohibited
@@ -88,10 +88,9 @@ function timeToLeaveNightParking(startDate){
   return -1;
 }
 
-
 function isPublicSunday(index){
-  keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
-  publicSundayKey = keys[3]; //3d key "röd dag:"
+  var keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
+  var publicSundayKey = keys[3]; //3d key "röd dag:"
   var isSunday = json_swedishDays.dagar[index][publicSundayKey];
   if(isSunday ==="Ja" ||isSunday === "ja"){
     return true;
@@ -107,6 +106,8 @@ function isPublicSaturday(index){ //public Saturday = day before a public sunday
 
 /* returns a Date object of next "not sunday" */
 function nextWeekdayOrSaturdayAtNine(index){
+  var keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
+  var publicSundayKey = keys[3]; //3d key "röd dag:"
   var index = index + 1; //start to search at next day after "input date"
   while (json_swedishDays.dagar[index][publicSundayKey] === "Ja"){ //increase index while public sunday
     index =index+1
@@ -145,8 +146,6 @@ function convertToDate(date){
 
 //-----END: feature-SeePublicHoldiays-------//
 
-
-
 // activates autocomplete-function
 autocomplete(document.getElementById("inputGata"), getStreetNames()); //param: id of html-input, list of street names
 
@@ -164,10 +163,24 @@ function fetchResidentialParkingInfo() {
       "ResidentialParkingArea"
     )[i].firstChild.nodeValue;
 
+    var night_parking;
+
+    if( areaCode_resPark.substr(areaCode_resPark.length-1) === "n"){
+      night_parking = true}
+    else { night_parking = false};
+
+    var timeUntilUnavailable = Math.pow(10,100); //initiate timeUntilUnavailable
+    var today = new Date(Date.now())
+
+    if(night_parking === true){
+      timeUntilUnavailable = timeLeftInMinutes(timeToLeaveNightParking(today))
+    }
     var match = {
       id_resPark: id_resPark,
       code_resPark: areaCode_resPark,
-      //night_parking: true/false,
+      timeLeft: timeUntilUnavailable, //insert real function here
+      night_parking: false,
+
       info: extractResidentialInfo(i)
     };
 
@@ -177,6 +190,11 @@ function fetchResidentialParkingInfo() {
 
       if (id_resPark === id_cleaningZone) {
         match.info = extractCleaningInfo(j);
+        var time = new Date(Date.parse(xml_cleaningZones.getElementsByTagName("CurrentPeriodStart")[j]
+        .firstChild.nodeValue))
+        if(timeLeftInMinutes(time) < timeUntilUnavailable){
+          match.timeLeft = timeLeftInMinutes(time);
+        }
       }
     }
     residentialParkingWithCleaning.push(match);
@@ -186,26 +204,27 @@ function fetchResidentialParkingInfo() {
   return residentialParkingWithCleaning;
 }
 
+
+function timeLeftInMinutes(date) {
+  if(date === -1 ) {
+    return 0;
+  }
+  var one_min = 1000*60;
+  today = new Date(Date.now());
+  var timeLeft = date.getTime() - today.getTime();
+  var min =(timeLeft/one_min);
+  return min;
+
+}
+
+
 //get the response of the inserted request, if the request is done, without errors.
 function getXML_Response(request) {
   if (request.readyState == 4 && request.status == 200) {
-    response = request.responseXML;
-    //console.log(response);
+    var response = request.responseXML;
+    console.log(response);
     return response;
   }
-}
-
-/*sends request to url and return the response in JSON*/
-function getJsonResponse(url) {
-  var response;
-  var req = new XMLHttpRequest();
-  req.overrideMimeType("application/json");
-  req.open('GET', url, false);
-  req.onload  = function() {
-     response = JSON.parse(req.responseText);
-  };
-  req.send(null);
-  return response;
 }
 
 //returns an array of all street names in xml_cleaningZones.
@@ -224,32 +243,19 @@ function getStreetNames() {
   return allStreetNames;
 }
 
-//returns an array of all locations in xml_cleaningZones
-function getAllLocations() {
-  var allLocations = [];
-
-  for (var i = 0; i < allCleaningZones.length; i++) {
-    var street = xml_cleaningZones.getElementsByTagName("StreetName")[i]
-      .firstChild.nodeValue;
-    var Lat = xml_cleaningZones.getElementsByTagName("Lat")[i].firstChild
-      .nodeValue;
-    var Lng = xml_cleaningZones.getElementsByTagName("Long")[i].firstChild
-      .nodeValue;
-    var lastStreet;
-
-    if (lastStreet !== street) {
-      //TODO: visa istället alla zoner på en gata
-      var x = [];
-      x.push(street);
-      x.push(Lat);
-      x.push(Lng);
-      allLocations.push(x);
-      lastStreet = street;
-    }
-  }
-  //console.log(allLocations);
-  return allLocations;
+/*sends request to url and return the response in JSON*/
+function getJsonResponse(url) {
+  var response;
+  var req = new XMLHttpRequest();
+  req.overrideMimeType("application/json");
+  req.open('GET', url, false);
+  req.onload  = function() {
+     response = JSON.parse(req.responseText);
+  };
+  req.send(null);
+  return response;
 }
+
 
 initGoogleMaps(); // initiate google maps
 initGothenburgMap(residentialParkingWithCleaning); //initiate map over cleaning zones in Gothenburg
@@ -265,67 +271,45 @@ function initGoogleMaps() {
 }
 
 function initGothenburgMap(allLocations) {
-  window.initMap = function (listener) {
-
+  window.initMap = function() {
     var map = new google.maps.Map(document.getElementById("map"), {
-      center: {lat: 57.70887, lng: 11.97456},
+      center: { lat: 57.70887, lng: 11.97456 },
       zoom: 13
     });
-    var InforObj = [];
+    console.log(map.getCenter().toString());
     var marker, i;
     for (i = 0; i < allLocations.length; i++) {
-
+      var icon;
+      if(allLocations[i].timeLeft > 1440){
+          icon = "https://cdn.glitch.com/e4d0e510-b26f-4814-91be-cd314052cbec%2FYesParking.png?v=1588253609539"
+        // YELLOW Move care within 24 hours YELLOW
+      }else if(allLocations[i].timeLeft > 30) {
+          icon= "https://cdn.glitch.com/e4d0e510-b26f-4814-91be-cd314052cbec%2FMaybeParking.png?v=1588253637586"
+        // RED Illegal parking
+        }else {
+          icon = "https://cdn.glitch.com/e4d0e510-b26f-4814-91be-cd314052cbec%2FNoParking.png?v=1588253633312"
+        }
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(
-            allLocations[i].info.x,
-            allLocations[i].info.y
+          allLocations[i].info.x,
+          allLocations[i].info.y
         ),
         map: map,
         title: allLocations[i].info.streetName,
-        icon: "Resources/Parking.png"
+        icon: icon
       });
-      var contentString = '<h1>' + allLocations[i].info.streetName + '</h1>' +
-      '<h3>Antal platser: __</h3>' + '<h3> Du får parkera här :</h3>'+
-      '<h3>' + allLocations[i].info.infoText + '</h3>';
-      
-      if(allLocations[i].info.infoText != null && 
-        allLocations[i].info.startTime != null &&
-        allLocations[i].info.endTime != null &&
-        allLocations[i].info.endDate != null &&
-        allLocations[i].info.oddEven != null){
-          contentString +=
-          "<button onclick='createAnEvent( "+allLocations[i].info.startTime + "," 
-          + allLocations[i].info.endTime + ", " + allLocations[i].info.x +", " 
-          + allLocations[i].info.y + ", "+allLocations[i].info.endDate + ", " 
-          + allLocations[i].info.oddEven + ")'> Lägg till! </button>";
-      }
-          //onclick = 'createAnEvent(activeCleaningInfo[0].startTime, activeCleaningInfo[0].endTime, activeCleaningInfo[0].x, activeCleaningInfo[0].y, activeCleaningInfo[0].endDate, activeCleaningInfo[0].oddEven)
-
-      const infowindow = new google.maps.InfoWindow({
-        content: contentString,
-      });
-
-      marker.addListener('click', function () {
-        closeOtherInfo();
-        infowindow.open(this.get('map'), this);
-        InforObj[0] = infowindow;
+      marker.addListener("click", function() {
         map.setZoom(16);
         map.setCenter(this.getPosition());
       });
     }
+  };
+}
 
-    function closeOtherInfo() {
-      if (InforObj.length > 0) {
-        /* detach the info-window from the marker ... undocumented in the API docs */
-        InforObj[0].set("marker", null);
-        /* and close it */
-        InforObj[0].close();
-        /* blank the array */
-        InforObj.length = 0;
-      }
-    };
-
-  }
+function isNightParking(zone){
+    if( zone.substr(zone.length-1) === "n"){
+      return true }
+    else { return false}
 }
 
 //change view on map (zooms in on the lat,long coordinates)
@@ -333,19 +317,29 @@ function getMapByLatitude(list) {
   // Attach your callback function to the `window` object
   window.initMap = function() {
     var map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: list[0].x, lng: list[0].y },
+      center: { lat: list[0].info.x, lng: list[0].info.y },
       zoom: 16
     });
     var marker, i;
     for (i = 0; i < list.length; i++) {
+      var icon;
+      if(list[i].timeLeft > 1440){
+          icon = "Resources/YesParking.png"
+        // YELLOW Move care within 24 hours YELLOW
+        }else if(list[i].timeLeft > 30) {
+          icon= "Resources/MaybeParking.png"
+        // RED Illegal parking
+        }else {
+          icon = "Resources/NoParking.png"
+        }
       marker = new google.maps.Marker({
         position: new google.maps.LatLng(
-          list[i].x,
-          list[i].y
+          list[i].info.x,
+          list[i].info.y
         ),
         map: map,
-        title: list[i].streetName,
-        icon: "Resources/Parking.png"
+        title: list[i].info.streetName,
+        icon: icon
       });
   };
 }
@@ -523,11 +517,11 @@ function search() {
 
     //In the loop, if the input matches "gata" extract data + initiate map
     if (input === gata) {
-      var info = residentialParkingWithCleaning[i].info;
+      var info = residentialParkingWithCleaning[i];
       activeCleaningInfo.push(info);
-
      // initGoogleMaps();
       //getMapByLatitude(activeCleaningInfo);
+      console.log(activeCleaningInfo[0].timeLeft)
     }
   }
   initGoogleMaps();
@@ -535,37 +529,37 @@ function search() {
   if (activeCleaningInfo.length > 0) {
     document.getElementById("result").innerHTML += input + " städas:" + "<br>";
     for (var i = 0; i < activeCleaningInfo.length; i++) {
-      if (activeCleaningInfo[i].infoText == null) {
+      if (activeCleaningInfo[i].info.infoText == null) {
         document.getElementById("result").innerHTML +=
           "Boendeparkeringen vid" +
           " koordinaterna:  " +
-          activeCleaningInfo[i].x +
+          activeCleaningInfo[i].info.x +
           ", " +
-          activeCleaningInfo[i].y + " städas inte." + "<br><br>";
+          activeCleaningInfo[i].info.y + " städas inte." + "<br><br>";
       } else {
         document.getElementById("result").innerHTML +=
-          activeCleaningInfo[i].infoText +
+          activeCleaningInfo[i].info.infoText +
           " Vid koordinaterna:  " +
-          activeCleaningInfo[i].x +
+          activeCleaningInfo[i].info.x +
           ", " +
-          activeCleaningInfo[i].y;
+          activeCleaningInfo[i].info.y;
 
         // Adding a new button for every coordinate combination on the same street.
         var inputTag = document.createElement("div");
         inputTag.innerHTML =
           "<input type = 'button' value = 'Lägg till!' onClick = 'createAnEvent(activeCleaningInfo[" +
           i +
-          "].startTime, activeCleaningInfo[" +
+          "].info.startTime, activeCleaningInfo[" +
           i +
-          "].endTime, activeCleaningInfo[" +
+          "].info.endTime, activeCleaningInfo[" +
           i +
-          "].x, activeCleaningInfo[" +
+          "].info.x, activeCleaningInfo[" +
           i +
-          "].y, activeCleaningInfo[" +
+          "].info.y, activeCleaningInfo[" +
           i +
-          "].endDate, activeCleaningInfo[" +
+          "].info.endDate, activeCleaningInfo[" +
           i +
-          "].oddEven)'>";
+          "].info.oddEven)'>";
 
         document.getElementById("result").appendChild(inputTag);
         document.getElementById("result").innerHTML += "<br>";
@@ -578,7 +572,7 @@ function search() {
     document.getElementById("result").innerHTML +=
       "" + input + " kan inte hittas i datan." + "<br>";
   }
-  console.log(activeCleaningInfo[0].oddEven);
+  console.log(activeCleaningInfo[0].info.oddEven);
   return false;
 }
 
@@ -658,7 +652,7 @@ function extractCleaningInfo(i) {
 }
 
 /*
-  Extracting information of residential parkings. 
+  Extracting information of residential parkings.
   streetName = the name of the street
   x = lat,
   y = long
@@ -666,6 +660,7 @@ function extractCleaningInfo(i) {
 function extractResidentialInfo(i) {
   var info = {
     streetName: "",
+    timeLeft: "",
     x: "",
     y: ""
   };
@@ -674,7 +669,6 @@ function extractResidentialInfo(i) {
   info.streetName = xml_residentialParkings.getElementsByTagName("Name")[
     i
   ].firstChild.nodeValue;
-
   //x
   info.x = parseFloat(
     xml_residentialParkings.getElementsByTagName("Lat")[i].firstChild.nodeValue
