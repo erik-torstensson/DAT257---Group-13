@@ -30,12 +30,11 @@ var xml_residentialParkings = getXML_Response(residentialParkingRequest);
 
 // all nodes that contains a "Name"
 var allResidentialParkings = xml_residentialParkings.getElementsByTagName("Name");
-
+ 
 //get the response of the inserted request, if the request is done, without errors.
 function getXML_Response(request) {
   if (request.readyState == 4 && request.status == 200) {
     var response = request.responseXML;
-    console.log(response);
     return response;
   }
 }
@@ -185,7 +184,7 @@ var residentialParkingWithCleaning = fetchResidentialParkingInfo();
 
 function fetchResidentialParkingInfo() {
   var residentialParkingWithCleaning = [];
-  for (var i = 0; i < allResidentialParkings.length; i++) {
+  for (var i = 0; i < allResidentialParkings.length-1; i++) {
     var id_resPark = xml_residentialParkings.getElementsByTagName("Id")[i]
       .firstChild.nodeValue;
     var areaCode_resPark = xml_residentialParkings.getElementsByTagName(
@@ -197,7 +196,7 @@ function fetchResidentialParkingInfo() {
 
     var timeUntilUnavailable = Math.pow(10, 100); //initiate timeUntilUnavailable
     var today = new Date(Date.now());
-
+    var places = xml_residentialParkings.getElementsByTagName("ParkingSpaces")[i].firstChild.nodeValue;
     if (night_parking === true) {
       timeUntilUnavailable = timeLeftInMinutes(timeToLeaveNightParking(today));
     }
@@ -206,7 +205,7 @@ function fetchResidentialParkingInfo() {
       code_resPark: areaCode_resPark,
       timeLeft: timeUntilUnavailable, //insert real function here
       night_parking: false,
-
+      numOfPlaces: places,
       info: extractResidentialInfo(i)
     };
 
@@ -229,8 +228,6 @@ function fetchResidentialParkingInfo() {
     }
     residentialParkingWithCleaning.push(match);
   }
-  console.log(residentialParkingWithCleaning);
-
   return residentialParkingWithCleaning;
 }
 
@@ -343,11 +340,9 @@ function extractResidentialInfo(i) {
   var info = {
     streetName: "",
     timeLeft: "",
-    numOfPlaces: "",
     x: "",
     y: ""
   };
-
   //streetName
   info.streetName = xml_residentialParkings.getElementsByTagName("Name")[
     i
@@ -361,17 +356,6 @@ function extractResidentialInfo(i) {
   info.y = parseFloat(
     xml_residentialParkings.getElementsByTagName("Long")[i].firstChild.nodeValue
   );
-
-  if (xml_residentialParkings.getElementsByTagName("ParkingSpaces")[
-      i
-      ] != null){
-    info.numOfPlaces = xml_residentialParkings.getElementsByTagName("ParkingSpaces")[
-        i
-        ].firstChild.nodeValue;
-  } else {
-    info.numOfPlaces = "Ej tillgänglig";
-  }
-
   return info;
 };
 

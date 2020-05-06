@@ -101,7 +101,7 @@ function addMarkersFromParkingList(parkingsList){
 
     var contentString = '<h1>' + parkingsList[i].info.streetName + '</h1>' +
         '<h3>Zone: ' + parkingsList[i].timeZoneName + '</h3>' +  '</h3>' + '<h3> Här får du parkera: ' + parkingsList[i].timeLeft + ' Timmar </h3>' +
-        '<h3>Antal platser: ' + parkingsList[i].info.numOfPlaces + '</h3>';
+        '<h3>Antal platser: ' + parkingsList[i].numOfPlaces + '</h3>';
 
     if(parkingsList[i].info.startTime != null){
       contentString +=
@@ -110,7 +110,6 @@ function addMarkersFromParkingList(parkingsList){
           + parkingsList[i].info.y + ", " +'"'+ parkingsList[i].info.endDate +'"'+ ", "
           +'"'+ parkingsList[i].info.oddEven +'"'+ ")'> Lägg till! </button>";
     }
-
     const infowindow = new google.maps.InfoWindow({
       content: contentString,
     });
