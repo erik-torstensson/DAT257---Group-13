@@ -100,14 +100,10 @@ function addMarkersFromParkingList(parkingsList){
     });
 
     var contentString = '<h1>' + parkingsList[i].info.streetName + '</h1>' +
-        '<h3>Antal platser: __</h3>' + '<div><h3> Du får parkera här :</h3></div>'+
-        '<div><h3>' + parkingsList[i].info.infoText + '</h3></div>';
+        '<h3>Zone: ' + parkingsList[i].timeZoneName + '</h3>' +  '</h3>' + '<h3> Här får du parkera: ' + parkingsList[i].timeLeft + ' Timmar </h3>' +
+        '<h3>Antal platser: ' + parkingsList[i].info.numOfPlaces + '</h3>';
 
-    if(parkingsList[i].info.infoText != null &&
-        parkingsList[i].info.startTime != null &&
-        parkingsList[i].info.endTime != null &&
-        parkingsList[i].info.endDate != null &&
-        parkingsList[i].info.oddEven != null){
+    if(parkingsList[i].info.startTime != null){
       contentString +=
           "<button onclick='createAnEvent("+'"'+parkingsList[i].info.startTime +'"'+ ", "
           +'"'+ parkingsList[i].info.endTime +'"'+ ", " + parkingsList[i].info.x +", "

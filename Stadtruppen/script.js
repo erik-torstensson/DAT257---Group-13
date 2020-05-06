@@ -343,6 +343,7 @@ function extractResidentialInfo(i) {
   var info = {
     streetName: "",
     timeLeft: "",
+    numOfPlaces: "",
     x: "",
     y: ""
   };
@@ -351,6 +352,7 @@ function extractResidentialInfo(i) {
   info.streetName = xml_residentialParkings.getElementsByTagName("Name")[
     i
   ].firstChild.nodeValue;
+
   //x
   info.x = parseFloat(
     xml_residentialParkings.getElementsByTagName("Lat")[i].firstChild.nodeValue
@@ -359,6 +361,16 @@ function extractResidentialInfo(i) {
   info.y = parseFloat(
     xml_residentialParkings.getElementsByTagName("Long")[i].firstChild.nodeValue
   );
+
+  if (xml_residentialParkings.getElementsByTagName("ParkingSpaces")[
+      i
+      ] != null){
+    info.numOfPlaces = xml_residentialParkings.getElementsByTagName("ParkingSpaces")[
+        i
+        ].firstChild.nodeValue;
+  } else {
+    info.numOfPlaces = "Ej tillgänglig";
+  }
 
   return info;
 };
