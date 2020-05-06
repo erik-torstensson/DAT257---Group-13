@@ -1,6 +1,8 @@
 $(document).ready(init()); //initialize when document is ready
 
-//set up requests for data.gbg
+
+//-----START: Set up requests for data.gbg-------//
+
 //CleaningZones
 var cleaningZonesRequest = new XMLHttpRequest();
 cleaningZonesRequest.open(
@@ -9,7 +11,12 @@ cleaningZonesRequest.open(
   false //suggestion: have synchronious, we don't need to asynchrinious? we get the data within a second..
 );
 cleaningZonesRequest.send();
+
 var xml_cleaningZones = getXML_Response(cleaningZonesRequest);
+
+// all nodes that contains a "Streetname"
+var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); 
+
 
 //residentialParkings
 var residentialParkingRequest = new XMLHttpRequest();
@@ -21,96 +28,105 @@ residentialParkingRequest.open(
 residentialParkingRequest.send();
 var xml_residentialParkings = getXML_Response(residentialParkingRequest);
 
-var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
-var allResidentialParkings = xml_residentialParkings.getElementsByTagName(
-  "Name"
-);
+// all nodes that contains a "Name"
+var allResidentialParkings = xml_residentialParkings.getElementsByTagName("Name");
+
+//get the response of the inserted request, if the request is done, without errors.
+function getXML_Response(request) {
+  if (request.readyState == 4 && request.status == 200) {
+    var response = request.responseXML;
+    console.log(response);
+    return response;
+  }
+}
+
+//-----END: Set up requests for data.gbg-------//
 
 
 
 //-----START: feature-SeePublicHoldiays-------//
 var today = new Date(Date.now());
 var year = today.getFullYear();
-const json_swedishDays = getJsonResponse('https://api.dryg.net/dagar/v2.1/' + year);
+const json_swedishDays = getJsonResponse(
+  "https://api.dryg.net/dagar/v2.1/" + year
+);
 
 var dateToMove = timeToLeaveNightParking(today); //test
-//console.log(dateToMove); //test
-
-
-var residentialParkingWithCleaning = fetchResidentialParkingInfo();
 
 /*
 returns a Date object, of next time this night parking is prohibited
 returns -1 if parking is prohibited at the moment
 */
-function timeToLeaveNightParking(startDate){
+function timeToLeaveNightParking(startDate) {
   var startHour = startDate.getHours();
   var startDate = convertToDate(startDate); //converts to same format as in the json object
-  var dateToMove= new Date();
+  var dateToMove = new Date();
 
-  for (var i=0; i<json_swedishDays.dagar.length; i++){ //search for startDate
-    if (json_swedishDays.dagar[i].datum === startDate){
-      if(isPublicSunday(i)){ //SUNDAY
-        dateToMove =nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
+  for (var i = 0; i < json_swedishDays.dagar.length; i++) {
+    //search for startDate
+    if (json_swedishDays.dagar[i].datum === startDate) {
+      if (isPublicSunday(i)) {
+        //SUNDAY
+        dateToMove = nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
         return dateToMove;
-      }
-      else if (isPublicSaturday(i)){ // SATURDAY (day before red day)
-          if(startHour < 9){ //before 09:00
-            dateToMove = setDateTo_0900(startDate); //today at 9.00
-            return dateToMove;
-          }
-          else if(startHour >= 9 && startHour < 15){ //parking prohibited
-            return (-1)
-          }
-          else if (startHour >= 15){
-            dateToMove = nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
-            return dateToMove;
-          }
-      }
-      else { //its a WEEKDAY
-          if(startHour < 9){
-            dateToMove = setDateTo_0900(startDate); //today at 09.00
-            return dateToMove;
-          }
-          else if (startHour >= 9 && startHour < 18){ //parking prohibited
-            return (-1) //??? hur visar vi p-förbud?
-          }
-          else if (startHour >= 18){
-            const ONE_DAY_MS = 24*60*60*1000;
-            var tommorrow = new Date(startDate);
-            tommorrow.setTime(tommorrow.getTime() + ONE_DAY_MS); //today + one day
-            dateToMove = setDateTo_0900(tommorrow); //at 09:00
-            return dateToMove;
-          }
+      } else if (isPublicSaturday(i)) {
+        // SATURDAY (day before red day)
+        if (startHour < 9) {
+          //before 09:00
+          dateToMove = setDateTo_0900(startDate); //today at 9.00
+          return dateToMove;
+        } else if (startHour >= 9 && startHour < 15) {
+          //parking prohibited
+          return -1;
+        } else if (startHour >= 15) {
+          dateToMove = nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
+          return dateToMove;
+        }
+      } else {
+        //its a WEEKDAY
+        if (startHour < 9) {
+          dateToMove = setDateTo_0900(startDate); //today at 09.00
+          return dateToMove;
+        } else if (startHour >= 9 && startHour < 18) {
+          //parking prohibited
+          return -1; //??? hur visar vi p-förbud?
+        } else if (startHour >= 18) {
+          const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+          var tommorrow = new Date(startDate);
+          tommorrow.setTime(tommorrow.getTime() + ONE_DAY_MS); //today + one day
+          dateToMove = setDateTo_0900(tommorrow); //at 09:00
+          return dateToMove;
+        }
       }
     }
   }
   return -1;
 }
 
-function isPublicSunday(index){
+function isPublicSunday(index) {
   var keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
   var publicSundayKey = keys[3]; //3d key "röd dag:"
   var isSunday = json_swedishDays.dagar[index][publicSundayKey];
-  if(isSunday ==="Ja" ||isSunday === "ja"){
+  if (isSunday === "Ja" || isSunday === "ja") {
     return true;
   }
   return false;
 }
 
-
-function isPublicSaturday(index){ //public Saturday = day before a public sunday/red day.
+function isPublicSaturday(index) {
+  //public Saturday = day before a public sunday/red day.
   var isSaturday = isPublicSunday(index + 1); //if its 'red day' tommorrow
   return isSaturday;
 }
 
 /* returns a Date object of next "not sunday" */
-function nextWeekdayOrSaturdayAtNine(index){
+function nextWeekdayOrSaturdayAtNine(index) {
   var keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
   var publicSundayKey = keys[3]; //3d key "röd dag:"
   var index = index + 1; //start to search at next day after "input date"
-  while (json_swedishDays.dagar[index][publicSundayKey] === "Ja"){ //increase index while public sunday
-    index =index+1
+  while (json_swedishDays.dagar[index][publicSundayKey] === "Ja") {
+    //increase index while public sunday
+    index = index + 1;
   }
   var nextWeekdayOrSaturdayDate = new Date(json_swedishDays.dagar[index].datum);
   nextWeekdayOrSaturdayDate.setHours(9); // both weekdays and saturdays has parking restriction after 09.00
@@ -120,7 +136,7 @@ function nextWeekdayOrSaturdayAtNine(index){
 /*
 returns a new Date, with same YYMMDD as input, but changed time to 09:00:00
 */
-function setDateTo_0900(date){
+function setDateTo_0900(date) {
   var dateNine = new Date(date);
   dateNine.setHours(9);
   dateNine.setMinutes(0);
@@ -129,30 +145,43 @@ function setDateTo_0900(date){
 }
 
 /*converts a Date ('YYYY-MM-DDTHH:MM:SS' to 'YYYY-MM-DD')*/
-function convertToDate(date){
+function convertToDate(date) {
   var year = date.getFullYear();
-  var month = "" + (date.getMonth() +1); //jan = 0
+  var month = "" + (date.getMonth() + 1); //jan = 0
   var day = "" + date.getDate();
 
-  if(month.length == 1){ //single number gets a zero before, example march '3' --> '03'
-    month = '0' + month;
+  if (month.length == 1) {
+    //single number gets a zero before, example march '3' --> '03'
+    month = "0" + month;
   }
-  if(day.length == 1){ //single number gets a zero before,
-    day = '0' + day;
+  if (day.length == 1) {
+    //single number gets a zero before,
+    day = "0" + day;
   }
   var convertedDate = "" + year + "-" + month + "-" + day;
   return convertedDate;
 }
 
+/*sends request to url and return the response in JSON*/
+function getJsonResponse(url) {
+  var response;
+  var req = new XMLHttpRequest();
+  req.overrideMimeType("application/json");
+  req.open("GET", url, false);
+  req.onload = function() {
+    response = JSON.parse(req.responseText);
+  };
+  req.send(null);
+  return response;
+}
+
 //-----END: feature-SeePublicHoldiays-------//
 
-// activates autocomplete-function
-autocomplete(document.getElementById("inputGata"), getStreetNames()); //param: id of html-input, list of street names
 
-/* tillfällig kod, gör till en funktion.
-//TODO: skriv en funktion som kollar om areaCode_resPark slutar på 'N' eller inte,
- isåfall är det en nattparkering. Om N: får man bara stå där 18.00 till 09.00.
-*/
+
+//-----START: Constructing array with complete parking information-------//
+
+var residentialParkingWithCleaning = fetchResidentialParkingInfo();
 
 function fetchResidentialParkingInfo() {
   var residentialParkingWithCleaning = [];
@@ -163,17 +192,14 @@ function fetchResidentialParkingInfo() {
       "ResidentialParkingArea"
     )[i].firstChild.nodeValue;
 
-    var night_parking;
+    var night_parking = isNightParking(areaCode_resPark);
 
-    if( areaCode_resPark.substr(areaCode_resPark.length-1) === "n"){
-      night_parking = true}
-    else { night_parking = false};
 
-    var timeUntilUnavailable = Math.pow(10,100); //initiate timeUntilUnavailable
-    var today = new Date(Date.now())
+    var timeUntilUnavailable = Math.pow(10, 100); //initiate timeUntilUnavailable
+    var today = new Date(Date.now());
 
-    if(night_parking === true){
-      timeUntilUnavailable = timeLeftInMinutes(timeToLeaveNightParking(today))
+    if (night_parking === true) {
+      timeUntilUnavailable = timeLeftInMinutes(timeToLeaveNightParking(today));
     }
     var match = {
       id_resPark: id_resPark,
@@ -190,9 +216,13 @@ function fetchResidentialParkingInfo() {
 
       if (id_resPark === id_cleaningZone) {
         match.info = extractCleaningInfo(j);
-        var time = new Date(Date.parse(xml_cleaningZones.getElementsByTagName("CurrentPeriodStart")[j]
-        .firstChild.nodeValue))
-        if(timeLeftInMinutes(time) < timeUntilUnavailable){
+        var time = new Date(
+          Date.parse(
+            xml_cleaningZones.getElementsByTagName("CurrentPeriodStart")[j]
+              .firstChild.nodeValue
+          )
+        );
+        if (timeLeftInMinutes(time) < timeUntilUnavailable) {
           match.timeLeft = timeLeftInMinutes(time);
         }
       }
@@ -204,379 +234,31 @@ function fetchResidentialParkingInfo() {
   return residentialParkingWithCleaning;
 }
 
+initGoogleMaps(); // initiate google maps
+initGothenburgMap(residentialParkingWithCleaning); //initiate map over residentual parkings in Gothenburg
 
+
+//methods for calucating time until input date from today, returns time in minutes
 function timeLeftInMinutes(date) {
-  if(date === -1 ) {
+  if (date === -1) {
     return 0;
   }
-  var one_min = 1000*60;
+  var one_min = 1000 * 60;
   today = new Date(Date.now());
   var timeLeft = date.getTime() - today.getTime();
-  var min =(timeLeft/one_min);
+  var min = timeLeft / one_min;
   return min;
-
 }
 
-
-//get the response of the inserted request, if the request is done, without errors.
-function getXML_Response(request) {
-  if (request.readyState == 4 && request.status == 200) {
-    var response = request.responseXML;
-    console.log(response);
-    return response;
-  }
-}
-
-//returns an array of all street names in xml_cleaningZones.
-function getStreetNames() {
-  var allStreetNames = []; //Set istället?
-  for (var i = 0; i < allResidentialParkings.length; i++) {
-    var street = xml_residentialParkings.getElementsByTagName("Name")[i]
-      .firstChild.nodeValue;
-
-    if (!allStreetNames.includes(street)) {
-      //prevents adding duplicates.
-      allStreetNames.push(street);
-      // lastStreet = street;
-    }
-  }
-  return allStreetNames;
-}
-
-/*sends request to url and return the response in JSON*/
-function getJsonResponse(url) {
-  var response;
-  var req = new XMLHttpRequest();
-  req.overrideMimeType("application/json");
-  req.open('GET', url, false);
-  req.onload  = function() {
-     response = JSON.parse(req.responseText);
-  };
-  req.send(null);
-  return response;
-}
-
-
-initGoogleMaps(); // initiate google maps
-initGothenburgMap(residentialParkingWithCleaning); //initiate map over cleaning zones in Gothenburg
-
-function initGoogleMaps() {
-  // Create the script tag, set the appropriate attributes
-  var script = document.createElement("script");
-  script.src =
-    "https://maps.googleapis.com/maps/api/js?key=AIzaSyC0e2gcKhtLn8kThQtPInG0--CDuxwBXgE&callback=initMap";
-  script.defer = true;
-  script.async = true;
-  document.head.appendChild(script); // Append the 'script' element to 'head'
-}
-
-function initGothenburgMap(allLocations) {
-  window.initMap = function() {
-    var map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: 57.70887, lng: 11.97456 },
-      zoom: 13
-    });
-    console.log(map.getCenter().toString());
-    var marker, i;
-    for (i = 0; i < allLocations.length; i++) {
-      var icon;
-      if(allLocations[i].timeLeft > 1440){
-          icon = "https://cdn.glitch.com/e4d0e510-b26f-4814-91be-cd314052cbec%2FYesParking.png?v=1588253609539"
-        // YELLOW Move care within 24 hours YELLOW
-      }else if(allLocations[i].timeLeft > 30) {
-          icon= "https://cdn.glitch.com/e4d0e510-b26f-4814-91be-cd314052cbec%2FMaybeParking.png?v=1588253637586"
-        // RED Illegal parking
-        }else {
-          icon = "https://cdn.glitch.com/e4d0e510-b26f-4814-91be-cd314052cbec%2FNoParking.png?v=1588253633312"
-        }
-      marker = new google.maps.Marker({
-        position: new google.maps.LatLng(
-          allLocations[i].info.x,
-          allLocations[i].info.y
-        ),
-        map: map,
-        title: allLocations[i].info.streetName,
-        icon: icon
-      });
-      marker.addListener("click", function() {
-        map.setZoom(16);
-        map.setCenter(this.getPosition());
-      });
-    }
-  };
-}
-
-function isNightParking(zone){
-    if( zone.substr(zone.length-1) === "n"){
-      return true }
-    else { return false}
-}
-
-//change view on map (zooms in on the lat,long coordinates)
-function getMapByLatitude(list) {
-  // Attach your callback function to the `window` object
-  window.initMap = function() {
-    var map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: list[0].info.x, lng: list[0].info.y },
-      zoom: 16
-    });
-    var marker, i;
-    for (i = 0; i < list.length; i++) {
-      var icon;
-      if(list[i].timeLeft > 1440){
-          icon = "Resources/YesParking.png"
-        // YELLOW Move care within 24 hours YELLOW
-        }else if(list[i].timeLeft > 30) {
-          icon= "Resources/MaybeParking.png"
-        // RED Illegal parking
-        }else {
-          icon = "Resources/NoParking.png"
-        }
-      marker = new google.maps.Marker({
-        position: new google.maps.LatLng(
-          list[i].info.x,
-          list[i].info.y
-        ),
-        map: map,
-        title: list[i].info.streetName,
-        icon: icon
-      });
-  };
-}
-}
-
-//shows the xml file in browser
-//not using this? Free to remove - Author, but the "data scource" button will be gone for good!
-function openwin() {
-  window.open(
-    "http://data.goteborg.se/ParkingService/v2.1/CleaningZones/{ad12cf6a-f54c-4400-bf36-d5c95beb6095}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}"
-  );
-}
-
-//reset the map
-function resetMap() {
-  initGoogleMaps();
-  initGothenburgMap(residentialParkingWithCleaning);
-}
-
-//initilaze when document is ready
-function init() {
-  //jQuery(document).ready(function(){ //se överst i dokumentet, blir detta samma sak nu?
-  var width = $(window).width(),
-    height = $(window).height();
-
-  //bg
-  var bg_num = 0;
-  function bg01(item) {
-    var N = 640,
-      step = Math.ceil(width / N),
-      html =
-        '<div class="area"><div class="field"></div><div class="load"><div class="line"></div></div><div class="tree tree01"></div><div class="tree tree02"><div class="leaf"></div></div><div class="tree tree03"><div class="leaf"></div></div><div class="tree tree02 pos02"><div class="leaf"></div></div><div class="tree tree03 pos02"><div class="leaf"></div></div><div class="hydrant pos01"><div class="line"></div></div><div class="hydrant pos02"><div class="line"></div></div><div class="back_building building01"></div><div class="back_building building02"></div><div class="back_building building03"></div><div class="back_building building04"></div><div class="sign"><div class="panel pos01"></div><div class="panel pos02"></div><div class="panel pos03"></div></div><div class="traffic_light"><div class="circle red"></div><div class="circle yellow"></div><div class="circle green"></div></div><div class="street_lamp street_lamp01"><div class="light left"></div><div class="light right"></div></div><div class="street_lamp street_lamp02"><div class="light"></div></div><div class="cloud cloud01"><div class="circle circle01"></div><div class="circle circle02"></div></div><div class="cloud cloud02"><div class="circle circle01"></div><div class="circle circle02"></div><div class="circle circle03"></div></div><div class="cloud cloud03"><div class="circle circle01"></div></div><div class="tower tower01"><div class="chimney chimney01"></div><div class="window window01" data-h="0" data-pos="0"></div><div class="window window01" data-h="1" data-pos="1"></div><div class="window window01" data-h="2" data-pos="2"></div><div class="window window01" data-h="0" data-pos="3"></div><div class="window window01" data-h="3" data-pos="4"></div><div class="window window01" data-h="4" data-pos="5"></div><div class="window window01" data-h="0" data-pos="6"></div><div class="window window01" data-h="0" data-pos="7"></div><div class="door door01"></div><div class="stair"><div class="side pos01"><div class="deck"></div></div><div class="side pos02"><div class="deck"></div></div></div></div><div class="tower tower02"><div class="chimney chimney02"></div><div class="window window01" data-h="1" data-pos="0"></div><div class="window window01" data-h="2" data-pos="1"></div><div class="window window01" data-h="0" data-pos="2"></div><div class="window window01" data-h="3" data-pos="3"></div><div class="window window01" data-h="4" data-pos="4"></div><div class="window window01" data-h="0" data-pos="5"></div><div class="window window01" data-h="2" data-pos="6"></div><div class="window window01" data-h="0" data-pos="7"></div><div class="door door02"><div class="deck"></div></div></div><div class="tower tower03"><div class="floor"><div class="chimney chimney01"></div><div class="window window02" data-h="0" data-pos="0"></div><div class="window window02" data-h="1" data-pos="1"></div></div><div class="window window03"><div class="deck"></div></div><div class="door door03"><div class="deck"></div></div></div><div class="tower tower04"><div class="billboard"><div class="deck"></div></div><div class="kiosk"><div class="deck01"></div><div class="deck02"></div><div class="deck03"></div><div class="deck04"></div></div><div class="door door01"></div></div><div class="tower tower05"><div class="chimney chimney01"></div><div class="window window01" data-h="5" data-pos="0"></div><div class="window window01" data-h="0" data-pos="1"></div><div class="window window01" data-h="6" data-pos="2"></div><div class="window window04" data-s="0" data-pos="3"></div><div class="window window04" data-s="1" data-pos="4"></div><div class="kiosk"><div class="deck01"></div><div class="deck02"></div><div class="deck03"></div><div class="deck04"></div></div><div class="door door01"></div></div><div class="balloon balloon01"><div class="deck"></div></div><div class="balloon balloon02"><div class="deck"></div></div></div>';
-    if (item.lenght !== 0) {
-      if (step !== bg_num) {
-        bg_num = step;
-        item.html("");
-        item.width(N * step);
-        for (var i = 0; i < step; i += 1) {
-          item.append(html);
-        }
-        return;
-      }
-    }
-  }
-  bg01($(".bg_area .bg01"));
-
-  var resizeTimer;
-  $(window).resize(function(e) {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function() {
-      width = $(window).width();
-
-      bg01($(".bg_area .bg01"));
-    }, 250);
-  });
-  //});
-}
-
-//allt under här är : test for autocomplete
-function autocomplete(inp, arr) {
-  /*the autocomplete function takes two arguments,
-  the text field element and an array of possible autocompleted values:*/
-  var currentFocus;
-  /*execute a function when someone writes in the text field:*/
-  inp.addEventListener("input", function(e) {
-    var a,
-      b,
-      i,
-      val = this.value;
-    /*close any already open lists of autocompleted values*/
-    closeAllLists();
-    if (!val) {
-      return false;
-    }
-    currentFocus = -1;
-    /*create a DIV element that will contain the items (values):*/
-    a = document.createElement("DIV");
-    a.setAttribute("id", this.id + "autocomplete-list");
-    a.setAttribute("class", "autocomplete-items");
-    /*append the DIV element as a child of the autocomplete container:*/
-    this.parentNode.appendChild(a);
-    /*for each item in the array...*/
-    for (i = 0; i < arr.length; i++) {
-      /*check if the item starts with the same letters as the text field value:*/
-      if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-        /*create a DIV element for each matching element:*/
-        b = document.createElement("DIV");
-        /*make the matching letters bold:*/
-        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-        b.innerHTML += arr[i].substr(val.length);
-        /*insert a input field that will hold the current array item's value:*/
-        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-        /*execute a function when someone clicks on the item value (DIV element):*/
-        b.addEventListener("click", function(e) {
-          /*insert the value for the autocomplete text field:*/
-          inp.value = this.getElementsByTagName("input")[0].value;
-          /*close the list of autocompleted values,
-              (or any other open lists of autocompleted values:*/
-          closeAllLists();
-        });
-        a.appendChild(b);
-      }
-    }
-  });
-  /*execute a function presses a key on the keyboard:*/
-  inp.addEventListener("keydown", function(e) {
-    var x = document.getElementById(this.id + "autocomplete-list");
-    if (x) x = x.getElementsByTagName("div");
-    if (e.keyCode == 40) {
-      /*If the arrow DOWN key is pressed,
-        increase the currentFocus variable:*/
-      currentFocus++;
-      /*and and make the current item more visible:*/
-      addActive(x);
-    } else if (e.keyCode == 38) {
-      //up
-      /*If the arrow UP key is pressed,
-        decrease the currentFocus variable:*/
-      currentFocus--;
-      /*and and make the current item more visible:*/
-      addActive(x);
-    } else if (e.keyCode == 13) {
-      /*If the ENTER key is pressed, prevent the form from being submitted,*/
-      e.preventDefault();
-      if (currentFocus > -1) {
-        /*and simulate a click on the "active" item:*/
-        if (x) x[currentFocus].click();
-      }
-    }
-  });
-  function addActive(x) {
-    /*a function to classify an item as "active":*/
-    if (!x) return false;
-    /*start by removing the "active" class on all items:*/
-    removeActive(x);
-    if (currentFocus >= x.length) currentFocus = 0;
-    if (currentFocus < 0) currentFocus = x.length - 1;
-    /*add class "autocomplete-active":*/
-    x[currentFocus].classList.add("autocomplete-active");
-  }
-  function removeActive(x) {
-    /*a function to remove the "active" class from all autocomplete items:*/
-    for (var i = 0; i < x.length; i++) {
-      x[i].classList.remove("autocomplete-active");
-    }
-  }
-  function closeAllLists(elmnt) {
-    /*close all autocomplete lists in the document,
-    except the one passed as an argument:*/
-    var x = document.getElementsByClassName("autocomplete-items");
-    for (var i = 0; i < x.length; i++) {
-      if (elmnt != x[i] && elmnt != inp) {
-        x[i].parentNode.removeChild(x[i]);
-      }
-    }
-  }
-  /*execute a function when someone clicks in the document:*/
-  document.addEventListener("click", function(e) {
-    closeAllLists(e.target);
-  });
-}
-
-//Creating an array, used to store info from the same (active) streetname but potentially different attributes.
-var activeCleaningInfo = new Array();
-
-function search() {
-  document.getElementById("result").innerHTML ="";
-  activeCleaningInfo = [];
-  var input = document.Input["Gatunamn"].value;
-
-  //Looping through the open data provided by GBG
-  for (var i = 0; i < residentialParkingWithCleaning.length; i++) {
-    var temp = residentialParkingWithCleaning[i].info.infoText;
-    var gata = residentialParkingWithCleaning[i].info.streetName;
-
-    //In the loop, if the input matches "gata" extract data + initiate map
-    if (input === gata) {
-      var info = residentialParkingWithCleaning[i];
-      activeCleaningInfo.push(info);
-     // initGoogleMaps();
-      //getMapByLatitude(activeCleaningInfo);
-      console.log(activeCleaningInfo[0].timeLeft)
-    }
-  }
-  initGoogleMaps();
-  getMapByLatitude(activeCleaningInfo);
-  if (activeCleaningInfo.length > 0) {
-    document.getElementById("result").innerHTML += input + " städas:" + "<br>";
-    for (var i = 0; i < activeCleaningInfo.length; i++) {
-      if (activeCleaningInfo[i].info.infoText == null) {
-        document.getElementById("result").innerHTML +=
-          "Boendeparkeringen vid" +
-          " koordinaterna:  " +
-          activeCleaningInfo[i].info.x +
-          ", " +
-          activeCleaningInfo[i].info.y + " städas inte." + "<br><br>";
-      } else {
-        document.getElementById("result").innerHTML +=
-          activeCleaningInfo[i].info.infoText +
-          " Vid koordinaterna:  " +
-          activeCleaningInfo[i].info.x +
-          ", " +
-          activeCleaningInfo[i].info.y;
-
-        // Adding a new button for every coordinate combination on the same street.
-        var inputTag = document.createElement("div");
-        inputTag.innerHTML =
-          "<input type = 'button' value = 'Lägg till!' onClick = 'createAnEvent(activeCleaningInfo[" +
-          i +
-          "].info.startTime, activeCleaningInfo[" +
-          i +
-          "].info.endTime, activeCleaningInfo[" +
-          i +
-          "].info.x, activeCleaningInfo[" +
-          i +
-          "].info.y, activeCleaningInfo[" +
-          i +
-          "].info.endDate, activeCleaningInfo[" +
-          i +
-          "].info.oddEven)'>";
-
-        document.getElementById("result").appendChild(inputTag);
-        document.getElementById("result").innerHTML += "<br>";
-      }
-      /*document.getElementById("result").innerHTML +=
-      "För mer information om din gata kontakta parkering göteborg" + "<br>";*/
-      //document.getElementById("add").style.display = "block";
-    }
+//Method taking a street zone, and returns true if it is a nightparking zone. 
+function isNightParking(zone) {
+  if (zone.substr(zone.length - 1) === "n") {
+    return true;
   } else {
-    document.getElementById("result").innerHTML +=
-      "" + input + " kan inte hittas i datan." + "<br>";
+    return false;
   }
-  console.log(activeCleaningInfo[0].info.oddEven);
-  return false;
 }
-
-/*starttime = start of next cleaning period,
+  /*starttime = start of next cleaning period,
  endtime = end of next cleaning period,
  x = lat,
  y = long
@@ -649,7 +331,7 @@ function extractCleaningInfo(i) {
     "T000000Z";
 
   return info;
-}
+};
 
 /*
   Extracting information of residential parkings.
@@ -679,135 +361,111 @@ function extractResidentialInfo(i) {
   );
 
   return info;
-}
+};
+  
+//-----END: Constructing array with complete parking information-------//
 
-/*execute a function when someone clicks in the document:*/
-document.addEventListener("click", function(e) {
-  closeAllLists(e.target);
-});
 
-name = "google-signin-client_id";
-content =
-  "739088881240-10g8629mucg31r7bqt0k94oen66ei1ba.apps.googleusercontent.com";
 
-// Client ID and API key from the Developer Console
-var CLIENT_ID =
-  "739088881240-10g8629mucg31r7bqt0k94oen66ei1ba.apps.googleusercontent.com";
-var API_KEY = "AIzaSyBwcVcI3o9LXxE1vLaek-pX0-Ns75CV0v0";
+//-----START: feature-Search through cleaning info by user input-------//
 
-// Array of API discovery doc URLs for APIs used by the quickstart
-var DISCOVERY_DOCS = [
-  "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"
-];
+//Creating an array, used to store info from the same (active) streetname but potentially different attributes.
+var activeCleaningInfo = new Array();
 
-// Authorization scopes required by the API; multiple scopes can be
-// included, separated by spaces.
-var SCOPES = "https://www.googleapis.com/auth/calendar";
+function search() {
+  document.getElementById("result").innerHTML = "";
+  activeCleaningInfo = [];
+  var input = document.Input["Gatunamn"].value;
 
-var authorizeButton = document.getElementById("authorize_button");
-var signoutButton = document.getElementById("signout_button");
+  //Looping through the open data provided by GBG
+  for (var i = 0; i < residentialParkingWithCleaning.length; i++) {
+    var temp = residentialParkingWithCleaning[i].info.infoText;
+    var gata = residentialParkingWithCleaning[i].info.streetName;
 
-/**
- *  On load, called to load the auth2 library and API client library.
- */
-function handleClientLoad() {
-  gapi.load("client:auth2", initClient);
-}
-
-/**
- *  Initializes the API client library and sets up sign-in state
- *  listeners.
- */
-function initClient() {
-  gapi.client.init({
-    apiKey: API_KEY,
-    clientId: CLIENT_ID,
-    discoveryDocs: DISCOVERY_DOCS,
-    scope: SCOPES
-  });
-}
-
-/**
- *   Information about the signed in user.
- */
-function onSignIn(googleUser) {
-  var profile = googleUser.getBasicProfile();
-  console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  console.log("Name: " + profile.getName());
-  console.log("Image URL: " + profile.getImageUrl());
-  console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
-}
-function signOut() {
-  var auth2 = gapi.auth2.getAuthInstance();
-  auth2.signOut().then(function() {
-    console.log("User signed out.");
-  });
-}
-
-/**
- *  Sign in the user upon button click.
- */
-function handleAuthClick(event) {
-  gapi.auth2.getAuthInstance().signIn();
-}
-
-/**
- *  Sign out the user upon button click.
- */
-function handleSignoutClick(event) {
-  gapi.auth2.getAuthInstance().signOut();
-}
-
-/**
- * Append a pre element to the body containing the given message
- * as its text node. Used to display the results of the API call.
- *
- * @param {string} message Text to be placed in pre element.
- */
-function appendPre(message) {
-  var pre = document.getElementById("content");
-  var textContent = document.createTextNode(message + "\n");
-  pre.appendChild(textContent);
-}
-
-/*
-      Creating an event and insert it into to primary (logged in) user.
-      */
-
-function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
-  var event = {
-    summary: document.Input["Gatunamn"].value,
-    location: x + ", " + y,
-    description: ":-)",
-    start: {
-      dateTime: startTime,
-      timeZone: "Europe/Amsterdam"
-    },
-    end: {
-      dateTime: endTime,
-      timeZone: "Europe/Amsterdam"
-    },
-    recurrence: [
-      "RRULE:FREQ=WEEKLY;INTERVAL=" + oddEven + ";WKST=SU;UNTIL=" + endDate
-    ],
-    /*'attendees': [
-          {'email': 'erikt1234567@gmail.com'},
-        ],*/
-    reminders: {
-      useDefault: false,
-      overrides: [
-        { method: "email", minutes: 24 * 60 },
-        { method: "popup", minutes: 10 }
-      ]
+    //In the loop, if the input matches "gata" extract data + initiate map
+    if (input === gata) {
+      var info = residentialParkingWithCleaning[i];
+      activeCleaningInfo.push(info);
+      // initGoogleMaps();
+      //getMapByLatitude(activeCleaningInfo);
+      console.log(activeCleaningInfo[0].timeLeft);
     }
-  };
-  console.log(event);
-  var request = gapi.client.calendar.events.insert({
-    calendarId: "primary",
-    resource: event
-  });
-  //console.log(request.created!=null);
-  request.execute(function(event) {
-    appendPre("Lagt till i kalendern! Länk: " + event.htmlLink);
-  });
+  }
+  //Initiate map again.
+  initGoogleMaps();
+  //Shows info when searched
+  getMapByLatitude(activeCleaningInfo);
+  if (activeCleaningInfo.length > 0) {
+    document.getElementById("result").innerHTML += input + " städas:" + "<br>";
+    for (var i = 0; i < activeCleaningInfo.length; i++) {
+      if (activeCleaningInfo[i].info.infoText == null) {
+        document.getElementById("result").innerHTML +=
+          "Boendeparkeringen vid" +
+          " koordinaterna:  " +
+          activeCleaningInfo[i].info.x +
+          ", " +
+          activeCleaningInfo[i].info.y +
+          " städas inte." +
+          "<br><br>";
+      } else {
+        document.getElementById("result").innerHTML +=
+          activeCleaningInfo[i].info.infoText +
+          " Vid koordinaterna:  " +
+          activeCleaningInfo[i].info.x +
+          ", " +
+          activeCleaningInfo[i].info.y;
+
+        // Adding a new button for every coordinate combination on the same street.
+        var inputTag = document.createElement("div");
+        inputTag.innerHTML =
+          "<input type = 'button' value = 'Lägg till!' onClick = 'createAnEvent(activeCleaningInfo[" +
+          i +
+          "].info.startTime, activeCleaningInfo[" +
+          i +
+          "].info.endTime, activeCleaningInfo[" +
+          i +
+          "].info.x, activeCleaningInfo[" +
+          i +
+          "].info.y, activeCleaningInfo[" +
+          i +
+          "].info.endDate, activeCleaningInfo[" +
+          i +
+          "].info.oddEven)'>";
+
+        document.getElementById("result").appendChild(inputTag);
+        document.getElementById("result").innerHTML += "<br>";
+      }
+      /*document.getElementById("result").innerHTML +=
+      "För mer information om din gata kontakta parkering göteborg" + "<br>";*/
+      //document.getElementById("add").style.display = "block";
+    }
+  } else {
+    document.getElementById("result").innerHTML +=
+      "" + input + " kan inte hittas i datan." + "<br>";
+  }
+  console.log(activeCleaningInfo[0].info.oddEven);
+  return false;
 }
+
+
+//-----END: feature-Search through cleaning info by user input-------//
+
+
+//-----START: Supporting functions-------//
+
+//shows the xml file in browser
+//Convenient way of going to the source data.
+function CleaningData() {
+  window.open(
+    "http://data.goteborg.se/ParkingService/v2.1/CleaningZones/{ad12cf6a-f54c-4400-bf36-d5c95beb6095}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}"
+  );
+}
+
+function ResidentialData() {
+  window.open(
+    "https://data.goteborg.se/ParkingService/v2.1/ResidentialParkings/{9ed683b1-845e-41d2-bc44-fc871065c08b}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}"
+  );
+}
+
+
+//-----END: Supporting functions-------//

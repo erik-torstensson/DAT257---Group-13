@@ -16,7 +16,10 @@
   <link rel="stylesheet" href="style.css" />
 
   <!-- import the webpage's javascript file -->
+  <script src="map.js" defer></script>
+  <script src="calendar.js" defer></script>
   <script src="script.js" defer></script>
+   <script src="autocomplete.js" defer></script>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
   <script src="jQuery.js"></script>
 
@@ -47,22 +50,12 @@
 </form>
 <div id="result"></div>
 <br />
-
-
-Button to data source
-<button onclick="openwin()">Try it</button>
-<!-- include the Glitch button to show what the webpage is about and
-  to make it easier for folks to view source and remix -->
-  <br />
-
   
   <button onclick="resetMap()" class= "mapButton">Återställ karta</button>
   <div id="map">kartan ska vara här </div>
   
 
 <pre id="content" style="white-space: pre-wrap;"></pre>
-
-<div id="map">kartan ska vara här</div>
 
 </body>
 <div class="wrap">
@@ -92,10 +85,18 @@ Button to data source
 
 <input
         type="button"
-        value="Data source"
-        onclick="openwin()"
+        value="Cleaning Data"
+        onclick="CleaningData()"
         id="Button"
         style="position:fixed;top:80px;right:20px;"
+/>
+  
+  <input
+        type="button"
+        value="Residential Data"
+        onclick="ResidentialData()"
+        id="Button2"
+        style="position:fixed;top:120px;right:20px;"
 />
 </body>
 </html>
