@@ -103,6 +103,18 @@ function addMarkersFromParkingList(parkingsList){
         '<h3>Antal platser: __</h3>' + '<div><h3> Du får parkera här :</h3></div>'+
         '<div><h3>' + parkingsList[i].info.infoText + '</h3></div>';
 
+    if(parkingsList[i].info.infoText != null &&
+        parkingsList[i].info.startTime != null &&
+        parkingsList[i].info.endTime != null &&
+        parkingsList[i].info.endDate != null &&
+        parkingsList[i].info.oddEven != null){
+      contentString +=
+          "<button onclick='createAnEvent("+'"'+parkingsList[i].info.startTime +'"'+ ", "
+          +'"'+ parkingsList[i].info.endTime +'"'+ ", " + parkingsList[i].info.x +", "
+          + parkingsList[i].info.y + ", " +'"'+ parkingsList[i].info.endDate +'"'+ ", "
+          +'"'+ parkingsList[i].info.oddEven +'"'+ ")'> Lägg till! </button>";
+    }
+
     const infowindow = new google.maps.InfoWindow({
       content: contentString,
     });
