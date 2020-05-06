@@ -15,7 +15,7 @@ cleaningZonesRequest.send();
 var xml_cleaningZones = getXML_Response(cleaningZonesRequest);
 
 // all nodes that contains a "Streetname"
-var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); 
+var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName");
 
 
 //residentialParkings
@@ -250,7 +250,7 @@ function timeLeftInMinutes(date) {
   return min;
 }
 
-//Method taking a street zone, and returns true if it is a nightparking zone. 
+//Method taking a street zone, and returns true if it is a nightparking zone.
 function isNightParking(zone) {
   if (zone.substr(zone.length - 1) === "n") {
     return true;
@@ -362,7 +362,7 @@ function extractResidentialInfo(i) {
 
   return info;
 };
-  
+
 //-----END: Constructing array with complete parking information-------//
 
 
@@ -386,15 +386,13 @@ function search() {
     if (input === gata) {
       var info = residentialParkingWithCleaning[i];
       activeCleaningInfo.push(info);
-      // initGoogleMaps();
-      //getMapByLatitude(activeCleaningInfo);
       console.log(activeCleaningInfo[0].timeLeft);
     }
   }
-  //Initiate map again.
-  initGoogleMaps();
-  //Shows info when searched
-  getMapByLatitude(activeCleaningInfo);
+
+  clearAllMarkers();
+  addMarkersFromParkingList(activeCleaningInfo);
+
   if (activeCleaningInfo.length > 0) {
     document.getElementById("result").innerHTML += input + " städas:" + "<br>";
     for (var i = 0; i < activeCleaningInfo.length; i++) {

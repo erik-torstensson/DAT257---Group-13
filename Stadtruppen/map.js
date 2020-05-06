@@ -1,3 +1,10 @@
+//Variables
+var visibleMarkers = []; //global array for visable markers on map
+var map; //global variable to reach the map from everywhere
+const GREEN_PARKING = "Resources/YesParking.png"
+const YELLOW_PARKING = "Resources/MaybeParking.png"
+const RED_PARKING = "Resources/NoParking.png"
+
 
 //reset the map
 function resetMap() {
@@ -54,72 +61,56 @@ function init() {
   //});
 }
 
-
-//change view on map (zooms in on the lat,long coordinates)
-function getMapByLatitude(list) {
-  // Attach your callback function to the `window` object
+function initGothenburgMap(parkingsList) {
   window.initMap = function() {
-    var map = new google.maps.Map(document.getElementById("map"), {
-      center: { lat: list[0].info.x, lng: list[0].info.y },
-      zoom: 16
-    });
-    var marker, i;
-    for (i = 0; i < list.length; i++) {
-      var icon;
-      if(list[i].timeLeft > 1440){
-          icon = "Resources/YesParking.png"
-        // YELLOW Move care within 24 hours YELLOW
-        }else if(list[i].timeLeft > 30) {
-          icon= "Resources/MaybeParking.png"
-        // RED Illegal parking
-        }else {
-          icon = "Resources/NoParking.png"
-        }
-      marker = new google.maps.Marker({
-        position: new google.maps.LatLng(
-          list[i].info.x,
-          list[i].info.y
-        ),
-        map: map,
-        title: list[i].info.streetName,
-        icon: icon
-      });
-  };
-}
-}
-
-function initGothenburgMap(allLocations) {
-  window.initMap = function() {
-    var map = new google.maps.Map(document.getElementById("map"), {
+      map = new google.maps.Map(document.getElementById("map"), {
       center: { lat: 57.70887, lng: 11.97456 },
       zoom: 13
     });
-    console.log(map.getCenter().toString());
-    var marker, i;
-    for (i = 0; i < allLocations.length; i++) {
-      var icon;
-      if(allLocations[i].timeLeft > 1440){
-          icon = "https://cdn.glitch.com/e4d0e510-b26f-4814-91be-cd314052cbec%2FYesParking.png?v=1588253609539"
-        // YELLOW Move care within 24 hours YELLOW
-      }else if(allLocations[i].timeLeft > 30) {
-          icon= "https://cdn.glitch.com/e4d0e510-b26f-4814-91be-cd314052cbec%2FMaybeParking.png?v=1588253637586"
-        // RED Illegal parking
-        }else {
-          icon = "https://cdn.glitch.com/e4d0e510-b26f-4814-91be-cd314052cbec%2FNoParking.png?v=1588253633312"
-        }
-      marker = new google.maps.Marker({
-        position: new google.maps.LatLng(
-          allLocations[i].info.x,
-          allLocations[i].info.y
-        ),
-        map: map,
-        title: allLocations[i].info.streetName,
-        icon: icon
-      });
-      marker.addListener("click", function() {
-        map.setZoom(16);
-        map.setCenter(this.getPosition());
-      });
-    }
+    //console.log(map.getCenter().toString());
+    addMarkersFromParkingList(parkingsList);
   };
+}
+
+
+function addMarkersFromParkingList(parkingsList){
+  visibleMarkers =[]; //empty array
+  var bounds = new google.maps.LatLngBounds(); //bounds: for auto-center and auto-zoom
+
+  for (var i = 0; i < parkingsList.length; i++) {
+    var icon;
+    if(parkingsList[i].timeLeft > 1440){
+        icon = GREEN_PARKING
+      // YELLOW Move care within 24 hours YELLOW
+    }else if(parkingsList[i].timeLeft > 30) {
+        icon= YELLOW_PARKING
+      // RED Illegal parking
+      }else {
+        icon = RED_PARKING
+      }
+    var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(
+        parkingsList[i].info.x,
+        parkingsList[i].info.y
+      ),
+      map: map,
+      title: parkingsList[i].info.streetName,
+      icon: icon
+    });
+    marker.addListener("click", function() {
+      map.setZoom(16);
+      map.setCenter(this.getPosition());
+    });
+    visibleMarkers.push(marker);
+    bounds.extend(marker.position);  //put this (lat,long) in bounds, for auto-center and auto-zoom
+  }
+  map.fitBounds(bounds);   // auto-zoom
+  map.panToBounds(bounds); // auto-center
+}
+
+function clearAllMarkers(){
+  for(var i=0; i<visibleMarkers.length; i++){
+    var marker = visibleMarkers[i];
+    marker.setMap(null);
+  }
 }
