@@ -161,10 +161,10 @@ function initGothenburgMap(allLocations) {
         allLocations[i].info.endDate != null &&
         allLocations[i].info.oddEven != null){
           contentString +=
-          "<button onclick='createAnEvent( "+allLocations[i].info.startTime + "," 
-          + allLocations[i].info.endTime + ", " + allLocations[i].info.x +", " 
-          + allLocations[i].info.y + ", "+allLocations[i].info.endDate + ", " 
-          + allLocations[i].info.oddEven + ")'> Lägg till! </button>";
+          "<button onclick='createAnEvent("+'"'+allLocations[i].info.startTime +'"'+ ", "
+          +'"'+ allLocations[i].info.endTime +'"'+ ", " + allLocations[i].info.x +", "
+          + allLocations[i].info.y + ", " +'"'+ allLocations[i].info.endDate +'"'+ ", "
+          +'"'+ allLocations[i].info.oddEven +'"'+ ")'> Lägg till! </button>";
       }
           //onclick = 'createAnEvent(activeCleaningInfo[0].startTime, activeCleaningInfo[0].endTime, activeCleaningInfo[0].x, activeCleaningInfo[0].y, activeCleaningInfo[0].endDate, activeCleaningInfo[0].oddEven)
 
