@@ -76,6 +76,7 @@ function initGothenburgMap(parkingsList) {
 function addMarkersFromParkingList(parkingsList){
   visibleMarkers =[]; //empty array
   var bounds = new google.maps.LatLngBounds(); //bounds: for auto-center and auto-zoom
+  var InforObj = [];
 
   for (var i = 0; i < parkingsList.length; i++) {
     var icon;
@@ -97,13 +98,37 @@ function addMarkersFromParkingList(parkingsList){
       title: parkingsList[i].info.streetName,
       icon: icon
     });
+
+    var contentString = '<h1>' + parkingsList[i].info.streetName + '</h1>' +
+        '<h3>Antal platser: __</h3>' + '<div><h3> Du får parkera här :</h3></div>'+
+        '<div><h3>' + parkingsList[i].info.infoText + '</h3></div>';
+
+    const infowindow = new google.maps.InfoWindow({
+      content: contentString,
+    });
+
     marker.addListener("click", function() {
+      closeOtherInfo();
+      infowindow.open(this.get('map'), this);
+      InforObj[0] = infowindow;
       map.setZoom(16);
       map.setCenter(this.getPosition());
     });
     visibleMarkers.push(marker);
     bounds.extend(marker.position);  //put this (lat,long) in bounds, for auto-center and auto-zoom
   }
+
+  function closeOtherInfo() {
+    if (InforObj.length > 0) {
+      /* detach the info-window from the marker ... undocumented in the API docs */
+      InforObj[0].set("marker", null);
+      /* and close it */
+      InforObj[0].close();
+      /* blank the array */
+      InforObj.length = 0;
+    }
+  }
+
   map.fitBounds(bounds);   // auto-zoom
   map.panToBounds(bounds); // auto-center
 }
