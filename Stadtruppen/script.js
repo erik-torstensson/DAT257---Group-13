@@ -224,6 +224,9 @@ function fetchResidentialParkingInfo() {
         );
         if (timeLeftInMinutes(time) < timeUntilUnavailable) {
           match.timeLeft = timeLeftInMinutes(time);
+          if(timeLeftInMinutes(time) < -120) {
+            match.timeLeft = timeUntilUnavailable;
+          }
         }
       }
     }
