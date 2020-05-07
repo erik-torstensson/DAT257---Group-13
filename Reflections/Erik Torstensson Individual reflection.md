@@ -24,3 +24,12 @@ Det kan kännas svårt för mig att lära resten av gruppen när det kommer till
 Vi har börjat planera sprints och genomföra sprints och det inkulderar att skriva user stories, använda git och ha sprint reviews. Jag har bidragit till alla dessa delar så gott jag kan och ämnar göra det i samma utsträckning i framtiden. I gruppen har vi disskuterat hur vi skall använda oss av scrum masters och det kan vara ett sätt att arbeta ännu bättre med scrum.
 
 Den första sprinten och den pågående sprinten har vart välfördelad mellan gruppens medlemmar och jag har bidragit med kodning till projektets hemsida och bakomliggande funktioner. Jag vill fortsätta bidra på samma sätt resterande sprintar och kommer bland annat att läsa på och lära mig programmeringsspråken bättre för att uppnå detta.
+
+# Week 4
+Jag lär mig mer och mer om scrum och programmering för varje vecka som går. I nuläget ligger kunskapen på ungefär samma som förra vecka, men gruppens implementering av scrum master och mer avancerade KPI:er har gjort att jag lärt mig mer. Mitt mål är att lära mig mer om till exempel en scrum masters uppgifter och jag tror att om jag blir tilldelad rollen eller bara läser på på egen hand så kan jag nå mitt mål.
+
+Jag tror att scrum master-rollen kommer att vara ett utmärkt sätt att lära de andra gruppmedlemmarna. Utöver detta har jag samma tankar som förra veckan.
+
+Vi har tillsammans satt upp nya KPI:er som har bidragit till min egen användning av Scrum. Hoppas kunna bidra med input på dessa de kommande veckorna. Det gör så att jag kan bidra med det jag vill.
+
+Jag har gjort det vi satte upp att jag skulle göra. Jag har skrivit kod, satt upp tasks på scrum boarden, och använt GitHub. FÖrhoppningen är att detta arbete skall fortgå de kommande veckorna på samma sätt.
