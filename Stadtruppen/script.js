@@ -303,10 +303,10 @@ function extractCleaningInfo(i) {
   //oddEven
   info.oddEven = 2;
   if (
-    typeof xml_cleaningZones.getElementsByTagName("OnlyEvenWeeks")[i] ==
-      "undefined" &&
-    typeof xml_cleaningZones.getElementsByTagName("OnlyOddWeeks")[i] ==
-      "undefined"
+    typeof xml_cleaningZones.getElementsByTagName("CleaningZone")[i].getElementsByTagName("OnlyEvenWeeks")[0] ==
+          "undefined" &&
+        typeof xml_cleaningZones.getElementsByTagName("CleaningZone")[i].getElementsByTagName("OnlyOddWeeks")[0] ==
+          "undefined"
   ) {
     info.oddEven = 1;
   }
