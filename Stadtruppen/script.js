@@ -448,12 +448,6 @@ function search() {
 
 //-----END: feature-Search through cleaning info by user input-------//
 
-console.log('residentialParkingWithCleaning');
-console.log(residentialParkingWithCleaning);
-var parkingsInZone_V=getParkingsInZone('V');
-console.log("in zone V: ")
-console.log(parkingsInZone_V);
-
 /*
 Return array of all parking objects with the same zone as input parameter.
 Input is expected to be a single letter string. example: "V"
