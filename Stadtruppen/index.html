@@ -16,12 +16,14 @@
   <link rel="stylesheet" href="style.css" />
 
   <!-- import the webpage's javascript file -->
+  <script src="test.js" defer></script>
   <script src="map.js" defer></script>
   <script src="calendar.js" defer></script>
   <script src="script.js" defer></script>
    <script src="autocomplete.js" defer></script>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
   <script src="jQuery.js"></script>
+
 
   <script
           defer
@@ -50,12 +52,13 @@
 </form>
 <div id="result"></div>
 <br />
-  
+
   <button onclick="resetMap()" class= "mapButton">Återställ karta</button>
   <div id="map">kartan ska vara här </div>
-  
+
 
 <pre id="content" style="white-space: pre-wrap;"></pre>
+
 
 </body>
 <div class="wrap">
@@ -90,7 +93,7 @@
         id="Button"
         style="position:fixed;top:80px;right:20px;"
 />
-  
+
   <input
         type="button"
         value="Residential Data"
