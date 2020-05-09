@@ -76,7 +76,7 @@ function initGothenburgMap(parkingsList) {
 function addMarkersFromParkingList(parkingsList){
   visibleMarkers =[]; //empty array
   var bounds = new google.maps.LatLngBounds(); //bounds: for auto-center and auto-zoom
-  var InforObj = [];
+  var InfoObj = []; // empty array for info window
 
   for (var i = 0; i < parkingsList.length; i++) {
     var icon;
@@ -99,53 +99,68 @@ function addMarkersFromParkingList(parkingsList){
       icon: icon
     });
 
-    var contentString = '<h1>' + parkingsList[i].info.streetName + '</h1>' +
-        '<h3>Zone: ' + parkingsList[i].code_resPark + 
-        '</h3>' + minutesToReadableTime(parkingsList[i].timeLeft)  +
-        '<h3>Antal platser: ' + parkingsList[i].numOfPlaces + '</h3>';
-    if(parkingsList[i].night_parking == true){
-      contentString += "<h3>Det här är en natt parkering</h3>" 
-    }else{
-      contentString += "<h3>Det här är inte en natt parkering</h3>" 
-    }
-    if(parkingsList[i].info.startTime != null){
-      contentString +=
-          "<button onclick='createAnEvent("+'"'+parkingsList[i].info.startTime +'"'+ ", "
-          +'"'+ parkingsList[i].info.endTime +'"'+ ", " + parkingsList[i].info.x +", "
-          + parkingsList[i].info.y + ", " +'"'+ parkingsList[i].info.endDate +'"'+ ", "
-          +'"'+ parkingsList[i].info.oddEven +'"'+ ")'> Lägg till! </button>";
-    }else{
-      contentString +=
-          "<button disabled> Lägg till! </button>";
-    }
+
+    var infoContent = createInfoContent(parkingsList[i]);
+
     const infowindow = new google.maps.InfoWindow({
-      content: contentString,
+      content: infoContent,
     });
 
+
     marker.addListener("click", function() {
-      closeOtherInfo();
+      closeOtherInfo(InfoObj);
       infowindow.open(this.get('map'), this);
-      InforObj[0] = infowindow;
-      map.setZoom(16);
+      InfoObj[0] = infowindow;
+      map.setZoom(17);
       map.setCenter(this.getPosition());
     });
     visibleMarkers.push(marker);
     bounds.extend(marker.position);  //put this (lat,long) in bounds, for auto-center and auto-zoom
   }
 
-  function closeOtherInfo() {
-    if (InforObj.length > 0) {
-      /* detach the info-window from the marker ... undocumented in the API docs */
-      InforObj[0].set("marker", null);
-      /* and close it */
-      InforObj[0].close();
-      /* blank the array */
-      InforObj.length = 0;
-    }
-  }
-
   map.fitBounds(bounds);   // auto-zoom
   map.panToBounds(bounds); // auto-center
+}
+
+// This function get the needed information about parking to show it in the pop-up info window
+function createInfoContent(parking) {
+  var contentString;
+
+  contentString = '<h1>' + parking.info.streetName + '</h1>' +
+  '<h3>Zone: ' + parking.code_resPark +
+  '</h3>' + minutesToReadableTime(parking.timeLeft)  +
+  '<h3>Antal platser: ' + parking.numOfPlaces + '</h3>';
+  if(parking.night_parking == true){
+    contentString += "<h3>Det här är en natt parkering</h3>"
+  }else{
+    contentString += "<h3>Det här är inte en natt parkering</h3>"
+  }
+
+  // Add a button to createAnEvent
+  if(parking.info.startTime != null){
+    contentString +=
+        "<button onclick='createAnEvent("+'"'+parking.info.startTime +'"'+ ", "
+        +'"'+ parking.info.endTime +'"'+ ", " + parking.info.x +", "
+        + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
+        +'"'+ parking.info.oddEven +'"'+ ")'> Lägg till! </button>";
+  }else{
+    contentString +=
+        "<button disabled> Lägg till! </button>";
+  }
+
+  return contentString;
+}
+
+// This function closes the current info window when clicking on a new marker
+function closeOtherInfo(InfoObj) {
+  if (InfoObj.length > 0) {
+    /* detach the info-window from the marker ... undocumented in the API docs */
+    InfoObj[0].set("marker", null);
+    /* and close it */
+    InfoObj[0].close();
+    /* blank the array */
+    InfoObj.length = 0;
+  }
 }
 
 function clearAllMarkers(){
