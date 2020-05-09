@@ -4,7 +4,22 @@ var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
-
+const CLUSTER_OPTIONS = { //The different cluster icons
+  styles: [{
+      height: 32,
+      url: "Resources/m1.png",
+      width: 32
+    },
+    {
+      height: 32,
+      url: "Resources/m2.png",
+      width: 32
+    },
+    {
+      height: 32,
+      url: "Resources/m3.png",
+      width: 32
+    }]}
 
 //reset the map
 function resetMap() {
@@ -69,6 +84,7 @@ function initGothenburgMap(parkingsList) {
     });
     //console.log(map.getCenter().toString());
     addMarkersFromParkingList(parkingsList);
+    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer 
   };
 }
 
@@ -94,7 +110,6 @@ function addMarkersFromParkingList(parkingsList){
         parkingsList[i].info.x,
         parkingsList[i].info.y
       ),
-      map: map,
       title: parkingsList[i].info.streetName,
       icon: icon
     });
