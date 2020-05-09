@@ -1,6 +1,6 @@
 Obada Al Khayat - Individual Reflection
 
------- Week 1 ------
+# Week 1
 
 What do I want to learn or understand better?
 
@@ -23,5 +23,45 @@ What is my contribution towards the team's deliveries?
 
 This week we had a meeting on Discord and discussed the social contract and wrote the first version together. 
 
+----------------
 
------- Week 2 ------
+# Week 2 
+
+What is:
+
+
+
+What might or should be:
+
+Feedback designed to reduce the gap:
+
+----------------
+
+# Week 3 
+
+What is:
+
+What might or should be:
+
+Feedback designed to reduce the gap:
+
+----------------
+
+# Week 4 
+
+In our meeting with Kim, he minstioned how could the info window be represnted. The most important think with the info window is to make the language as simple as possible,
+use "Lätt svenska" so any user could benifet from this web-application. He suggested to make the markers change its colour depending on the availability of the parking.
+
+
+----------------
+
+# Week 5 
+
+This week me and Anas continued working on map and improving the pop-up info window, we added relevant info that we
+think is the most important for the user. 
+We had an issue whith the database, where there is a location that has no number of spaces, and this caused the application to crach when getting the number
+of spaces for all parkings. We fixed it by adding a condition to show "Ej tillänglig" when this data is missing. We presented this issue with the database in our meeting with Kim.  
+
+In our meeting with Kim, Jonas och Lisa they suggested that adding a highlaigth/border araound the area when the user search up for a parking with multiple postions.
+This would give the user a better experience and make it easier to know exactly where a specific parking is located. We are thinking to add this feature in the following sprint next week. 
+
