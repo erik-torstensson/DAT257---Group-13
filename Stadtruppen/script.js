@@ -448,6 +448,38 @@ function search() {
 
 //-----END: feature-Search through cleaning info by user input-------//
 
+/*
+Return array of all parking objects with the same zone as input parameter.
+Input is expected to be a single letter string. example: "V"
+*/
+function getParkingsInZone(zone){
+  var parkingsInZone=[];
+  residentialParkingWithCleaning.forEach(obj => { //for each parking
+    var currentZone = obj.code_resPark.charAt(0);
+    if(currentZone === zone){
+      parkingsInZone.push(obj); //saves all parking with same zone as input param
+    }
+  });
+  return parkingsInZone;
+}
+
+/*
+returns array of all parking objects in 'zone' and with 'tariff'.
+example: ("V",7) returns parkings in zone V7,V8 and V9.
+*/
+function getParkingsInZoneWithSameTariff(zone, tariff){
+    var parkingsInZoneWithSameOrLowerTariff = [];
+
+    getParkingsInZone(zone).forEach(obj => { //for each parking in 'zone'
+      var currentTariff = obj.code_resPark.charAt(1);
+      if(currentTariff >= tariff){     //if the number is equal or higher, the price is lower or equal
+        parkingsInZoneWithSameOrLowerTariff.push(obj);
+      }
+    });
+    return parkingsInZoneWithSameOrLowerTariff;
+}
+
+
 
 //-----START: Supporting functions-------//
 
