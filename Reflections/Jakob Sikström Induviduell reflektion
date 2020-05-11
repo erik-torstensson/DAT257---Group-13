@@ -56,3 +56,20 @@ Mitt bidrag till inlämningarna denna vecka är att jag hjälpt till med att utv
 våran första "team reflection". Jag tycker det har fungerat bra och som det ska, och planerar igentligen bara att fortsätta med samma i 
 framtiden.
 
+-------------------------------------------------------------------------------------------------------------------------------------------
+Vecka 4
+
+Under denna vecka har jag jobbat på att visualisera olika tillgängligheter för parkeringsplatser på kartan samt få till att alla gamla funktotioner fungerar med vårat nya scope.
+Det nya scopet gjorde så att vi adderade mer data från Göteborg stad vilket krävde en del backtracking och fixande. 
+
+Jag har fortsatt att arbete med trello scrumboarden, den har blivit allt mer avancerad med våra nya KPIs vilket jag såklart deltagit i denna vecka.
+
+Annars finns det inte mycket att säga om denna vecka, men det fungerar bra i gruppen, jag vet vad jag skall göra och hur allt struktureras!.
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+Vecka 5
+
+Denna vecka jobbade jag med att stukturera upp våran script.js fil till flera mindre filer specifika för olika features. Detta skulle göra koden mer översiktlig och lättläst.
+Utöver det fixade jag lite buggar och kollade på hur förändringen av data set från Göteborg stad fungerar. 
+
+Scrum har fungerat bra och arbetet är likt föregående veckor, inget nytt dock för mig dock. 

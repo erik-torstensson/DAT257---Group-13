@@ -90,7 +90,6 @@ function initGothenburgMap(parkingsList) {
 
 
 function addMarkersFromParkingList(parkingsList){
-  visibleMarkers =[]; //empty array
   var bounds = new google.maps.LatLngBounds(); //bounds: for auto-center and auto-zoom
   var InfoObj = []; // empty array for info window
 
@@ -183,4 +182,5 @@ function clearAllMarkers(){
     var marker = visibleMarkers[i];
     marker.setMap(null);
   }
+  visibleMarkers=[]; //make the global array empty
 }
