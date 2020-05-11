@@ -33,3 +33,10 @@ Jag tror att scrum master-rollen kommer att vara ett utmärkt sätt att lära de
 Vi har tillsammans satt upp nya KPI:er som har bidragit till min egen användning av Scrum. Hoppas kunna bidra med input på dessa de kommande veckorna. Det gör så att jag kan bidra med det jag vill.
 
 Jag har gjort det vi satte upp att jag skulle göra. Jag har skrivit kod, satt upp tasks på scrum boarden, och använt GitHub. FÖrhoppningen är att detta arbete skall fortgå de kommande veckorna på samma sätt.
+
+# Week 5
+Läget ser likadant ut som för förra veckan i alla punkter. Jag har samma mål och samma tankar på hur de skall uppnås.
+
+Under team reflection så har vi som team reflekterat över våra nya KPIer och hur vi skall aanvända dessa i framtiden. Detta har varit mycket givande i lärandet om agil programering och scrum specifikt.
+
+Planeringen inför nästa sprint gjordes även med hänsyn till att stress-KPIn ökat sedan förra veckan och att flera medlemmar i teamet skriver kandidatarbete med inlämning under denna sprint. Detta tror jag kommer göra att vi inte tar oss an för mycket och bränner ut oss själva.
