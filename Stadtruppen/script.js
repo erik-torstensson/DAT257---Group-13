@@ -224,6 +224,9 @@ function fetchResidentialParkingInfo() {
         );
         if (timeLeftInMinutes(time) < timeUntilUnavailable) {
           match.timeLeft = timeLeftInMinutes(time);
+          if(timeLeftInMinutes(time) < -120) { //Checking if there has been more than two hours since cleaning start
+            match.timeLeft = timeUntilUnavailable;
+          }
         }
       }
     }
