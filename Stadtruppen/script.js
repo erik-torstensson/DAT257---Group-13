@@ -28,14 +28,13 @@ residentialParkingRequest.open(
 residentialParkingRequest.send();
 var xml_residentialParkings = getXML_Response(residentialParkingRequest);
 
-// all nodes that contains a "Name"
-var allResidentialParkings = xml_residentialParkings.getElementsByTagName("Name");
+// all nodes that contains a ResidentialParking tag
+var residentialParkings = xml_residentialParkings.getElementsByTagName("ResidentialParking");
 
 //get the response of the inserted request, if the request is done, without errors.
 function getXML_Response(request) {
   if (request.readyState == 4 && request.status == 200) {
     var response = request.responseXML;
-    console.log(response);
     return response;
   }
 }
@@ -178,6 +177,33 @@ function getJsonResponse(url) {
 //-----END: feature-SeePublicHoldiays-------//
 
 
+//-----START: Turn minutes to readable time-------//
+function minutesToReadableTime(i){
+  /*the input i is how many minutes to turn into a more readable format
+    the function takes a number of minutes into input and turns it into 
+    a number of days hours and minutes. 
+  */
+  if(i == 0){
+    return "<h3 style = 'color : red;'>  Du får inte parkera just nu!</h3>";
+  }
+  var left = i%1440
+  var days = (i-left)/1440; 
+  i = left;
+  left = left%60;
+  var hours = (i-left)/60;
+  if(days > 365){
+    return "<h3 style = 'color : green;' >  Du får alltid parkera här!</h3>";
+  }
+  var today = new Date(Date.now());
+  today.setDate(today.getDate()+days);  
+  today.setHours(today.getHours()+hours);
+  today.setMinutes(today.getMinutes()+parseInt(left));
+  today.setSeconds(60);
+  return "<h3> Du får parkera här till: " + today.toLocaleString() + "</h3>";
+}
+
+//-----END: Turn minutes to readable time-------//
+
 
 //-----START: Constructing array with complete parking information-------//
 
@@ -185,28 +211,37 @@ var residentialParkingWithCleaning = fetchResidentialParkingInfo();
 
 function fetchResidentialParkingInfo() {
   var residentialParkingWithCleaning = [];
-  for (var i = 0; i < allResidentialParkings.length; i++) {
-    var id_resPark = xml_residentialParkings.getElementsByTagName("Id")[i]
-      .firstChild.nodeValue;
-    var areaCode_resPark = xml_residentialParkings.getElementsByTagName(
-      "ResidentialParkingArea"
-    )[i].firstChild.nodeValue;
-
-    var night_parking = isNightParking(areaCode_resPark);
+  for (var i = 0; i < residentialParkings.length; i++) {
+    // Gets the id of the parking
+    var id_resPark = residentialParkings[i].querySelector('Id').firstChild.nodeValue;
+    // Gets the area code of the parking
+    var areaCode_resPark = residentialParkings[i].querySelector('ResidentialParkingArea');
+    var night_parking = false;
+    
+    if (areaCode_resPark != null) {
+      areaCode_resPark = areaCode_resPark.firstChild.nodeValue;
+      night_parking = isNightParking(areaCode_resPark);
+    }
 
 
     var timeUntilUnavailable = Math.pow(10, 100); //initiate timeUntilUnavailable
     var today = new Date(Date.now());
-
     if (night_parking === true) {
       timeUntilUnavailable = timeLeftInMinutes(timeToLeaveNightParking(today));
+    }
+    //Get the amonunt of places
+    var places = residentialParkings[i].querySelector("ParkingSpaces");
+    if(places != null){
+      places = places.firstChild.nodeValue;
+    }else{
+      places = "Ej Tillgänglig";
     }
     var match = {
       id_resPark: id_resPark,
       code_resPark: areaCode_resPark,
       timeLeft: timeUntilUnavailable, //insert real function here
-      night_parking: false,
-
+      night_parking: night_parking,
+      numOfPlaces: places,
       info: extractResidentialInfo(i)
     };
 
@@ -232,8 +267,6 @@ function fetchResidentialParkingInfo() {
     }
     residentialParkingWithCleaning.push(match);
   }
-  console.log(residentialParkingWithCleaning);
-
   return residentialParkingWithCleaning;
 }
 
@@ -349,11 +382,11 @@ function extractResidentialInfo(i) {
     x: "",
     y: ""
   };
-
   //streetName
   info.streetName = xml_residentialParkings.getElementsByTagName("Name")[
     i
   ].firstChild.nodeValue;
+
   //x
   info.x = parseFloat(
     xml_residentialParkings.getElementsByTagName("Lat")[i].firstChild.nodeValue
@@ -362,7 +395,6 @@ function extractResidentialInfo(i) {
   info.y = parseFloat(
     xml_residentialParkings.getElementsByTagName("Long")[i].firstChild.nodeValue
   );
-
   return info;
 };
 

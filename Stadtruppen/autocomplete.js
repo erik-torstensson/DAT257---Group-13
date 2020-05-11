@@ -6,7 +6,7 @@ autocomplete(document.getElementById("inputGata"), getStreetNames()); //param: i
 //returns an array of all street names in xml_cleaningZones.
 function getStreetNames() {
   var allStreetNames = []; //Set istället?
-  for (var i = 0; i < allResidentialParkings.length; i++) {
+  for (var i = 0; i < residentialParkings.length; i++) {
     var street = xml_residentialParkings.getElementsByTagName("Name")[i]
       .firstChild.nodeValue;
 

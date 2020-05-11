@@ -4,7 +4,22 @@ var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
-
+const CLUSTER_OPTIONS = { //The different cluster icons
+  styles: [{
+      height: 32,
+      url: "Resources/m1.png",
+      width: 32
+    },
+    {
+      height: 32,
+      url: "Resources/m2.png",
+      width: 32
+    },
+    {
+      height: 32,
+      url: "Resources/m3.png",
+      width: 32
+    }]}
 
 //reset the map
 function resetMap() {
@@ -69,12 +84,14 @@ function initGothenburgMap(parkingsList) {
     });
     //console.log(map.getCenter().toString());
     addMarkersFromParkingList(parkingsList);
+    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer 
   };
 }
 
 
 function addMarkersFromParkingList(parkingsList){
   var bounds = new google.maps.LatLngBounds(); //bounds: for auto-center and auto-zoom
+  var InfoObj = []; // empty array for info window
 
   for (var i = 0; i < parkingsList.length; i++) {
     var icon;
@@ -92,19 +109,72 @@ function addMarkersFromParkingList(parkingsList){
         parkingsList[i].info.x,
         parkingsList[i].info.y
       ),
-      map: map,
       title: parkingsList[i].info.streetName,
       icon: icon
     });
+
+
+    var infoContent = createInfoContent(parkingsList[i]);
+
+    const infowindow = new google.maps.InfoWindow({
+      content: infoContent,
+    });
+
+
     marker.addListener("click", function() {
-      map.setZoom(16);
+      closeOtherInfo(InfoObj);
+      infowindow.open(this.get('map'), this);
+      InfoObj[0] = infowindow;
+      map.setZoom(17);
       map.setCenter(this.getPosition());
     });
     visibleMarkers.push(marker);
     bounds.extend(marker.position);  //put this (lat,long) in bounds, for auto-center and auto-zoom
   }
+
   map.fitBounds(bounds);   // auto-zoom
   map.panToBounds(bounds); // auto-center
+}
+
+// This function get the needed information about parking to show it in the pop-up info window
+function createInfoContent(parking) {
+  var contentString;
+
+  contentString = '<h1>' + parking.info.streetName + '</h1>' +
+  '<h3>Zone: ' + parking.code_resPark +
+  '</h3>' + minutesToReadableTime(parking.timeLeft)  +
+  '<h3>Antal platser: ' + parking.numOfPlaces + '</h3>';
+  if(parking.night_parking == true){
+    contentString += "<h3>Det här är en natt parkering</h3>"
+  }else{
+    contentString += "<h3>Det här är inte en natt parkering</h3>"
+  }
+
+  // Add a button to createAnEvent
+  if(parking.info.startTime != null){
+    contentString +=
+        "<button onclick='createAnEvent("+'"'+parking.info.startTime +'"'+ ", "
+        +'"'+ parking.info.endTime +'"'+ ", " + parking.info.x +", "
+        + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
+        +'"'+ parking.info.oddEven +'"'+ ")'> Lägg till! </button>";
+  }else{
+    contentString +=
+        "<button disabled> Lägg till! </button>";
+  }
+
+  return contentString;
+}
+
+// This function closes the current info window when clicking on a new marker
+function closeOtherInfo(InfoObj) {
+  if (InfoObj.length > 0) {
+    /* detach the info-window from the marker ... undocumented in the API docs */
+    InfoObj[0].set("marker", null);
+    /* and close it */
+    InfoObj[0].close();
+    /* blank the array */
+    InfoObj.length = 0;
+  }
 }
 
 function clearAllMarkers(){
