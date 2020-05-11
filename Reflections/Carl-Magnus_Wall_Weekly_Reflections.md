@@ -122,3 +122,35 @@ I veckan kände jag att jag hade behövt vara tydligare med vad jag behövde lägga 
 Vi måste fortsätta tala aktivt om våra valda KPIer för att öka effektiviteten ytterligare. Det är inget fel att någon är lite mer upptagen och inte klarar av lika mycket som någon annan under en vecka. Så länge vi kan dela upp arbetsbördan och sätta rimliga mål kan alla bidraga på sitt eget sätt. Alla behöver inte nöta kod varje vecka om det känns jobbigt ett stressigt. Jag ska försöka tänka lite extra på detta framöver och tala med mina gruppmedlemmar mer om det.
 
 Det blir mindre förvirring och mindre stress desto tydligare våra uppgifter är. Jobbar vi med detta kommer vi kunna flyta på ännu bättre. Jag måste avsätta mer av min tid till att läsa på om kodspråken och lära mig fler effektiva kodknep. Jag behöver blir mer effektiv. Då blir det även lättare för mig att vara till hjälp för de andra i gruppen.
+
+----------------
+
+# Vecka 5:
+
+**What is: **
+
+Vecka 5 har flytit på likt tidigare vecka. Redan från dag ett har vi dock funderat och arbetat lite mer runt våra KPIer. Vi valde ny scrum master som har haft koll på dessa samt styrt möten. Jag tycker att det har varit lite mer strukturerat och det har varit lättare att se vilken typ av workload vi kan klara av. Jag har lättare kunnat fokusera på mina tasks och det har inte känts lika stressigt när det går långsamt eller när jag har fastnat. Effort-beräkning har hjälpt oss alla att se hur lång tid en viss uppgift tar, trots att vi inte alltid gjort helt korrekta estimeringar. Det kommer att göra det lättare att lägga fram beräkningar för kommande sprint, vilket känns betryggande. Stressnivåerna har dokumenterats precis som tidigare, vilket känns bra. Det gör det lättare att förstå varandra och lättare att fördela arbete. Vi har alla känt lite mer stress, men för de flesta av oss har det berott på yttre faktorer (andra kurser framför allt).
+
+Gällande vår kvalitets-KPI har vi fortfarande saker att jobba på. Vi arbetar med grundliga code reviews, men vi behöver ett lite mer tydligt workflow här. Många tasks fastnar i In Review, vilket bidrar till en känsla av att vi ligger lite efter.
+
+Under veckan har jag arbetat mycket med att implementera andra typer av kalenderfunktioner (Microsoft-tjänster som Outlook). Det har varit väldigt krångligt, men gått långsamt framåt. Alla har hållit sig till sina tilldelade tasks och snacket i gruppen har varit bra. De flesta av oss håller på med olika delar med koden.
+
+Jag känner att våra standup meetings har hjälpt mig (och alla andra) att ta tag i vissa uppgifter och sett till att arbetsflödet hålls på en jämn nivå.
+
+Under fredagen höll vi ännu ett möte med Parkering Göteborg där vi uppdaterade om läget. Jag kunde inte deltaga i detta mötet, men fick en tydlig genomgång av mina gruppmedlemmar. Vi fick tips på vad som skulle vara värdefullt att implementera samt påminnelse om att utföra en kundundersökning.
+
+**What it might or should be: **
+
+Det som vi framför allt måste tänka på framöver är hur vi arbetar med vår kvalitets-KPI. Vi har sagt att vi ska göra ordentliga code reviews innan vi gör merges, men det har som sagt bidragit till att vi har många saker som fastnar i In Review. Poängen med KPIn är att se till att färdig kod verkligen är färdig. Vi har tagit fram en checklista för våra reviews, men vi måste jobba lite mer med den. Det är särskilt viktigt just nu, eftersom det inte återstår så mycket tid av kursen. Om vi inte har lite mer struktur kommer stressnivåerna definitivt öka. Just nu ligger vi på en rimlig stressnivå, men med tanke på kandidatarbeten och andra kurser som ligger och jäser, så behöver vi vi verkligen fördela även denna arbetsuppgift ordentligt.
+
+Vi behöver input från potentiella kunder.
+
+**Feedback designed to reduce the gap: **
+
+Under måndagens möte/sprint review har vi konstaterat att vi alla är överens om att vi behöver lägga lite tid på våra code reviews. När vi tog fram våra Effort-poäng räknade vi in ordentliga reviews, och vi hade definitivt tid att genomföra dessa. Det behöver bara struktureras lite. Jag har utsetts till ny scrum master och kommer att göra mitt bästa för att styra oss mot bättre reviews. Jag ska se till att höra med var och en av mina kollegor om hur mycket de har att göra utöver denna kursen under veckan. Jag kommer att uppmana de som har mycket att göra att ta sig an lättare uppgifter för att effektivisera arbetet.
+
+Som scrum master kommer jag också att se över våra code reviews samt kundundersökningen. Jag kommer även att fortsätta arbeta med att implementera kalenderfunktionalitet för Microsoft-tjänster.
+
+Som scrum master har jag denna veckan en utmaning. Jag måste ta till mig allting som jag skrivit tidigare veckor och försöka implementera de tips som jag gett mig själv. Jag kommer att hålla i ett standup meeting samt vårt större möte på torsdag. Jag kommer personligen att förbereda punkter för diskussion. Dessa kommer framför allt gälla våra code reviews. Det är viktigt att jag håller igång diskussionen i gruppen under veckan, eftersom flera är väldigt upptagna med andra arbeten.
+
+För att strukturera en så bra kundundersökning som möjligt kommer jag att läsa igenom tidigare liknande undersökningar. Parkering Göteborg har genomfört undersökningar tidigare, så jag måste ta vara på dessa. Jag kommer också att läsa på ytterligare om hur man är en effektiv scrum master.
