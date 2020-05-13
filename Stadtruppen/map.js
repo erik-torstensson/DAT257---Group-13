@@ -92,18 +92,11 @@ function initGothenburgMap(parkingsList) {
 function addMarkersFromParkingList(parkingsList){
   var bounds = new google.maps.LatLngBounds(); //bounds: for auto-center and auto-zoom
   var InfoObj = []; // empty array for info window
-
+  var ChangePark;
+  var icon;
   for (var i = 0; i < parkingsList.length; i++) {
-    var icon;
-    if(parkingsList[i].timeLeft > 1440){
-        icon = GREEN_PARKING
-      // YELLOW Move care within 24 hours YELLOW
-    }else if(parkingsList[i].timeLeft > 30) {
-        icon= YELLOW_PARKING
-      // RED Illegal parking
-      }else {
-        icon = RED_PARKING
-      }
+    icon = getMarkerIcon(i);
+    ChangePark = !isGreenPark(i);
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(
         parkingsList[i].info.x,
@@ -114,7 +107,7 @@ function addMarkersFromParkingList(parkingsList){
     });
 
 
-    var infoContent = createInfoContent(parkingsList[i]);
+    var infoContent = createInfoContent(parkingsList[i], ChangePark, i);
 
     const infowindow = new google.maps.InfoWindow({
       content: infoContent,
@@ -125,7 +118,6 @@ function addMarkersFromParkingList(parkingsList){
       closeOtherInfo(InfoObj);
       infowindow.open(this.get('map'), this);
       InfoObj[0] = infowindow;
-      map.setZoom(17);
       map.setCenter(this.getPosition());
     });
     visibleMarkers.push(marker);
@@ -135,21 +127,39 @@ function addMarkersFromParkingList(parkingsList){
   map.fitBounds(bounds);   // auto-zoom
   map.panToBounds(bounds); // auto-center
 }
-
+//Returns which icon the marker will have based on the availablity
+function getMarkerIcon(i){
+    if(isGreenPark(i)){
+        return GREEN_PARKING;
+    }else if(isYellowPark(i)) {
+        return YELLOW_PARKING;
+    }
+    return RED_PARKING;// RED Illegal parking
+}
+//Check if the park is available for more than 24 hours. Green
+function isGreenPark(i){
+  return residentialParkingWithCleaning[i].timeLeft > 1440;
+}
+//Check if the park is available for more than 30 minutes. Yellow
+function isYellowPark(i){
+  return residentialParkingWithCleaning[i].timeLeft > 30;
+}
 // This function get the needed information about parking to show it in the pop-up info window
-function createInfoContent(parking) {
+function createInfoContent(parking, ChangePark, i) {
   var contentString;
-
   contentString = '<h1>' + parking.info.streetName + '</h1>' +
   '<h3>Zone: ' + parking.code_resPark +
   '</h3>' + minutesToReadableTime(parking.timeLeft)  +
   '<h3>Antal platser: ' + parking.numOfPlaces + '</h3>';
-  if(parking.night_parking == true){
-    contentString += "<h3>Det här är en natt parkering</h3>"
+  if(parking.night_parking){
+    contentString += "<h3>Det här är en natt parkering</h3>";
   }else{
-    contentString += "<h3>Det här är inte en natt parkering</h3>"
+    contentString += "<h3>Det här är inte en natt parkering</h3>";
   }
-
+  if (ChangePark){
+    contentString += "<h3>Den närmsta lediga parkering finns på " +
+    residentialParkingWithCleaning[closestPark(i)].info.streetName + "</h3>";
+  }
   // Add a button to createAnEvent
   if(parking.info.startTime != null){
     contentString +=
@@ -183,4 +193,25 @@ function clearAllMarkers(){
     marker.setMap(null);
   }
   visibleMarkers=[]; //make the global array empty
+}
+
+//A function that calculates the distance with each parking to find the closeset one.
+function closestPark(parkIndex){
+  var x = residentialParkingWithCleaning[parkIndex].info.x;
+  var y = residentialParkingWithCleaning[parkIndex].info.y;
+  var dist = 1e100;
+  var index;
+  for(i = 0; i < residentialParkingWithCleaning.length; i++){
+    if (parkIndex == i){
+      continue;
+    }
+    var x1 = residentialParkingWithCleaning[i].info.x;
+    var y1 = residentialParkingWithCleaning[i].info.y;
+    var newDist = Math.sqrt((x-x1)**2+(y-y1)**2);
+    if (newDist < dist && residentialParkingWithCleaning[i].timeLeft > 1440){
+      dist = newDist;
+      index = i;
+    }
+  }
+  return index;
 }
