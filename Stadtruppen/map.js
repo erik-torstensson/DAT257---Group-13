@@ -4,6 +4,9 @@ var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
+const USER_ICON = "Resources/currentLocation_icon.png"
+const NAVIGATION_ICON = "Resources/navigation_icon.png"
+
 const CLUSTER_OPTIONS = { //The different cluster icons
   styles: [{
       height: 32,
@@ -84,7 +87,8 @@ function initGothenburgMap(parkingsList) {
     });
     //console.log(map.getCenter().toString());
     addMarkersFromParkingList(parkingsList);
-    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer 
+    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer
+    putUserLocOnMap();
   };
 }
 
@@ -184,3 +188,38 @@ function clearAllMarkers(){
   }
   visibleMarkers=[]; //make the global array empty
 }
+
+//----------start-GeoLocation----------//
+function addGeolocMarker(lat,long){
+  //userLocationMarker.setMap(null); //remove old marker
+  var icon = {
+        url: USER_ICON, // url
+        scaledSize: new google.maps.Size(80, 80) // size
+    };
+  var marker = new google.maps.Marker({
+    position: new google.maps.LatLng(lat, long),
+    map: map,
+    title: 'your location',
+    icon: icon
+  });
+  userLocationMarker = marker;
+}
+
+
+function putUserLocOnMap(){
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        var lat = position.coords.latitude;
+        var long = position.coords.longitude;
+        addGeolocMarker(lat,long);
+      },
+          function errorCallback(error) {
+              console.log('some error with getCurrentPosition');
+              console.log(error);
+          },
+          {
+              maximumAge:Infinity,
+              timeout:12000 //time until error message if position is not found happens
+          }
+      );
+  }
