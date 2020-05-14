@@ -451,7 +451,7 @@ function search() {
         // Adding a new button for every coordinate combination on the same street.
         var inputTag = document.createElement("div");
         inputTag.innerHTML =
-          "<input type = 'button' value = 'Lägg till!' onClick = 'createAnEvent(activeCleaningInfo[" +
+          "<input type = 'button' value = 'Lägg till!' onClick = ' GoogleAuth.signIn(); createAnEvent(activeCleaningInfo[" +
           i +
           "].info.startTime, activeCleaningInfo[" +
           i +

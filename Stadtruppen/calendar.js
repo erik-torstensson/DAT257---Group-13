@@ -97,7 +97,7 @@ function appendPre(message) {
       */
 
 function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
-  GoogleAuth.signIn();
+ 
   var event = {
     summary: document.Input["Gatunamn"].value,
     location: x + ", " + y,
