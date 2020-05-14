@@ -44,7 +44,6 @@ function initClient() {
     scope: SCOPES
   }).then(function () {
       GoogleAuth = gapi.auth2.getAuthInstance();
-      GoogleAuth.signIn();
       GoogleAuth.isSignedIn.listen(updateSigninStatus);
   });
 }
