@@ -42,8 +42,13 @@ function initClient() {
     clientId: CLIENT_ID,
     discoveryDocs: DISCOVERY_DOCS,
     scope: SCOPES
+  }).then(function () {
+      GoogleAuth = gapi.auth2.getAuthInstance();
+      GoogleAuth.signIn();
+      GoogleAuth.isSignedIn.listen(updateSigninStatus);
   });
 }
+var GoogleAuth;
 
 /**
  *   Information about the signed in user.
@@ -93,6 +98,7 @@ function appendPre(message) {
       */
 
 function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
+  GoogleAuth.signIn();
   var event = {
     summary: document.Input["Gatunamn"].value,
     location: x + ", " + y,
