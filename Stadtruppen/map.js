@@ -89,6 +89,7 @@ function initGothenburgMap(parkingsList) {
     addMarkersFromParkingList(parkingsList);
     var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer
     putUserLocOnMap();
+    addNavigationButtonOnMap();
   };
 }
 
@@ -189,9 +190,16 @@ function clearAllMarkers(){
   visibleMarkers=[]; //make the global array empty
 }
 
-//----------start-GeoLocation----------//
+/*
+adds a location-marker at (lat,long) on the map.
+if it already exist an old marker, it will remove this one first.
+*/
 function addGeolocMarker(lat,long){
-  //userLocationMarker.setMap(null); //remove old marker
+  if(typeof(userLocationMarker)!= 'undefined' ){ //if userLocationMarker exists as object
+    userLocationMarker.setMap(null); //remove old marker
+    console.log('removed old marker');
+  }
+
   var icon = {
         url: USER_ICON, // url
         scaledSize: new google.maps.Size(80, 80) // size
@@ -205,7 +213,11 @@ function addGeolocMarker(lat,long){
   userLocationMarker = marker;
 }
 
-
+/*
+gets geolocation and adds a marker at that position. If this functions is
+called more than one, it will also remove the old position, if the user has
+moved
+*/
 function putUserLocOnMap(){
     navigator.geolocation.getCurrentPosition(
       function(position) {
@@ -222,4 +234,24 @@ function putUserLocOnMap(){
               timeout:12000 //time until error message if position is not found happens
           }
       );
+  }
+
+/*
+adds a "update user location" button/control on the map.
+on click: it updates the user location and adds a new marker at the position.
+*/
+  function addNavigationButtonOnMap(){
+    var controlDiv = document.createElement('div');
+    var img = document.createElement('img');
+    img.id="navigationImgButton";
+    img.src=NAVIGATION_ICON;
+    img.alt = "navigation icon"
+    controlDiv.appendChild(img);
+
+    img.addEventListener('click', function() {
+          putUserLocOnMap();
+        });
+
+    controlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlDiv);
   }
