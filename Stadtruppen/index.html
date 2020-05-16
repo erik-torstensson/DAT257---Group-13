@@ -53,6 +53,32 @@
   <input type="submit" id="skicka" value="Sök" />
 </form>
 <div id="result"></div>
+<!-- Label for the drop down menus, changes if there is no parking with the selected combination -->
+<label id="forDropDown" for="dropDownZone">Välj den zon och taxa som skall visas:</label>
+<!-- Drop down for the available zones, selecting one will make the rate menu enabled  -->
+<select id="dropDownZone" onchange="document.getElementById('dropDownRate').disabled = false;">
+  <option disabled selected value> -- Välj zon -- </option>
+  <option value="C">C
+  <option value="G">G
+  <option value="H">H
+  <option value="K">K
+  <option value="L">L
+  <option value="M">M
+  <option value="S">S
+  <option value="V">V
+  <option value="Ä">Ä
+  <option value="Ö">Ö
+</select>
+<!-- Drop down for the rates, selecting one will call the addMarkersFromParkingList using this rate and the previously selected zone -->
+<select id="dropDownRate" onchange="addMarkersFromParkingList(getParkingsInZoneWithSameTariff(document.getElementById('dropDownZone').value, this.value))" disabled="true">
+  <option disabled selected value> -- Välj taxa -- </option>
+  <option value="4">4
+  <option value="5">5
+  <option value="6">6
+  <option value="7">7
+  <option value="8">8
+  <option value="9">9
+</select>
 <br />
 
   <button onclick="resetMap()" class= "mapButton">Återställ karta</button>
