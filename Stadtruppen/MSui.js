@@ -1,3 +1,8 @@
+// SAVING THIS, MIGHT BE USEFUL LATER.
+
+
+
+/*
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
@@ -215,3 +220,5 @@ function updatePage(account, view, data) {
 // </updatePage>
 
 updatePage(null, Views.home);
+
+*/

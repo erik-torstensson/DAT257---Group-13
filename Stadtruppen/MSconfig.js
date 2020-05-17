@@ -5,7 +5,7 @@
 const msalConfig = {
   auth: {
     clientId: '69d2caaa-830b-44e2-9586-dc1c0ee2332a',
-    redirectUri: 'http://localhost:8080'
+    redirectUri: 'http://localhost:8000'
   },
   cache: {
     cacheLocation: "sessionStorage",

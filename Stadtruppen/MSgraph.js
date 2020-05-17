@@ -16,8 +16,9 @@ const authProvider =
 const graphClient = MicrosoftGraph.Client.initWithMiddleware({authProvider});
 // </graphInit>
 
-// <getEvents>
-async function getEvents() {
+// Create an event on outlook. Requires a signed in user.
+// Just for testing...
+async function createOutlookEvent() {
 
   console.log("Here")
   
@@ -34,17 +35,17 @@ async function getEvents() {
       content: "Does late morning work for you?"
     },
     start: {
-        dateTime: "2020-05-16T12:00:00",
+        dateTime: "2020-05-18T12:00:00",
         timeZone: "Pacific Standard Time"
     },
     end: {
-        dateTime: "2020-05-16T14:00:00",
+        dateTime: "2020-05-18T14:00:00",
         timeZone: "Pacific Standard Time"
     },
     location:{
         displayName:"Harry's Bar"
     },
-    attendees: [
+    /*attendees: [
       {
         emailAddress: {
           address:"samanthab@contoso.onmicrosoft.com",
@@ -53,71 +54,12 @@ async function getEvents() {
         type: "required"
       }
     ]
+    */
   };
   
   let res = await client.api('/me/events')
     .post(event);
 
-  try {
-    let events = await graphClient
-        .api('/me/events')
-        .select('subject,organizer,start,end')
-        .orderby('createdDateTime DESC')
-        .get();
-
-    updatePage(msalClient.getAccount(), Views.calendar, events);
-
-  } catch (error) {
-    updatePage(msalClient.getAccount(), Views.error, {
-      message: 'Error getting events',
-      debug: error
-    });
-  }
-}
-
-async function createEvent() {
-  console.log("Here")
-  
-  const options = {
-    authProvider,
-  };
-  
-  const client = graphClient;
-  
-  const event = {
-    subject: "Let's go for lunch",
-    body: {
-      contentType: "HTML",
-      content: "Does late morning work for you?"
-    },
-    start: {
-        dateTime: "2020-05-15T12:00:00",
-        timeZone: "Pacific Standard Time"
-    },
-    end: {
-        dateTime: "2020-05-15T14:00:00",
-        timeZone: "Pacific Standard Time"
-    },
-    location:{
-        displayName:"Harry's Bar"
-    },
-    attendees: [
-      {
-        emailAddress: {
-          address:"samanthab@contoso.onmicrosoft.com",
-          name: "Samantha Booth"
-        },
-        type: "required"
-      }
-    ]
-  };
-  
-  let res = await client.api('/me/events')
-    .post(event);
 }
 
   
-
-  
-
-// </getEvents>
