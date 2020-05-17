@@ -205,6 +205,30 @@ function minutesToReadableTime(i){
 //-----END: Turn minutes to readable time-------//
 
 
+//-----START: TEMP METHOD. SAVING TIME UNTIL LEAVE, BUT IN CORRECT FORMAT FOR EVENT-------//
+function eventTime(i){
+  /*the input i is how many minutes to turn into a more readable format
+    the function takes a number of minutes into input and turns it into 
+    a number of days hours and minutes. 
+  */
+ 
+  var left = i%1440
+  var days = (i-left)/1440; 
+  i = left;
+  left = left%60;
+  var hours = (i-left)/60;
+ 
+  var today = new Date(Date.now());
+  today.setDate(today.getDate()+days);  
+  today.setHours(today.getHours()+hours);
+  today.setMinutes(today.getMinutes()+parseInt(left));
+  today.setSeconds(60);
+  return today.toLocaleString();
+}
+
+//-----END: Turn minutes to readable time-------//
+
+
 //-----START: Constructing array with complete parking information-------//
 
 var residentialParkingWithCleaning = fetchResidentialParkingInfo();

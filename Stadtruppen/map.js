@@ -156,11 +156,24 @@ function createInfoContent(parking) {
         "<button onclick='createAnEvent("+'"'+parking.info.startTime +'"'+ ", "
         +'"'+ parking.info.endTime +'"'+ ", " + parking.info.x +", "
         + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
-        +'"'+ parking.info.oddEven +'"'+ ")'> Lägg till! </button>";
+        +'"'+ parking.info.oddEven +'"'+ ")'> Google! </button>";
   }else{
     contentString +=
-        "<button disabled> Lägg till! </button>";
+        "<button disabled> Google! </button>";
   }
+// Add a button, outlookCreateEvent
+// End time is fakked, starttime is working. Need to fix google calendar too. :))
+if(parking.info.startTime != null){
+  contentString +=
+      "<button onclick='createOutlookEvent("+'"'+eventTime(parking.timeLeft) +'"'+ ", "
+      +'"'+ parking.info.endTime +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
+      + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
+      +'"'+ parking.info.oddEven +'"'+ ")'> Outlook! </button>";
+ }else{
+  contentString +=
+      "<button disabled> Outlook! </button>";
+ }
+
 
   return contentString;
 }

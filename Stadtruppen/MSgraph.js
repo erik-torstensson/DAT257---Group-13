@@ -16,9 +16,8 @@ const authProvider =
 const graphClient = MicrosoftGraph.Client.initWithMiddleware({authProvider});
 // </graphInit>
 
-// Create an event on outlook. Requires a signed in user.
-// Just for testing...
-async function createOutlookEvent() {
+// New
+async function createOutlookEvent(startTime, endTime, streetName, y, endDate, oddEven) {
 
   console.log("Here")
   
@@ -29,23 +28,25 @@ async function createOutlookEvent() {
   const client = graphClient;
   
   const event = {
-    subject: "Let's go for lunch",
+    subject: streetName,
     body: {
       contentType: "HTML",
-      content: "Does late morning work for you?"
+      content: "Parking reminder!"
     },
     start: {
-        dateTime: "2020-05-18T12:00:00",
-        timeZone: "Pacific Standard Time"
+        dateTime: startTime,
+        timeZone: "Europe/Amsterdam"
     },
     end: {
-        dateTime: "2020-05-18T14:00:00",
-        timeZone: "Pacific Standard Time"
+        dateTime: endTime,
+        timeZone: "Europe/Amsterdam"
     },
     location:{
-        displayName:"Harry's Bar"
-    },
-    /*attendees: [
+        displayName: streetName
+    }
+
+    /*
+    attendees: [
       {
         emailAddress: {
           address:"samanthab@contoso.onmicrosoft.com",
@@ -58,8 +59,8 @@ async function createOutlookEvent() {
   };
   
   let res = await client.api('/me/events')
-    .post(event);
-
+  .post(event);
+  console.log(startTime);
 }
 
   
