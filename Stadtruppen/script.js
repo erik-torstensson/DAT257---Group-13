@@ -511,7 +511,14 @@ function getParkingsInZoneWithSameTariff(zone, tariff){
         parkingsInZoneWithSameOrLowerTariff.push(obj);
       }
     });
-    return parkingsInZoneWithSameOrLowerTariff;
+    // If array is empty change the label for drop down menus and don't return the array
+    if(parkingsInZoneWithSameOrLowerTariff.length < 1 || parkingsInZoneWithSameOrLowerTariff == undefined) {
+        document.getElementById("forDropDown").innerHTML ="Kombinationen av zon och taxa finns inte:"
+        return null;
+    }
+    else {
+        return parkingsInZoneWithSameOrLowerTariff;
+    }
 }
 
 

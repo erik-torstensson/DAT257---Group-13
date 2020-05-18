@@ -4,6 +4,9 @@ var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
+const USER_ICON = "Resources/currentLocation_icon.png"
+const NAVIGATION_ICON = "Resources/navigation_icon.png"
+
 const CLUSTER_OPTIONS = { //The different cluster icons
   styles: [{
       height: 32,
@@ -84,7 +87,9 @@ function initGothenburgMap(parkingsList) {
     });
     //console.log(map.getCenter().toString());
     addMarkersFromParkingList(parkingsList);
-    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer 
+    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer
+    putUserLocOnMap();
+    addNavigationButtonOnMap();
   };
 }
 
@@ -195,6 +200,7 @@ function clearAllMarkers(){
   visibleMarkers=[]; //make the global array empty
 }
 
+
 //A function that calculates the distance with each parking to find the closeset one.
 function closestPark(parkIndex){
   var x = residentialParkingWithCleaning[parkIndex].info.x;
@@ -215,3 +221,70 @@ function closestPark(parkIndex){
   }
   return index;
 }
+
+/*
+adds a location-marker at (lat,long) on the map.
+if it already exist an old marker, it will remove this one first.
+*/
+function addGeolocMarker(lat,long){
+  if(typeof(userLocationMarker)!= 'undefined' ){ //if userLocationMarker exists as object
+    userLocationMarker.setMap(null); //remove old marker
+    console.log('removed old marker');
+  }
+
+  var icon = {
+        url: USER_ICON, // url
+        scaledSize: new google.maps.Size(80, 80) // size
+    };
+  var marker = new google.maps.Marker({
+    position: new google.maps.LatLng(lat, long),
+    map: map,
+    title: 'your location',
+    icon: icon
+  });
+  userLocationMarker = marker;
+}
+
+/*
+gets geolocation and adds a marker at that position. If this functions is
+called more than one, it will also remove the old position, if the user has
+moved
+*/
+function putUserLocOnMap(){
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        var lat = position.coords.latitude;
+        var long = position.coords.longitude;
+        addGeolocMarker(lat,long);
+      },
+          function errorCallback(error) {
+              console.log('some error with getCurrentPosition');
+              console.log(error);
+          },
+          {
+              maximumAge:Infinity,
+              timeout:12000 //time until error message if position is not found happens
+          }
+      );
+  }
+
+/*
+adds a "update user location" button/control on the map.
+on click: it updates the user location and adds a new marker at the position.
+*/
+  function addNavigationButtonOnMap(){
+    var controlDiv = document.createElement('div');
+    var img = document.createElement('img');
+    img.id="navigationImgButton";
+    img.src=NAVIGATION_ICON;
+    img.alt = "navigation icon"
+    controlDiv.appendChild(img);
+
+    img.addEventListener('click', function() {
+          putUserLocOnMap();
+        });
+
+    controlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlDiv);
+  }
+
