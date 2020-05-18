@@ -211,19 +211,22 @@ function eventTime(i){
     the function takes a number of minutes into input and turns it into 
     a number of days hours and minutes. 
   */
- 
   var left = i%1440
   var days = (i-left)/1440; 
   i = left;
   left = left%60;
   var hours = (i-left)/60;
- 
+
   var today = new Date(Date.now());
   today.setDate(today.getDate()+days);  
   today.setHours(today.getHours()+hours);
   today.setMinutes(today.getMinutes()+parseInt(left));
   today.setSeconds(60);
-  return today.toLocaleString();
+
+  //res += today.getFullYear()+"-"+today.getMonth()+"-"+today.getDate()+"T"+today.getHours()+":"+today.getMinutes()+parseInt(left);
+  var temp = today.toISOString();
+  var res = temp.substring(0,19);
+  return res;
 }
 
 //-----END: Turn minutes to readable time-------//

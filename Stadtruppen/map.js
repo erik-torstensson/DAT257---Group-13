@@ -166,7 +166,7 @@ function createInfoContent(parking) {
 if(parking.info.startTime != null){
   contentString +=
       "<button onclick='createOutlookEvent("+'"'+eventTime(parking.timeLeft) +'"'+ ", "
-      +'"'+ parking.info.endTime +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
+      +'"'+ eventTime(parking.timeLeft+60) +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
       + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
       +'"'+ parking.info.oddEven +'"'+ ")'> Outlook! </button>";
  }else{

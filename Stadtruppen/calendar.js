@@ -93,16 +93,17 @@ function appendPre(message) {
       */
 
 function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
+  console.log("Here GOOGLE")
   var event = {
     summary: document.Input["Gatunamn"].value,
     location: x + ", " + y,
     description: ":-)",
     start: {
-      dateTime: startTime,
+      dateTime: "2020-05-19T09:00:00",
       timeZone: "Europe/Amsterdam"
     },
     end: {
-      dateTime: endTime,
+      dateTime: "2020-05-19T11:00:00",
       timeZone: "Europe/Amsterdam"
     },
     recurrence: [
