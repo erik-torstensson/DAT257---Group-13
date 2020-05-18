@@ -455,55 +455,12 @@ function search() {
   clearAllMarkers();
   addMarkersFromParkingList(activeCleaningInfo);
 
-  if (activeCleaningInfo.length > 0) {
-    document.getElementById("result").innerHTML += input + " städas:" + "<br>";
-    for (var i = 0; i < activeCleaningInfo.length; i++) {
-      if (activeCleaningInfo[i].info.infoText == null) {
-        document.getElementById("result").innerHTML +=
-          "Boendeparkeringen vid" +
-          " koordinaterna:  " +
-          activeCleaningInfo[i].info.x +
-          ", " +
-          activeCleaningInfo[i].info.y +
-          " städas inte." +
-          "<br><br>";
-      } else {
-        document.getElementById("result").innerHTML +=
-          activeCleaningInfo[i].info.infoText +
-          " Vid koordinaterna:  " +
-          activeCleaningInfo[i].info.x +
-          ", " +
-          activeCleaningInfo[i].info.y;
-
-        // Adding a new button for every coordinate combination on the same street.
-        var inputTag = document.createElement("div");
-        inputTag.innerHTML =
-          "<input type = 'button' value = 'Lägg till!' onClick = 'createAnEvent(activeCleaningInfo[" +
-          i +
-          "].info.startTime, activeCleaningInfo[" +
-          i +
-          "].info.endTime, activeCleaningInfo[" +
-          i +
-          "].info.x, activeCleaningInfo[" +
-          i +
-          "].info.y, activeCleaningInfo[" +
-          i +
-          "].info.endDate, activeCleaningInfo[" +
-          i +
-          "].info.oddEven)'>";
-
-        document.getElementById("result").appendChild(inputTag);
-        document.getElementById("result").innerHTML += "<br>";
-      }
-      /*document.getElementById("result").innerHTML +=
-      "För mer information om din gata kontakta parkering göteborg" + "<br>";*/
-      //document.getElementById("add").style.display = "block";
-    }
-  } else {
+  if (activeCleaningInfo.length <= 0) {
+   
     document.getElementById("result").innerHTML +=
       "" + input + " kan inte hittas i datan." + "<br>";
   }
-  console.log(activeCleaningInfo[0].info.oddEven);
+
   return false;
 }
 
