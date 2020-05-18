@@ -92,26 +92,22 @@ function appendPre(message) {
       Creating an event and insert it into to primary (logged in) user.
       */
 
-function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
-  console.log("Here GOOGLE")
+function createAnEvent(startTime, endTime, x, y, endDate, streetName) {
+
   var event = {
-    summary: document.Input["Gatunamn"].value,
+    summary: streetName,
     location: x + ", " + y,
-    description: ":-)",
+    description: "Parking reminder",
     start: {
-      dateTime: "2020-05-19T09:00:00",
+      dateTime: startTime,
       timeZone: "Europe/Amsterdam"
     },
     end: {
-      dateTime: "2020-05-19T11:00:00",
+      dateTime: endTime,
       timeZone: "Europe/Amsterdam"
     },
     recurrence: [
-      "RRULE:FREQ=WEEKLY;INTERVAL=" + oddEven + ";WKST=SU;UNTIL=" + endDate
     ],
-    /*'attendees': [
-          {'email': 'erikt1234567@gmail.com'},
-        ],*/
     reminders: {
       useDefault: false,
       overrides: [

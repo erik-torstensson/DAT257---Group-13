@@ -139,7 +139,6 @@ function addMarkersFromParkingList(parkingsList){
 // This function get the needed information about parking to show it in the pop-up info window
 function createInfoContent(parking) {
   var contentString;
-
   contentString = '<h1>' + parking.info.streetName + '</h1>' +
   '<h3>Zone: ' + parking.code_resPark +
   '</h3>' + minutesToReadableTime(parking.timeLeft)  +
@@ -150,13 +149,15 @@ function createInfoContent(parking) {
     contentString += "<h3>Det här är inte en natt parkering</h3>"
   }
 
+  //console.log(eventTime(parking.timeLeft));
+  //console.log(parking.info.startTime);
   // Add a button to createAnEvent
   if(parking.info.startTime != null){
     contentString +=
-        "<button onclick='createAnEvent("+'"'+parking.info.startTime +'"'+ ", "
-        +'"'+ parking.info.endTime +'"'+ ", " + parking.info.x +", "
+        "<button onclick='createAnEvent("+'"'+eventTime(parking.timeLeft) +'"'+ ", "
+        +'"'+ eventTime(parking.timeLeft+60) +'"'+ ", " + parking.info.x +", "
         + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
-        +'"'+ parking.info.oddEven +'"'+ ")'> Google! </button>";
+        +'"'+ parking.info.streetName +'"'+ ")'> Google! </button>";
   }else{
     contentString +=
         "<button disabled> Google! </button>";

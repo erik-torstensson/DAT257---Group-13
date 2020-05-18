@@ -204,7 +204,6 @@ function minutesToReadableTime(i){
 
 //-----END: Turn minutes to readable time-------//
 
-
 //-----START: TEMP METHOD. SAVING TIME UNTIL LEAVE, BUT IN CORRECT FORMAT FOR EVENT-------//
 function eventTime(i){
   /*the input i is how many minutes to turn into a more readable format
@@ -220,7 +219,7 @@ function eventTime(i){
   var today = new Date(Date.now());
   today.setDate(today.getDate()+days);  
   today.setHours(today.getHours()+hours);
-  today.setMinutes(today.getMinutes()+parseInt(left));
+  today.setMinutes(today.getMinutes()+parseInt(left)+120);
   today.setSeconds(60);
 
   //res += today.getFullYear()+"-"+today.getMonth()+"-"+today.getDate()+"T"+today.getHours()+":"+today.getMinutes()+parseInt(left);
