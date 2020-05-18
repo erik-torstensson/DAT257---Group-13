@@ -40,3 +40,12 @@ Läget ser likadant ut som för förra veckan i alla punkter. Jag har samma mål
 Under team reflection så har vi som team reflekterat över våra nya KPIer och hur vi skall aanvända dessa i framtiden. Detta har varit mycket givande i lärandet om agil programering och scrum specifikt.
 
 Planeringen inför nästa sprint gjordes även med hänsyn till att stress-KPIn ökat sedan förra veckan och att flera medlemmar i teamet skriver kandidatarbete med inlämning under denna sprint. Detta tror jag kommer göra att vi inte tar oss an för mycket och bränner ut oss själva.
+
+# Week 6
+Projektet börjar gå mot ett slut och jag har lärt mig vädigt mycket om scrum och de språk vi arbetat i. Jag hoppas att jag under den sista tiden kan lära mig lite mer om programmeringen och den agila processen. Detta har jag tänkt skall ske genom att arbeta på den sista sprinten och se vad jag kan göra av det som är kvar.
+
+Samarbete och lärande har fungerat väl mellan gruppens medlemmar. För att sprida ännu mer kunskap och samarbete så är det viktigt att jag är aktiv och lyssnar på de möten vi satt upp som grupp. På dessa möten kan man alltid säga till om man vill ha hjälp och se om det finns någon annan att hjälpa.
+
+Sprintplaneringen och sprint review är tillfällen där jag och andra kan bidra mycket med scrum eller agilt arbere. Under dessa möten kan man bidra mot scrum tillsammmans med resterande gruppmedlemmar och scrum mastern.
+
+Jag har gjort det som vi tilldelat i början av sprintplaneringen. Denna veckan fungerade detta väldigt bra när det gäller effort, det var en stressig vecka för många medlemmar på grund av andra kurser och dylikt. Utifrån detta var det bra att vi ändå kunnde klara vår sprint och bidra till produkten.
