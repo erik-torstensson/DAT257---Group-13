@@ -149,25 +149,23 @@ function createInfoContent(parking) {
     contentString += "<h3>Det här är inte en natt parkering</h3>"
   }
 
-  //console.log(eventTime(parking.timeLeft));
-  //console.log(parking.info.startTime);
-  // Add a button to createAnEvent
-  if(parking.info.startTime != null){
+  // Add a button to add parking reminder to GOOGLE CALENDAR
+  if(parking.timeLeft < 20160){ //20160min = Two weeks
     contentString +=
-        "<button onclick='createAnEvent("+'"'+eventTime(parking.timeLeft) +'"'+ ", "
-        +'"'+ eventTime(parking.timeLeft+60) +'"'+ ", " + parking.info.x +", "
+        "<button onclick='createAnEvent("+'"'+calendarEventTime(parking.timeLeft) +'"'+ ", "
+        +'"'+ calendarEventTime(parking.timeLeft+60) +'"'+ ", " + parking.info.x +", "
         + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
         +'"'+ parking.info.streetName +'"'+ ")'> Google! </button>";
   }else{
     contentString +=
         "<button disabled> Google! </button>";
   }
-// Add a button, outlookCreateEvent
-// End time is fakked, starttime is working. Need to fix google calendar too. :))
-if(parking.info.startTime != null){
+// Add a button to add parking reminder to OUTLOOK CALENDAR
+// Due to problems with timezones; added 120 to get to right timezone.
+if(parking.timeLeft < 20160){ //20160min = Two weeks
   contentString +=
-      "<button onclick='createOutlookEvent("+'"'+eventTime(parking.timeLeft) +'"'+ ", "
-      +'"'+ eventTime(parking.timeLeft+60) +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
+      "<button onclick='createOutlookEvent("+'"'+calendarEventTime(parking.timeLeft+120) +'"'+ ", "
+      +'"'+ calendarEventTime(parking.timeLeft+60+120) +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
       + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
       +'"'+ parking.info.oddEven +'"'+ ")'> Outlook! </button>";
  }else{

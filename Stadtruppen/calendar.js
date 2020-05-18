@@ -89,8 +89,8 @@ function appendPre(message) {
 }
 
 /*
-      Creating an event and insert it into to primary (logged in) user.
-      */
+      Creating an event and insert it into to primary (logged in) Google user.
+*/
 
 function createAnEvent(startTime, endTime, x, y, endDate, streetName) {
 
@@ -121,7 +121,6 @@ function createAnEvent(startTime, endTime, x, y, endDate, streetName) {
     calendarId: "primary",
     resource: event
   });
-  //console.log(request.created!=null);
   request.execute(function(event) {
     appendPre("Lagt till i kalendern! Länk: " + event.htmlLink);
   });

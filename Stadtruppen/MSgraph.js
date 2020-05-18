@@ -16,11 +16,10 @@ const authProvider =
 const graphClient = MicrosoftGraph.Client.initWithMiddleware({authProvider});
 // </graphInit>
 
-// New
+// Creating and adding event to a logged in outlook users calendar.
+// Returns nothing. Creates the event.
 async function createOutlookEvent(startTime, endTime, streetName, y, endDate, oddEven) {
 
-  console.log("Here")
-  
   const options = {
     authProvider,
   };
@@ -45,22 +44,10 @@ async function createOutlookEvent(startTime, endTime, streetName, y, endDate, od
         displayName: streetName
     }
 
-    /*
-    attendees: [
-      {
-        emailAddress: {
-          address:"samanthab@contoso.onmicrosoft.com",
-          name: "Samantha Booth"
-        },
-        type: "required"
-      }
-    ]
-    */
   };
   
   let res = await client.api('/me/events')
   .post(event);
-  console.log(startTime);
 }
 
   
