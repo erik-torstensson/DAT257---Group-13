@@ -6,6 +6,7 @@ const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
 const USER_ICON = "Resources/currentLocation_icon.png"
 const NAVIGATION_ICON = "Resources/navigation_icon.png"
+const NIGHT_ICON = "Resources/nighticon.png"
 
 const CLUSTER_OPTIONS = { //The different cluster icons
   styles: [{
@@ -100,14 +101,18 @@ function addMarkersFromParkingList(parkingsList){
 
   for (var i = 0; i < parkingsList.length; i++) {
     var icon;
+    var borderColor;
     if(parkingsList[i].timeLeft > 1440){
         icon = GREEN_PARKING
+        borderColor='green';
       // YELLOW Move care within 24 hours YELLOW
     }else if(parkingsList[i].timeLeft > 30) {
         icon= YELLOW_PARKING
+        borderColor = 'yellow';
       // RED Illegal parking
       }else {
         icon = RED_PARKING
+        borderColor= 'red';
       }
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(
@@ -120,10 +125,15 @@ function addMarkersFromParkingList(parkingsList){
 
 
     var infoContent = createInfoContent(parkingsList[i]);
+      //var infoContent = '<div id="content_infowindow"></div>';
 
     const infowindow = new google.maps.InfoWindow({
       content: infoContent,
     });
+//test
+    if(i== 1){
+      console.log(infowindow);
+    }
 
 
     marker.addListener("click", function() {
@@ -143,17 +153,27 @@ function addMarkersFromParkingList(parkingsList){
 
 // This function get the needed information about parking to show it in the pop-up info window
 function createInfoContent(parking) {
-  var contentString;
 
-  contentString = '<h1>' + parking.info.streetName + '</h1>' +
-  '<h3>Zone: ' + parking.code_resPark +
-  '</h3>' + minutesToReadableTime(parking.timeLeft)  +
-  '<h3>Antal platser: ' + parking.numOfPlaces + '</h3>';
-  if(parking.night_parking == true){
-    contentString += "<h3>Det här är en natt parkering</h3>"
-  }else{
-    contentString += "<h3>Det här är inte en natt parkering</h3>"
+  var contentString = '<div id="content_infowindow">'; //container for all content in infowindow
+
+  contentString += '<div id="street-name-div">' + parking.info.streetName + '</div>' ;
+
+  if(parking.night_parking == true){ //add night icon to header_container
+    contentString += '<div class="nightParking-flex-box"> ';
+    contentString +=    '<img id="night_img" src="' + NIGHT_ICON +'" alt="night_parking">';
+    contentString +=    '  Nattparkering </div>';
   }
+
+
+  contentString +=      '<hr class=' + get_hr_StyleClass(parking) +'>'; //horizontal line under street name
+
+  contentString +=      '<div class="info-top"> '; //container for zone and nr of parkings
+  contentString +=          '<b> Zon: ' + '</b> ' + parking.code_resPark +'<br>' ; //Zone
+  contentString +=          '<b> Antal platser: </b>' + parking.numOfPlaces ; //antal platser
+  contentString +=      '</div>'; //end:info_top
+
+
+  contentString += minutesToReadableTime(parking.timeLeft); //time left info
 
   // Add a button to createAnEvent
   if(parking.info.startTime != null){
@@ -167,8 +187,11 @@ function createInfoContent(parking) {
         "<button disabled> Lägg till! </button>";
   }
 
+  contentString += '</div>'; //end content_infowindow
+
   return contentString;
 }
+
 
 // This function closes the current info window when clicking on a new marker
 function closeOtherInfo(InfoObj) {
@@ -255,3 +278,18 @@ on click: it updates the user location and adds a new marker at the position.
     controlDiv.index = 1;
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlDiv);
   }
+
+
+/*returns string (inside a string) of style class on horisontal line, which
+is shown in the markers info window (pop up window).*/
+function get_hr_StyleClass(parking){
+  if(parking.timeLeft > 1440){//one day
+    return '"iw_line_green"'; //green style class
+  }
+  else if(parking.timeLeft > 30){ //more than 30 min, but less than 24hrs
+    return '"iw_line_yellow"';
+  }
+  else { //less than 30 min
+    return '"iw_line_red"';
+  }
+}

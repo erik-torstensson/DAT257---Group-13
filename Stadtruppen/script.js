@@ -180,26 +180,70 @@ function getJsonResponse(url) {
 //-----START: Turn minutes to readable time-------//
 function minutesToReadableTime(i){
   /*the input i is how many minutes to turn into a more readable format
-    the function takes a number of minutes into input and turns it into 
-    a number of days hours and minutes. 
+    the function takes a number of minutes into input and turns it into
+    a number of days hours and minutes.
   */
-  if(i == 0){
-    return "<h3 style = 'color : red;'>  Du får inte parkera just nu!</h3>";
+  if(i == 0){ //if red parking
+    return '<h3 style = "color : red;">  Parkering förbjuden</h3>' +
+    '<div>' + '<b> Förbudet upphör: <b> <br>' +
+    'X' + 'dagar ' +'X'+'h ' +'X'+'min'+ //put in real nr as X,X,X
+    '</div>';
   }
-  var left = i%1440
-  var days = (i-left)/1440; 
+  var left = i%1440;
+  var days = (i-left)/1440;
   i = left;
   left = left%60;
   var hours = (i-left)/60;
-  if(days > 365){
-    return "<h3 style = 'color : green;' >  Du får alltid parkera här!</h3>";
+  i = left;
+  left = left % 1;
+  var mins = i-left; //remove decimals
+
+//Always OK to park, but maximum 14 days
+  if(days > 14){
+    return '<h3 style = "color : green; margin-block-end: 0.2em;">'+
+              'Parkering alltid tillåten!' +
+            '</h3>' +
+
+            '<div style="text-align: center; margin-top:5px;"> '+
+            'max 14 dygn ' +
+            '</div>';
   }
+
   var today = new Date(Date.now());
-  today.setDate(today.getDate()+days);  
-  today.setHours(today.getHours()+hours);
-  today.setMinutes(today.getMinutes()+parseInt(left));
-  today.setSeconds(60);
-  return "<h3> Du får parkera här till: " + today.toLocaleString() + "</h3>";
+  var movingDay = new Date(Date.now());
+  movingDay.setDate(today.getDate()+days);
+  movingDay.setHours(today.getHours()+hours);
+  movingDay.setMinutes(today.getMinutes()+parseInt(mins));
+  movingDay.setSeconds(60); //why?
+
+  var movingDate = movingDay.toLocaleDateString();
+  var movingTime = movingDay.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); //Time without seconds
+
+
+  var movingDayText = '<div class="info_bottom_inner">'; //container for info
+   movingDayText +=       '<h3 style="color:green;">' +
+                              'Parkering tillåten till: '+
+                          '</h3>';
+
+
+//date and time to move car
+  if(movingDay.getDate() - today.getDate() == 1){ //if moving day is tomorrow
+    movingDayText +=      "<b>Imorgon " + movingTime + '</b><br>' + movingDate;
+  } else if(movingDay.getDate() - today.getDate() == 0){ // if moving day today
+    movingDayText +=      "<b>Idag " + movingTime + '</b><br>' + movingDate;
+  } else{
+    movingDayText +=      '<b>' + movingDate +"  "+ movingTime + '</b>';
+  }
+
+// Time left in days, hours and minutes
+if(days == 0){ //if yellow parking, make yellow "time-left"-text
+  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: #d8a700;">' + hours + 'h ' + mins +'min </p>';
+} else { //if green parking
+  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: green;">' + days +' dagar '+ hours + 'h ' + mins +'min </p>';
+}
+  movingDayText +=    '</div>'; //end : div#info_bottom_inner
+
+  return movingDayText;
 }
 
 //-----END: Turn minutes to readable time-------//
@@ -217,7 +261,7 @@ function fetchResidentialParkingInfo() {
     // Gets the area code of the parking
     var areaCode_resPark = residentialParkings[i].querySelector('ResidentialParkingArea');
     var night_parking = false;
-    
+
     if (areaCode_resPark != null) {
       areaCode_resPark = areaCode_resPark.firstChild.nodeValue;
       night_parking = isNightParking(areaCode_resPark);
