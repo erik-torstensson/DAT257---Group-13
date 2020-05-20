@@ -4,6 +4,7 @@ var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
+const PARKING = "Resources/Parking.png"
 const USER_ICON = "Resources/currentLocation_icon.png"
 const NAVIGATION_ICON = "Resources/navigation_icon.png"
 const NIGHT_ICON = "Resources/nighticon.png"
@@ -98,11 +99,9 @@ function initGothenburgMap(parkingsList) {
 function addMarkersFromParkingList(parkingsList){
   var bounds = new google.maps.LatLngBounds(); //bounds: for auto-center and auto-zoom
   var InfoObj = []; // empty array for info window
-  var ChangePark;
   var icon;
   for (var i = 0; i < parkingsList.length; i++) {
     icon = getMarkerIcon(i);
-    ChangePark = !isGreenPark(i);
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(
         parkingsList[i].info.x,
@@ -113,7 +112,7 @@ function addMarkersFromParkingList(parkingsList){
     });
 
 
-    var infoContent = createInfoContent(parkingsList[i], ChangePark, i);
+    var infoContent = createInfoContent(parkingsList[i]);
 
     const infowindow = new google.maps.InfoWindow({
       content: infoContent,
@@ -152,7 +151,7 @@ function isYellowPark(i){
 }
 
 // This function get the needed information about parking to show it in the pop-up info window
-function createInfoContent(parking, ChangePark, i) {
+function createInfoContent(parking) {
   var contentString = '<div id="content_infowindow">'; //container for all content in infowindow
   contentString +=        '<div id="street-name-div">' + parking.info.streetName + '</div>';
 
@@ -192,16 +191,6 @@ function createInfoContent(parking, ChangePark, i) {
     contentString += minutesToReadableTime(parking.timeLeft); //time left info
   }
 
-
-  /*
-   * Lets have this as a comment until the new button is implemented
-   * it's easier to see how the info window will look like :) 
-  if (ChangePark){
-    contentString += "<h3>Den närmsta lediga parkering finns på " +
-    residentialParkingWithCleaning[closestPark(i)].info.streetName + "</h3>";
-  }
-  */
-  // Add a button to createAnEvent
   if(parking.info.startTime != null){
     contentString +=
         "<button onclick='createAnEvent("+'"'+parking.info.startTime +'"'+ ", "
@@ -212,7 +201,10 @@ function createInfoContent(parking, ChangePark, i) {
     contentString +=
         "<button disabled> Lägg till! </button>";
   }
-
+  if(parking.info.startTime != null){
+    contentString += "<button onclick= 'getCloseParkings("+ '"' + parking + '"' + ")'>hej</button> ";  
+  }
+ 
   contentString += '</div>'; //end content_infowindow
 
   return contentString;
@@ -339,4 +331,43 @@ function get_hr_StyleClass(parking){
   else { //less than 30 min
     return '"iw_line_red"';
   }
+}
+
+function getCloseParkings(parking){
+  var closeParkings = []; //List for the close parkings
+  console.log(parking.info.streetName);
+  var zone = parking.code_resPark.substr(0, 1); //get the parking's zone 
+  var tariff = parking.code_resPark.substr(1,1); //get the parking's tariff
+  var lat1 = parking.info.x; // set lat1 to the parking's lat
+  var lng1 = parking.info.y; // set lat1 to the parking's lng
+  var lat2; // declare lat2 to use in the loop
+  var lng2; // declare lng2 to use in the loop
+  getParkingsInZoneWithSameTariff(zone, tariff).forEach(element => {
+    lat2 = element.info.x; // set lat2 to the element's lat
+    lng2 = element.info.y; // set lng2 to the element's lng
+
+    //check if the park is available and within a 1 km radius
+    if(element.icon == GREEN_PARKING && getDistance(lat1, lng1, lat2, lng2 ) <= 2){ 
+      element.icon = PARKING; //Set the parking that is close by to have a blue icon to distingush it from other parkings 
+      closeParkings.push(element); //add the parking to the list 
+    }
+  });
+}
+
+function getDistance(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
 }
