@@ -174,7 +174,10 @@ function createInfoContent(parking, ChangePark, i) {
   if(parking.timeLeft == 0){
     contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
                     '<div>' + '<b> Förbudet upphör: <b> <br>' +
-                    'X' + 'dagar ' +'X'+'h ' +'X'+'min'+ //put in real nr as X,X,X
+                    // End time has the format "yyyy-mm-ddThh:mm:ss" 
+                    // Replace the T with a space
+                    // Remove the last two digits since they represent the seconds
+                    parking.info.endTime.replace(new RegExp('T'), ' ').substr(0, 16) + 
                     '</div>';
   }else if(parking.timeLeft > (60*24*365)){
   //more than a year, always ok to park but maximum 14 days
