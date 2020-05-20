@@ -48,17 +48,20 @@ function initClient() {
 /**
  *   Information about the signed in user.
  */
+var signedIn = false;
 function onSignIn(googleUser) {
   var profile = googleUser.getBasicProfile();
   console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
   console.log("Name: " + profile.getName());
   console.log("Image URL: " + profile.getImageUrl());
   console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
+  signedIn = true;
 }
 function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   auth2.signOut().then(function() {
     console.log("User signed out.");
+  signedIn = false;
   });
 }
 
@@ -93,6 +96,7 @@ function appendPre(message) {
       */
 
 function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
+  if(signedIn){
   var event = {
     summary: document.Input["Gatunamn"].value,
     location: x + ", " + y,
@@ -128,4 +132,9 @@ function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
   request.execute(function(event) {
     appendPre("Lagt till i kalendern! Länk: " + event.htmlLink);
   });
+}
+else{
+  alert("You must log in with google account in order to add schedule to google calendar!")
+}
+
 }
