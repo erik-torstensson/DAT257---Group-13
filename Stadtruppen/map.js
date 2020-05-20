@@ -6,6 +6,7 @@ const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
 const USER_ICON = "Resources/currentLocation_icon.png"
 const NAVIGATION_ICON = "Resources/navigation_icon.png"
+const NIGHT_ICON = "Resources/nighticon.png"
 
 const CLUSTER_OPTIONS = { //The different cluster icons
   styles: [{
@@ -149,22 +150,54 @@ function isGreenPark(i){
 function isYellowPark(i){
   return residentialParkingWithCleaning[i].timeLeft > 30;
 }
+
 // This function get the needed information about parking to show it in the pop-up info window
 function createInfoContent(parking, ChangePark, i) {
-  var contentString;
-  contentString = '<h1>' + parking.info.streetName + '</h1>' +
-  '<h3>Zone: ' + parking.code_resPark +
-  '</h3>' + minutesToReadableTime(parking.timeLeft)  +
-  '<h3>Antal platser: ' + parking.numOfPlaces + '</h3>';
-  if(parking.night_parking){
-    contentString += "<h3>Det här är en natt parkering</h3>";
-  }else{
-    contentString += "<h3>Det här är inte en natt parkering</h3>";
+  var contentString = '<div id="content_infowindow">'; //container for all content in infowindow
+  contentString +=        '<div id="street-name-div">' + parking.info.streetName + '</div>';
+
+  if(parking.night_parking == true){ //add night icon to header_container
+    contentString += '<div class="nightParking-flex-box"> ';
+    contentString +=    '<img id="night_img" src="' + NIGHT_ICON +'" alt="night_parking">';
+    contentString +=    '  Nattparkering </div>';
   }
+
+  contentString +=      '<hr class=' + get_hr_StyleClass(parking) +'>'; //horizontal line under street name
+
+  contentString +=      '<div class="info-top"> '; //container for zone and nr of parkings
+  contentString +=          '<b> Zon: ' + '</b> ' + parking.code_resPark +'<br>' ; //Zone
+  contentString +=          '<b> Antal platser: </b>' + parking.numOfPlaces ; //antal platser
+  contentString +=      '</div>'; //end:info_top
+
+
+  //Parking not allowed (red parking)
+  if(parking.timeLeft == 0){
+    contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
+                    '<div>' + '<b> Förbudet upphör: <b> <br>' +
+                    'X' + 'dagar ' +'X'+'h ' +'X'+'min'+ //put in real nr as X,X,X
+                    '</div>';
+  }else if(parking.timeLeft > (60*24*365)){
+  //more than a year, always ok to park but maximum 14 days
+    contentString += '<h3 style = "color : green; margin-block-end: 0.2em;">'+
+                        'Parkering alltid tillåten!' +
+                     '</h3>' +
+
+                     '<div style="text-align: center; margin-top:5px;"> '+
+                        'max 14 dygn ' +
+                     '</div>';
+  } else {
+    contentString += minutesToReadableTime(parking.timeLeft); //time left info
+  }
+
+
+  /*
+   * Lets have this as a comment until the new button is implemented
+   * it's easier to see how the info window will look like :) 
   if (ChangePark){
     contentString += "<h3>Den närmsta lediga parkering finns på " +
     residentialParkingWithCleaning[closestPark(i)].info.streetName + "</h3>";
   }
+  */
   // Add a button to createAnEvent
   if(parking.info.startTime != null){
     contentString +=
@@ -176,6 +209,8 @@ function createInfoContent(parking, ChangePark, i) {
     contentString +=
         "<button disabled> Lägg till! </button>";
   }
+
+  contentString += '</div>'; //end content_infowindow
 
   return contentString;
 }
@@ -288,3 +323,17 @@ on click: it updates the user location and adds a new marker at the position.
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlDiv);
   }
 
+
+  /*returns string (inside a string) of style class on horisontal line, which
+is shown in the markers info window (pop up window).*/
+function get_hr_StyleClass(parking){
+  if(parking.timeLeft > 1440){//one day
+    return '"iw_line_green"'; //green style class
+  }
+  else if(parking.timeLeft > 30){ //more than 30 min, but less than 24hrs
+    return '"iw_line_yellow"';
+  }
+  else { //less than 30 min
+    return '"iw_line_red"';
+  }
+}
