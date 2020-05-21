@@ -69,8 +69,8 @@
   <option value="Ä">Ä
   <option value="Ö">Ö
 </select>
-<!-- Drop down for the rates, selecting one will call the addMarkersFromParkingList using this rate and the previously selected zone -->
-<select id="dropDownRate" onchange="addMarkersFromParkingList(getParkingsInZoneWithSameTariff(document.getElementById('dropDownZone').value, this.value))" disabled="true">
+<!-- Drop down for the rates, selecting one will clear all markers and clusters and then call the addMarkersFromParkingList using this rate and the previously selected zone -->
+<select id="dropDownRate" onchange="clearAllMarkersAndClusters();addMarkersFromParkingList(getParkingsInZoneWithSameTariff(document.getElementById('dropDownZone').value, this.value))" disabled="true">
   <option disabled selected value> -- Välj taxa -- </option>
   <option value="4">4
   <option value="5">5

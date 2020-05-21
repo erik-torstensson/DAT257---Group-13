@@ -1,5 +1,6 @@
 //Variables
 var visibleMarkers = []; //global array for visable markers on map
+var markerCluster; //global marker cluster
 var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
@@ -88,7 +89,6 @@ function initGothenburgMap(parkingsList) {
     });
     //console.log(map.getCenter().toString());
     addMarkersFromParkingList(parkingsList);
-    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer
     putUserLocOnMap();
     addNavigationButtonOnMap();
   };
@@ -129,7 +129,7 @@ function addMarkersFromParkingList(parkingsList){
     visibleMarkers.push(marker);
     bounds.extend(marker.position);  //put this (lat,long) in bounds, for auto-center and auto-zoom
   }
-
+  markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating marker clusters
   map.fitBounds(bounds);   // auto-zoom
   map.panToBounds(bounds); // auto-center
 }
@@ -227,10 +227,10 @@ function closeOtherInfo(InfoObj) {
   }
 }
 
-function clearAllMarkers(){
+function clearAllMarkersAndClusters(){
+  markerCluster.setMap(null); //hides the cluster from map
   for(var i=0; i<visibleMarkers.length; i++){
-    var marker = visibleMarkers[i];
-    marker.setMap(null);
+    visibleMarkers[i].setMap(null);
   }
   visibleMarkers=[]; //make the global array empty
 }
