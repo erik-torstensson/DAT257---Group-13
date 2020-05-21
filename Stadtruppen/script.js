@@ -546,5 +546,35 @@ function ResidentialData() {
   );
 }
 
+// Outlook sign in button disappears onclick and outlook sign out appears.
+function disappear() {
+  sIn = document.getElementById("OSI");
+  sIn.style.visibility = "hidden";
+  sOut = document.getElementById("OSO");
+  sOut.style.visibility = "visible";
+}
+// Outlook sign out button disappears onclick and outlook sign in appears.
+function appear() {
+  sIn = document.getElementById("OSI");
+  sIn.style.visibility = "visible";
+  sOut = document.getElementById("OSO");
+  sOut.style.visibility = "hidden";
+}
+
+// Google sign in button disappears onclick and Google sign out appears.
+function gDisappear() {
+  sIn = document.getElementById("signin");
+  sIn.style.visibility = "hidden";
+  sOut = document.getElementById("gSignOut");
+  sOut.style.visibility = "visible";
+}
+// Google sign out button disappears onclick and Google sign in appears.
+function gAppear() {
+  sIn = document.getElementById("signin");
+  sIn.style.visibility = "visible";
+  sOut = document.getElementById("gSignOut");
+  sOut.style.visibility = "hidden";
+}
+
 
 //-----END: Supporting functions-------//

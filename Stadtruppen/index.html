@@ -130,22 +130,20 @@
         data-theme="dark"
         style="position:fixed;top:20px;right:20px; "
 ></div>
-<div
-        id="signout"
-        class="g-signout2"
-        data-onsuccess="signOut"
-        style="position:fixed;top:60px;right:20px; "
-></div>
-<a href="#" onclick="signOut();" style="position:fixed;top:60px;right:20px;"
->Sign out</a
->
-
+<input
+        type="button"
+        value= "Google Sign out"
+        onclick="signOut(), gAppear()"
+        id="gSignOut"
+        style="position:fixed;top:20px;right:20px;visibility:hidden;"
+/>
+<!--
 <input
         type="button"
         value="Cleaning Data"
         onclick="CleaningData()"
         id="Button"
-        style="position:fixed;top:80px;right:20px;"
+        style="position:fixed;top:100px;right:20px;"
 />
 
   <input
@@ -153,21 +151,23 @@
         value="Residential Data"
         onclick="ResidentialData()"
         id="Button2"
-        style="position:fixed;top:120px;right:20px;"
+        style="position:fixed;top:140px;right:20px;"
 />
-<input
-        type="button"
-        value="Outlook Sign in"
-        onclick="signIn()"
-        id="Button2"
-        style="position:fixed;top:160px;right:20px;"
+-->
+
+  <input
+  type="button"
+  value="Outlook Sign in"
+  onclick="signIn()"
+  id="OSI"
+  style="position:fixed;top:70px;right:20px;"
 />
 <input
         type="button"
         value="Outlook Sign out"
         onclick="outlookSignOut()"
-        id="Button2"
-        style="position:fixed;top:200px;right:20px;"
+        id="OSO"
+        style="position:fixed;top:70px;right:20px; visibility:hidden;"
 />
 <!--
 

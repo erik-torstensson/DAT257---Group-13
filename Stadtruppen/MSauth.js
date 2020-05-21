@@ -9,11 +9,14 @@ const msalClient = new Msal.UserAgentApplication(msalConfig);
 // </authInit>
 
 // <signIn>
+var outlookSignedIn = false;
 async function signIn() {
   // Login
   try {
     await msalClient.loginPopup(loginRequest);
     console.log('id_token acquired at: ' + new Date().toString());
+    outlookSignedIn = true;
+    disappear();
   } catch (error) {
     console.log(error);
   }
@@ -23,5 +26,7 @@ async function signIn() {
 // <signOut>
 function outlookSignOut() {
   msalClient.logout();
+  outlookSignedIn = false;
+  appear();
 }
 // </signOut>

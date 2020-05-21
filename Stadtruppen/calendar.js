@@ -48,17 +48,22 @@ function initClient() {
 /**
  *   Information about the signed in user.
  */
+var googleSignedIn = false;
 function onSignIn(googleUser) {
   var profile = googleUser.getBasicProfile();
   console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
   console.log("Name: " + profile.getName());
   console.log("Image URL: " + profile.getImageUrl());
   console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
+  googleSignedIn = true;
+  gDisappear();
 }
 function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   auth2.signOut().then(function() {
     console.log("User signed out.");
+    googleSignedIn = false;
+    gAppear();
   });
 }
 
@@ -92,8 +97,8 @@ function appendPre(message) {
       Creating an event and insert it into to primary (logged in) Google user.
 */
 
-function createAnEvent(startTime, endTime, x, y, endDate, streetName) {
-
+function createGoogleEvent(startTime, endTime, x, y, endDate, streetName) {
+if(googleSignedIn){
   var event = {
     summary: streetName,
     location: x + ", " + y,
@@ -122,6 +127,10 @@ function createAnEvent(startTime, endTime, x, y, endDate, streetName) {
     resource: event
   });
   request.execute(function(event) {
-    appendPre("Lagt till i kalendern! Länk: " + event.htmlLink);
+    alert("Påminnelse för "+streetName+" har lagts till i Google Calendar!")
   });
+  
+}else{
+  alert("Du måste vara inloggad för att kunna lägga till en påminnelse i Google Calendar!")
+}
 }

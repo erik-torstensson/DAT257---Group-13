@@ -203,13 +203,10 @@ function createInfoContent(parking, ChangePark, i) {
 // Add a button to add parking reminder to GOOGLE CALENDAR
   if(parking.timeLeft < 20160){
     contentString +=
-        "<button onclick='createAnEvent("+'"'+calendarEventTime(parking.timeLeft) +'"'+ ", "
+        "<button onclick='createGoogleEvent("+'"'+calendarEventTime(parking.timeLeft) +'"'+ ", "
         +'"'+ calendarEventTime(parking.timeLeft+60) +'"'+ ", " + parking.info.x +", "
         + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
         +'"'+ parking.info.streetName +'"'+ ")'> Google! </button>";
-  }else{
-    contentString +=
-        "<button disabled> Google! </button>";
   }
 // Add a button to add parking reminder to OUTLOOK CALENDAR
 // Due to problems with timezones; added 120 to get to right timezone.
@@ -219,9 +216,6 @@ if(parking.timeLeft < 20160){ //20160min = Two weeks
       +'"'+ calendarEventTime(parking.timeLeft+60+120) +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
       + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
       +'"'+ parking.info.oddEven +'"'+ ")'> Outlook! </button>";
- }else{
-  contentString +=
-      "<button disabled> Outlook! </button>";
  }
 
 
