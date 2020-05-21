@@ -186,13 +186,13 @@ function createInfoContent(parking, ChangePark, i) {
                         'max 14 dygn ' +
                      '</div>';
   } else {
-    contentString += minutesToReadableTime(parking.timeLeft); //time left info
+    contentString += createHTMLForCleaningOrNightParking(parking); //time left info
   }
 
 
   /*
    * Lets have this as a comment until the new button is implemented
-   * it's easier to see how the info window will look like :) 
+   * it's easier to see how the info window will look like :)
   if (ChangePark){
     contentString += "<h3>Den närmsta lediga parkering finns på " +
     residentialParkingWithCleaning[closestPark(i)].info.streetName + "</h3>";

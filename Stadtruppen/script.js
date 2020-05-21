@@ -177,30 +177,69 @@ function getJsonResponse(url) {
 //-----END: feature-SeePublicHoldiays-------//
 
 
-//-----START: Turn minutes to readable time-------//
-function minutesToReadableTime(i){
-  /*the input i is how many minutes to turn into a more readable format
-    the function takes a number of minutes into input and turns it into
-    a number of days hours and minutes.
-  */
-  var left = i%1440;
-  var days = (i-left)/1440;
-  i = left;
-  left = left%60;
-  var hours = (i-left)/60;
-  i=left;
-  left = left % 1;
-  var mins = i-left; //remove decimals
 
+
+function hrsMinsSecsFrDate(date_future){
+  /*copied from stackoverflow, return an object with remaining time until
+  the input date.*/
+  date_now = new Date(Date.now());
+
+  // get total seconds between the times
+  var delta = Math.abs(date_future - date_now) / 1000;
+
+  // calculate (and subtract) whole days
+  var days = Math.floor(delta / 86400);
+  delta -= days * 86400;
+
+  // calculate (and subtract) whole hours
+  var hours = Math.floor(delta / 3600) % 24;
+  delta -= hours * 3600;
+
+  // calculate (and subtract) whole minutes
+  var minutes = Math.floor(delta / 60) % 60;
+  delta -= minutes * 60;
+
+  // what's left is seconds
+  var seconds = (delta % 60);  // in theory the modulus is not required
+
+  var timeLeftObj = {
+    days: days,
+    hours: hours,
+    minutes: minutes,
+    seconds: seconds
+  };
+  return timeLeftObj;
+}
+
+function getMovingDate(parking){
+  /* Returns a date, when it's time to move your vehicle.
+  Assume its either a cleaning day or night parking */
   var today = new Date(Date.now());
-  var movingDay = new Date(Date.now()); //TODO: moving date is already in parking object? don't need to do this way i think.
-  movingDay.setDate(today.getDate()+days);
-  movingDay.setHours(today.getHours()+hours);
-  movingDay.setMinutes(today.getMinutes()+parseInt(left));
-  movingDay.setSeconds(60); //why?
+  var movingDay;
 
+  if(parking.info.startTime != undefined){ //is there a cleaning restriction some day?
+    movingDay = new Date(parking.info.startTime);
+  }
+  if(parking.night_parking == true){
+    var movingDayNight = timeToLeaveNightParking(today);
+
+    if (parking.info.startTime === undefined || movingDayNight < movingDay){ //if night parking is before next cleaning or no cleaning
+      movingDay = movingDayNight;
+    }
+  }
+  return movingDay;
+}
+
+
+
+function createHTMLForCleaningOrNightParking(parking){
+  /*Creates HTML in string format for google maps info window. Assumes
+  that the parking is either night parking or have a cleaning day.
+  */
+  var movingDay = getMovingDate(parking)
   var movingDate = movingDay.toLocaleDateString(); //YYYY-MM-DD
   var movingTime = movingDay.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); //HH:MM (not seconds)
+
 
   var movingDayText = '<div class="info_bottom_inner">'; //container for info
       movingDayText +=  '<h3 style="color:green;">' +
@@ -216,21 +255,24 @@ function minutesToReadableTime(i){
     movingDayText +=      '<b>' + movingDate +"  "+ movingTime + '</b>';
   }
 
-  // Time left in days, hours and minutes
-  if(days == 0){ //if yellow parking, make yellow "time-left"-text
-  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: #d8a700;">' + hours + 'h ' + mins +'min </p>';
-  } else { //if green parking
-  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: green;">' + days +' dagar '+ hours + 'h ' + mins +'min </p>';
-  }
 
+  var timeToMovingDay = hrsMinsSecsFrDate(movingDay);
+
+  // Time left in days, hours and minutes
+  if(timeToMovingDay.days == 0){ //if yellow parking, make yellow "time-left"-text
+  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: #d8a700;">' + timeToMovingDay.hours + 'h ' + timeToMovingDay.minutes +'min </p>';
+  } else { //if green parking
+  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: green;">' + timeToMovingDay.days +' dagar '+ timeToMovingDay.hours + 'h ' + timeToMovingDay.minutes +'min </p>';
+  }
   movingDayText +=    '</div>'; //end : div#info_bottom_inner
+
+  //console.log(movingDay,parking,timeToMovingDay); //control if movingDay is same as in object
   return movingDayText;
 }
 
-//-----END: Turn minutes to readable time-------//
 
 
-//-----START: Constructing array with complete parking information-------//
+
 
 var residentialParkingWithCleaning = fetchResidentialParkingInfo();
 
@@ -446,7 +488,8 @@ function search() {
     if (input === gata) {
       var info = residentialParkingWithCleaning[i];
       activeCleaningInfo.push(info);
-      console.log(activeCleaningInfo[0].timeLeft);
+      //console.log(residentialParkingWithCleaning[i]);
+      //console.log(activeCleaningInfo[0].timeLeft);
     }
   }
 
