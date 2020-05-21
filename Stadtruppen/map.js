@@ -4,6 +4,10 @@ var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
+const USER_ICON = "Resources/currentLocation_icon.png"
+const NAVIGATION_ICON = "Resources/navigation_icon.png"
+const NIGHT_ICON = "Resources/nighticon.png"
+
 const CLUSTER_OPTIONS = { //The different cluster icons
   styles: [{
       height: 32,
@@ -84,7 +88,9 @@ function initGothenburgMap(parkingsList) {
     });
     //console.log(map.getCenter().toString());
     addMarkersFromParkingList(parkingsList);
-    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer 
+    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer
+    putUserLocOnMap();
+    addNavigationButtonOnMap();
   };
 }
 
@@ -92,18 +98,11 @@ function initGothenburgMap(parkingsList) {
 function addMarkersFromParkingList(parkingsList){
   var bounds = new google.maps.LatLngBounds(); //bounds: for auto-center and auto-zoom
   var InfoObj = []; // empty array for info window
-
+  var ChangePark;
+  var icon;
   for (var i = 0; i < parkingsList.length; i++) {
-    var icon;
-    if(parkingsList[i].timeLeft > 1440){
-        icon = GREEN_PARKING
-      // YELLOW Move care within 24 hours YELLOW
-    }else if(parkingsList[i].timeLeft > 30) {
-        icon= YELLOW_PARKING
-      // RED Illegal parking
-      }else {
-        icon = RED_PARKING
-      }
+    icon = getMarkerIcon(i);
+    ChangePark = !isGreenPark(i);
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(
         parkingsList[i].info.x,
@@ -114,7 +113,7 @@ function addMarkersFromParkingList(parkingsList){
     });
 
 
-    var infoContent = createInfoContent(parkingsList[i]);
+    var infoContent = createInfoContent(parkingsList[i], ChangePark, i);
 
     const infowindow = new google.maps.InfoWindow({
       content: infoContent,
@@ -125,7 +124,6 @@ function addMarkersFromParkingList(parkingsList){
       closeOtherInfo(InfoObj);
       infowindow.open(this.get('map'), this);
       InfoObj[0] = infowindow;
-      map.setZoom(17);
       map.setCenter(this.getPosition());
     });
     visibleMarkers.push(marker);
@@ -135,22 +133,75 @@ function addMarkersFromParkingList(parkingsList){
   map.fitBounds(bounds);   // auto-zoom
   map.panToBounds(bounds); // auto-center
 }
+//Returns which icon the marker will have based on the availablity
+function getMarkerIcon(i){
+    if(isGreenPark(i)){
+        return GREEN_PARKING;
+    }else if(isYellowPark(i)) {
+        return YELLOW_PARKING;
+    }
+    return RED_PARKING;// RED Illegal parking
+}
+//Check if the park is available for more than 24 hours. Green
+function isGreenPark(i){
+  return residentialParkingWithCleaning[i].timeLeft > 1440;
+}
+//Check if the park is available for more than 30 minutes. Yellow
+function isYellowPark(i){
+  return residentialParkingWithCleaning[i].timeLeft > 30;
+}
 
 // This function get the needed information about parking to show it in the pop-up info window
-function createInfoContent(parking) {
-  var contentString;
-  contentString = '<h1>' + parking.info.streetName + '</h1>' +
-  '<h3>Zone: ' + parking.code_resPark +
-  '</h3>' + minutesToReadableTime(parking.timeLeft)  +
-  '<h3>Antal platser: ' + parking.numOfPlaces + '</h3>';
-  if(parking.night_parking == true){
-    contentString += "<h3>Det här är en natt parkering</h3>"
-  }else{
-    contentString += "<h3>Det här är inte en natt parkering</h3>"
+
+
+function createInfoContent(parking, ChangePark, i) {
+  var contentString = '<div id="content_infowindow">'; //container for all content in infowindow
+  contentString +=        '<div id="street-name-div">' + parking.info.streetName + '</div>';
+
+  if(parking.night_parking == true){ //add night icon to header_container
+    contentString += '<div class="nightParking-flex-box"> ';
+    contentString +=    '<img id="night_img" src="' + NIGHT_ICON +'" alt="night_parking">';
+    contentString +=    '  Nattparkering </div>';
   }
 
-  // Add a button to add parking reminder to GOOGLE CALENDAR
-  if(parking.timeLeft < 20160){ //20160min = Two weeks
+  contentString +=      '<hr class=' + get_hr_StyleClass(parking) +'>'; //horizontal line under street name
+
+  contentString +=      '<div class="info-top"> '; //container for zone and nr of parkings
+  contentString +=          '<b> Zon: ' + '</b> ' + parking.code_resPark +'<br>' ; //Zone
+  contentString +=          '<b> Antal platser: </b>' + parking.numOfPlaces ; //antal platser
+  contentString +=      '</div>'; //end:info_top
+
+
+  //Parking not allowed (red parking)
+  if(parking.timeLeft == 0){
+    contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
+                    '<div>' + '<b> Förbudet upphör: <b> <br>' +
+                    'X' + 'dagar ' +'X'+'h ' +'X'+'min'+ //put in real nr as X,X,X
+                    '</div>';
+  }else if(parking.timeLeft > (60*24*365)){
+  //more than a year, always ok to park but maximum 14 days
+    contentString += '<h3 style = "color : green; margin-block-end: 0.2em;">'+
+                        'Parkering alltid tillåten!' +
+                     '</h3>' +
+
+                     '<div style="text-align: center; margin-top:5px;"> '+
+                        'max 14 dygn ' +
+                     '</div>';
+  } else {
+    contentString += minutesToReadableTime(parking.timeLeft); //time left info
+  }
+
+
+  /*
+   * Lets have this as a comment until the new button is implemented
+   * it's easier to see how the info window will look like :) 
+  if (ChangePark){
+    contentString += "<h3>Den närmsta lediga parkering finns på " +
+    residentialParkingWithCleaning[closestPark(i)].info.streetName + "</h3>";
+  }
+  */
+// Add a button to add parking reminder to GOOGLE CALENDAR
+  if(parking.timeLeft < 20160){
     contentString +=
         "<button onclick='createAnEvent("+'"'+calendarEventTime(parking.timeLeft) +'"'+ ", "
         +'"'+ calendarEventTime(parking.timeLeft+60) +'"'+ ", " + parking.info.x +", "
@@ -174,6 +225,8 @@ if(parking.timeLeft < 20160){ //20160min = Two weeks
  }
 
 
+  contentString += '</div>'; //end content_infowindow
+
   return contentString;
 }
 
@@ -195,4 +248,107 @@ function clearAllMarkers(){
     marker.setMap(null);
   }
   visibleMarkers=[]; //make the global array empty
+}
+
+
+//A function that calculates the distance with each parking to find the closeset one.
+function closestPark(parkIndex){
+  var x = residentialParkingWithCleaning[parkIndex].info.x;
+  var y = residentialParkingWithCleaning[parkIndex].info.y;
+  var dist = 1e100;
+  var index;
+  for(i = 0; i < residentialParkingWithCleaning.length; i++){
+    if (parkIndex == i){
+      continue;
+    }
+    var x1 = residentialParkingWithCleaning[i].info.x;
+    var y1 = residentialParkingWithCleaning[i].info.y;
+    var newDist = Math.sqrt((x-x1)**2+(y-y1)**2);
+    if (newDist < dist && residentialParkingWithCleaning[i].timeLeft > 1440){
+      dist = newDist;
+      index = i;
+    }
+  }
+  return index;
+}
+
+/*
+adds a location-marker at (lat,long) on the map.
+if it already exist an old marker, it will remove this one first.
+*/
+function addGeolocMarker(lat,long){
+  if(typeof(userLocationMarker)!= 'undefined' ){ //if userLocationMarker exists as object
+    userLocationMarker.setMap(null); //remove old marker
+    console.log('removed old marker');
+  }
+
+  var icon = {
+        url: USER_ICON, // url
+        scaledSize: new google.maps.Size(80, 80) // size
+    };
+  var marker = new google.maps.Marker({
+    position: new google.maps.LatLng(lat, long),
+    map: map,
+    title: 'your location',
+    icon: icon
+  });
+  userLocationMarker = marker;
+}
+
+/*
+gets geolocation and adds a marker at that position. If this functions is
+called more than one, it will also remove the old position, if the user has
+moved
+*/
+function putUserLocOnMap(){
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        var lat = position.coords.latitude;
+        var long = position.coords.longitude;
+        addGeolocMarker(lat,long);
+      },
+          function errorCallback(error) {
+              console.log('some error with getCurrentPosition');
+              console.log(error);
+          },
+          {
+              maximumAge:Infinity,
+              timeout:12000 //time until error message if position is not found happens
+          }
+      );
+  }
+
+/*
+adds a "update user location" button/control on the map.
+on click: it updates the user location and adds a new marker at the position.
+*/
+  function addNavigationButtonOnMap(){
+    var controlDiv = document.createElement('div');
+    var img = document.createElement('img');
+    img.id="navigationImgButton";
+    img.src=NAVIGATION_ICON;
+    img.alt = "navigation icon"
+    controlDiv.appendChild(img);
+
+    img.addEventListener('click', function() {
+          putUserLocOnMap();
+        });
+
+    controlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlDiv);
+  }
+
+
+  /*returns string (inside a string) of style class on horisontal line, which
+is shown in the markers info window (pop up window).*/
+function get_hr_StyleClass(parking){
+  if(parking.timeLeft > 1440){//one day
+    return '"iw_line_green"'; //green style class
+  }
+  else if(parking.timeLeft > 30){ //more than 30 min, but less than 24hrs
+    return '"iw_line_yellow"';
+  }
+  else { //less than 30 min
+    return '"iw_line_red"';
+  }
 }

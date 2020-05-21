@@ -72,7 +72,66 @@ Läsa på om hur man på ett snyggt sätt kan använda ”The sprint burn down c
 
 Week 4: 27/4 - 3/5
 
-I annat dokument
+What is:
+Under denna vecka har arbetet gått framåt i ett relativt bra tempo. Vi upplevde dock att vi saknade struktur och lämpliga KPI:er, så under denna
+vecka införde vi ett rullande system där vi tillsätter en ny scrum-master varje vecka som får i uppdrag att strukturera möten
+samt hållar koll på KPI:erna. Något vi började fundera på var nya KPI:er, men än så länge har vi endast nyttjat en av KPI:erna, stress.
+Vilket vi anser är en bra indikation på vårat workload, och se om det är hållbart i längden, men också som en diskussionspunkt under mötena
+där vi ser om gruppmedlemmarna har andra engagemang som gör att de känner sig stressade och därefter anpassa arbetsbördan. 
+
+What might or should be:
+
+Det som vi behöver jobba på är användandet av KPI:erna, möjligtvis något sätt att visualiesra på något snyggt sätt så vi kan se utvecklingen under arbetes gång.
+Vi behöver ta fram en KPI som behandlar kvalité och börja vår skissade velocity kpi...
+
+
+Feedback Designed to reduce the gap:
+Vi ska läsa på och fråga handledare om tips gällande detta. 
+Annars tycker jag att samarbetet fungerar rätt bra, något som skulle vara schysst är att lägga till ännu ett standup-eeting någon gång under veckan.
+För att få koll på hur det går för de andra och se till så att estimeringarna under startandet av sprinten var rimliga. 
+
 
 Week 5: 4/5 - 10/5
 
+What is:
+
+Arbetet har gått framåt denna vecka som vanligt. Jag har delvis kunnat fokusera på arbetet, har haft relativt mycket att göra i kandidatarbetet och
+känner på mig att det kommer att bli ännu mer under kommande vecka då inlämning är nästa vecka. Under veckan jobbade jag (och andra) med att formatera koden
+och ändra så vi får en snyggare struktur på koden, separerade funktionerna så det blir lättare att lägga till och först den. Utöver detta
+började jag(och andra) att försöka implemtera outlook-api:n i vår applikation. Vi samarbetar väl och vi hjälper varandra rätt bra
+när problem tas upp under standup-mötena.
+
+Under fredagen hade vi möte med en av våra "stake holders" som tipsade oss att göra en kundundersökning, för att få bättre input i vilka
+funktiner som ska implementeras i produkten. 
+
+Under slutet av sprinten så låg stor del arbetet kvar i "In review", trots att de var klara. Vi behöver införa ett bättre system för reviews.
+Trots att vi redan innan tagit fram en review-checklist i sambande med den nya KPI:n gällande kvalitén. 
+
+Vid utformandet av den nya sprinten tog vi hänsyn till KPI:en från förra veckan, stress men även velocityn. Vi försökte anpassa tempo
+så att det arbetsbördan var rimlig. 
+
+
+What might or should be:
+
+Behöver ta fram en kundundersökning. Dock finns det problem med att ingen av oss direkt känner personer som har boendeparkering i göteborg...
+Nytt system för reviews.
+
+Feedback to reduce the gap:
+
+Vi behöver lägga mer tid på reviews. Vi införde att man sätter två personer som får huvudsakligt ansvar för att reviewa kod. Annars
+så är det lätt att det faller mellan stolarna om det är ett kollektivt ansvar. 
+
+Week 6: 11/5 - 17/5
+
+What is:
+Under denna vecka fortsatte arbetet med att implementera outlook i produkten, då vi blev påminnda av vår stakeholder att många använder
+outlook via arbetet och det finns därmed rätt många som hade uppskattat att det fanns till både google calendar och outlook. 
+Vi har även genomfört en kundundersökning, vi har dock inte analyserat resultatet ännu..........
+
+KPI To be contiuned....
+
+What might or should be:
+
+Feedback to reduce the gap:
+
+TODO nästa vecka. Dela upp oss, vissa jobbar vidare med GUI och andra börjar behandla rapporten...
