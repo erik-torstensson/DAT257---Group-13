@@ -28,8 +28,7 @@ const CLUSTER_OPTIONS = { //The different cluster icons
 
 //reset the map
 function resetMap() {
-  initGoogleMaps();
-  script.initGothenburgMap(residentialParkingWithCleaning);
+  addMarkersFromParkingList(residentialParkingWithCleaning);
 }
 
 function initGoogleMaps() {
