@@ -152,6 +152,8 @@ function isYellowPark(i){
 }
 
 // This function get the needed information about parking to show it in the pop-up info window
+
+
 function createInfoContent(parking, ChangePark, i) {
   var contentString = '<div id="content_infowindow">'; //container for all content in infowindow
   contentString +=        '<div id="street-name-div">' + parking.info.streetName + '</div>';
@@ -198,17 +200,30 @@ function createInfoContent(parking, ChangePark, i) {
     residentialParkingWithCleaning[closestPark(i)].info.streetName + "</h3>";
   }
   */
-  // Add a button to createAnEvent
-  if(parking.info.startTime != null){
+// Add a button to add parking reminder to GOOGLE CALENDAR
+  if(parking.timeLeft < 20160){
     contentString +=
-        "<button onclick='createAnEvent("+'"'+parking.info.startTime +'"'+ ", "
-        +'"'+ parking.info.endTime +'"'+ ", " + parking.info.x +", "
+        "<button onclick='createAnEvent("+'"'+calendarEventTime(parking.timeLeft) +'"'+ ", "
+        +'"'+ calendarEventTime(parking.timeLeft+60) +'"'+ ", " + parking.info.x +", "
         + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
-        +'"'+ parking.info.oddEven +'"'+ ")'> Lägg till! </button>";
+        +'"'+ parking.info.streetName +'"'+ ")'> Google! </button>";
   }else{
     contentString +=
-        "<button disabled> Lägg till! </button>";
+        "<button disabled> Google! </button>";
   }
+// Add a button to add parking reminder to OUTLOOK CALENDAR
+// Due to problems with timezones; added 120 to get to right timezone.
+if(parking.timeLeft < 20160){ //20160min = Two weeks
+  contentString +=
+      "<button onclick='createOutlookEvent("+'"'+calendarEventTime(parking.timeLeft+120) +'"'+ ", "
+      +'"'+ calendarEventTime(parking.timeLeft+60+120) +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
+      + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
+      +'"'+ parking.info.oddEven +'"'+ ")'> Outlook! </button>";
+ }else{
+  contentString +=
+      "<button disabled> Outlook! </button>";
+ }
+
 
   contentString += '</div>'; //end content_infowindow
 

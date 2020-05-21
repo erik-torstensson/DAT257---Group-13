@@ -89,14 +89,15 @@ function appendPre(message) {
 }
 
 /*
-      Creating an event and insert it into to primary (logged in) user.
-      */
+      Creating an event and insert it into to primary (logged in) Google user.
+*/
 
-function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
+function createAnEvent(startTime, endTime, x, y, endDate, streetName) {
+
   var event = {
-    summary: document.Input["Gatunamn"].value,
+    summary: streetName,
     location: x + ", " + y,
-    description: ":-)",
+    description: "Parking reminder",
     start: {
       dateTime: startTime,
       timeZone: "Europe/Amsterdam"
@@ -106,11 +107,7 @@ function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
       timeZone: "Europe/Amsterdam"
     },
     recurrence: [
-      "RRULE:FREQ=WEEKLY;INTERVAL=" + oddEven + ";WKST=SU;UNTIL=" + endDate
     ],
-    /*'attendees': [
-          {'email': 'erikt1234567@gmail.com'},
-        ],*/
     reminders: {
       useDefault: false,
       overrides: [
@@ -124,7 +121,6 @@ function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
     calendarId: "primary",
     resource: event
   });
-  //console.log(request.created!=null);
   request.execute(function(event) {
     appendPre("Lagt till i kalendern! Länk: " + event.htmlLink);
   });
