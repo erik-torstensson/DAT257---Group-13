@@ -12,10 +12,12 @@ const NIGHT_ICON = "Resources/nighticon.png"
 
 const CLUSTER_OPTIONS = { //The different cluster icons
   styles: [{
-      height: 32,
-      url: "Resources/m1.png",
-      width: 32
-  }]
+      height: 40,
+      url: "Resources/clusterIcon.png",
+      width: 40
+  }],
+  gridSize: 55,
+  minimumClusterSize: 3 
 }
 
 //reset the map
