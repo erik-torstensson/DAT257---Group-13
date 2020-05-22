@@ -194,7 +194,7 @@ function createInfoContent(parking, ChangePark, i) {
 
   /*
    * Lets have this as a comment until the new button is implemented
-   * it's easier to see how the info window will look like :) 
+   * it's easier to see how the info window will look like :)
   if (ChangePark){
     contentString += "<h3>Den närmsta lediga parkering finns på " +
     residentialParkingWithCleaning[closestPark(i)].info.streetName + "</h3>";
@@ -266,6 +266,8 @@ function closestPark(parkIndex){
   return index;
 }
 
+var userLocationMarker;
+
 /*
 adds a location-marker at (lat,long) on the map.
 if it already exist an old marker, it will remove this one first.
@@ -278,7 +280,8 @@ function addGeolocMarker(lat,long){
 
   var icon = {
         url: USER_ICON, // url
-        scaledSize: new google.maps.Size(80, 80) // size
+        scaledSize: new google.maps.Size(80, 80), // size
+        anchor: new google.maps.Point(40,40) //anchorpoint in middle of img
     };
   var marker = new google.maps.Marker({
     position: new google.maps.LatLng(lat, long),
@@ -324,8 +327,9 @@ on click: it updates the user location and adds a new marker at the position.
     img.alt = "navigation icon"
     controlDiv.appendChild(img);
 
-    img.addEventListener('click', function() {
+    img.addEventListener('click', function() { //Action Listener for Navigation Button
           putUserLocOnMap();
+          zoomInOnUser();
         });
 
     controlDiv.index = 1;
@@ -344,5 +348,12 @@ function get_hr_StyleClass(parking){
   }
   else { //less than 30 min
     return '"iw_line_red"';
+  }
+}
+
+function zoomInOnUser(){
+  if(userLocationMarker != undefined){
+    map.setCenter(userLocationMarker.position);
+    map.setZoom(16);
   }
 }
