@@ -475,7 +475,7 @@ function search() {
     }
   }
 
-  clearAllMarkers();
+  clearAllMarkersAndClusters();
   addMarkersFromParkingList(activeCleaningInfo);
 
   if (activeCleaningInfo.length <= 0) {
