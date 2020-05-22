@@ -48,17 +48,22 @@ function initClient() {
 /**
  *   Information about the signed in user.
  */
+var googleSignedIn = false;
 function onSignIn(googleUser) {
   var profile = googleUser.getBasicProfile();
   console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
   console.log("Name: " + profile.getName());
   console.log("Image URL: " + profile.getImageUrl());
   console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
+  googleSignedIn = true;
+  gDisappear();
 }
 function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   auth2.signOut().then(function() {
     console.log("User signed out.");
+    googleSignedIn = false;
+    gAppear();
   });
 }
 
@@ -89,14 +94,15 @@ function appendPre(message) {
 }
 
 /*
-      Creating an event and insert it into to primary (logged in) user.
-      */
+      Creating an event and insert it into to primary (logged in) Google user.
+*/
 
-function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
+function createGoogleEvent(startTime, endTime, x, y, endDate, streetName) {
+if(googleSignedIn){
   var event = {
-    summary: document.Input["Gatunamn"].value,
+    summary: streetName,
     location: x + ", " + y,
-    description: ":-)",
+    description: "Parking reminder",
     start: {
       dateTime: startTime,
       timeZone: "Europe/Amsterdam"
@@ -106,11 +112,7 @@ function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
       timeZone: "Europe/Amsterdam"
     },
     recurrence: [
-      "RRULE:FREQ=WEEKLY;INTERVAL=" + oddEven + ";WKST=SU;UNTIL=" + endDate
     ],
-    /*'attendees': [
-          {'email': 'erikt1234567@gmail.com'},
-        ],*/
     reminders: {
       useDefault: false,
       overrides: [
@@ -124,8 +126,11 @@ function createAnEvent(startTime, endTime, x, y, endDate, oddEven) {
     calendarId: "primary",
     resource: event
   });
-  //console.log(request.created!=null);
   request.execute(function(event) {
-    appendPre("Lagt till i kalendern! Länk: " + event.htmlLink);
+    alert("Påminnelse för "+streetName+" har lagts till i Google Calendar!")
   });
+  
+}else{
+  alert("Du måste vara inloggad för att kunna lägga till en påminnelse i Google Calendar!")
+}
 }

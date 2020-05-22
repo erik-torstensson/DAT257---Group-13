@@ -25,6 +25,33 @@
   <script src="jQuery.js"></script>
   <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
   <script src="test.js" defer></script>
+  <!-- IMPORTS TO FIX OUTLOOK-->
+   <!-- Bootstrap/jQuery -->
+   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+   integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+   crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+   integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+   crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+   integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+   crossorigin="anonymous"></script>
+
+  <!-- Moment.js -->
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
+
+  <!-- MSAL -->
+  <script src="https://cdn.jsdelivr.net/npm/bluebird@3.7.2/js/browser/bluebird.min.js"></script>
+  <script src="https://alcdn.msftauth.net/lib/1.2.1/js/msal.js"
+   integrity="sha384-9TV1245fz+BaI+VvCjMYL0YDMElLBwNS84v3mY57pXNOt6xcUYch2QLImaTahcOP"
+   crossorigin="anonymous"></script>
+
+  <!-- Graph SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@microsoft/microsoft-graph-client/lib/graph-js-sdk.js"></script>
+
+  <script src="MSconfig.js" defer></script>
+  <script src="MSauth.js" defer></script>
+  <script src="MSgraph.js" defer></script>
 
 
   <script
@@ -69,8 +96,8 @@
   <option value="Ä">Ä
   <option value="Ö">Ö
 </select>
-<!-- Drop down for the rates, selecting one will call the addMarkersFromParkingList using this rate and the previously selected zone -->
-<select id="dropDownRate" onchange="addMarkersFromParkingList(getParkingsInZoneWithSameTariff(document.getElementById('dropDownZone').value, this.value))" disabled="true">
+<!-- Drop down for the rates, selecting one will clear all markers and clusters and then call the addMarkersFromParkingList using this rate and the previously selected zone -->
+<select id="dropDownRate" onchange="clearAllMarkersAndClusters();addMarkersFromParkingList(getParkingsInZoneWithSameTariff(document.getElementById('dropDownZone').value, this.value))" disabled="true">
   <option disabled selected value> -- Välj taxa -- </option>
   <option value="4">4
   <option value="5">5
@@ -103,22 +130,20 @@
         data-theme="dark"
         style="position:fixed;top:20px;right:20px; "
 ></div>
-<div
-        id="signout"
-        class="g-signout2"
-        data-onsuccess="signOut"
-        style="position:fixed;top:60px;right:20px; "
-></div>
-<a href="#" onclick="signOut();" style="position:fixed;top:60px;right:20px;"
->Sign out</a
->
-
+<input
+        type="button"
+        value= "Google Sign out"
+        onclick="signOut(), gAppear()"
+        id="gSignOut"
+        style="position:fixed;top:20px;right:20px;visibility:hidden;"
+/>
+<!--
 <input
         type="button"
         value="Cleaning Data"
         onclick="CleaningData()"
         id="Button"
-        style="position:fixed;top:80px;right:20px;"
+        style="position:fixed;top:100px;right:20px;"
 />
 
   <input
@@ -126,8 +151,34 @@
         value="Residential Data"
         onclick="ResidentialData()"
         id="Button2"
-        style="position:fixed;top:120px;right:20px;"
+        style="position:fixed;top:140px;right:20px;"
 />
+-->
+
+  <input
+  type="button"
+  value="Outlook Sign in"
+  onclick="signIn()"
+  id="OSI"
+  style="position:fixed;top:70px;right:20px;"
+/>
+<input
+        type="button"
+        value="Outlook Sign out"
+        onclick="outlookSignOut()"
+        id="OSO"
+        style="position:fixed;top:70px;right:20px; visibility:hidden;"
+/>
+<!--
+
+<input
+        type="button"
+        value="test event"
+        onclick="createOutlookEvent()"
+        id="Button2"
+        style="position:fixed;top:240px;right:20px;"
+/>
+-->
 
 <div id="test"> test</div>
 

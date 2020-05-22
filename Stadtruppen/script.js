@@ -177,30 +177,69 @@ function getJsonResponse(url) {
 //-----END: feature-SeePublicHoldiays-------//
 
 
-//-----START: Turn minutes to readable time-------//
-function minutesToReadableTime(i){
-  /*the input i is how many minutes to turn into a more readable format
-    the function takes a number of minutes into input and turns it into
-    a number of days hours and minutes.
-  */
-  var left = i%1440;
-  var days = (i-left)/1440;
-  i = left;
-  left = left%60;
-  var hours = (i-left)/60;
-  i=left;
-  left = left % 1;
-  var mins = i-left; //remove decimals
 
+
+function hrsMinsSecsFrDate(date_future){
+  /*copied from stackoverflow, return an object with remaining time until
+  the input date.*/
+  date_now = new Date(Date.now());
+
+  // get total seconds between the times
+  var delta = Math.abs(date_future - date_now) / 1000;
+
+  // calculate (and subtract) whole days
+  var days = Math.floor(delta / 86400);
+  delta -= days * 86400;
+
+  // calculate (and subtract) whole hours
+  var hours = Math.floor(delta / 3600) % 24;
+  delta -= hours * 3600;
+
+  // calculate (and subtract) whole minutes
+  var minutes = Math.floor(delta / 60) % 60;
+  delta -= minutes * 60;
+
+  // what's left is seconds
+  var seconds = (delta % 60);  // in theory the modulus is not required
+
+  var timeLeftObj = {
+    days: days,
+    hours: hours,
+    minutes: minutes,
+    seconds: seconds
+  };
+  return timeLeftObj;
+}
+
+function getMovingDate(parking){
+  /* Returns a date, when it's time to move your vehicle.
+  Assume its either a cleaning day or night parking */
   var today = new Date(Date.now());
-  var movingDay = new Date(Date.now()); //TODO: moving date is already in parking object? don't need to do this way i think.
-  movingDay.setDate(today.getDate()+days);
-  movingDay.setHours(today.getHours()+hours);
-  movingDay.setMinutes(today.getMinutes()+parseInt(left));
-  movingDay.setSeconds(60); //why?
+  var movingDay;
 
+  if(parking.info.startTime != undefined){ //is there a cleaning restriction some day?
+    movingDay = new Date(parking.info.startTime);
+  }
+  if(parking.night_parking == true){
+    var movingDayNight = timeToLeaveNightParking(today);
+
+    if (parking.info.startTime === undefined || movingDayNight < movingDay){ //if night parking is before next cleaning or no cleaning
+      movingDay = movingDayNight;
+    }
+  }
+  return movingDay;
+}
+
+
+
+function createHTMLForCleaningOrNightParking(parking){
+  /*Creates HTML in string format for google maps info window. Assumes
+  that the parking is either night parking or have a cleaning day.
+  */
+  var movingDay = getMovingDate(parking)
   var movingDate = movingDay.toLocaleDateString(); //YYYY-MM-DD
   var movingTime = movingDay.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); //HH:MM (not seconds)
+
 
   var movingDayText = '<div class="info_bottom_inner">'; //container for info
       movingDayText +=  '<h3 style="color:green;">' +
@@ -216,21 +255,49 @@ function minutesToReadableTime(i){
     movingDayText +=      '<b>' + movingDate +"  "+ movingTime + '</b>';
   }
 
-  // Time left in days, hours and minutes
-  if(days == 0){ //if yellow parking, make yellow "time-left"-text
-  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: #d8a700;">' + hours + 'h ' + mins +'min </p>';
-  } else { //if green parking
-  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: green;">' + days +' dagar '+ hours + 'h ' + mins +'min </p>';
-  }
 
+  var timeToMovingDay = hrsMinsSecsFrDate(movingDay);
+
+  // Time left in days, hours and minutes
+  if(timeToMovingDay.days == 0){ //if yellow parking, make yellow "time-left"-text
+  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: #d8a700;">' + timeToMovingDay.hours + 'h ' + timeToMovingDay.minutes +'min </p>';
+  } else { //if green parking
+  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: green;">' + timeToMovingDay.days +' dagar '+ timeToMovingDay.hours + 'h ' + timeToMovingDay.minutes +'min </p>';
+  }
   movingDayText +=    '</div>'; //end : div#info_bottom_inner
+
+  //console.log(movingDay,parking,timeToMovingDay); //control if movingDay is same as in object
   return movingDayText;
+}
+
+
+//-----START: TURNING MINUTES UNTIL LEAVE INTO CORRECT FORMAT FOR CALENDAR-------//
+function calendarEventTime(i){
+  /*The input i is how many minutes to turn into a format that the calendar functions accept.
+    The function takes a number of minutes into input and turns it into 
+    a number of days hours and minutes. 
+  */
+  var left = i%1440
+  var days = (i-left)/1440; 
+  i = left;
+  left = left%60;
+  var hours = (i-left)/60;
+
+  var today = new Date(Date.now());
+  today.setDate(today.getDate()+days);  
+  today.setHours(today.getHours()+hours);
+  today.setMinutes(today.getMinutes()+parseInt(left)+120);
+  today.setSeconds(60);
+
+  var temp = today.toISOString();
+  var res = temp.substring(0,19);
+  return res;
 }
 
 //-----END: Turn minutes to readable time-------//
 
 
-//-----START: Constructing array with complete parking information-------//
+
 
 var residentialParkingWithCleaning = fetchResidentialParkingInfo();
 
@@ -446,62 +513,20 @@ function search() {
     if (input === gata) {
       var info = residentialParkingWithCleaning[i];
       activeCleaningInfo.push(info);
-      console.log(activeCleaningInfo[0].timeLeft);
+      //console.log(residentialParkingWithCleaning[i]);
+      //console.log(activeCleaningInfo[0].timeLeft);
     }
   }
 
-  clearAllMarkers();
+  clearAllMarkersAndClusters();
   addMarkersFromParkingList(activeCleaningInfo);
 
-  if (activeCleaningInfo.length > 0) {
-    document.getElementById("result").innerHTML += input + " städas:" + "<br>";
-    for (var i = 0; i < activeCleaningInfo.length; i++) {
-      if (activeCleaningInfo[i].info.infoText == null) {
-        document.getElementById("result").innerHTML +=
-          "Boendeparkeringen vid" +
-          " koordinaterna:  " +
-          activeCleaningInfo[i].info.x +
-          ", " +
-          activeCleaningInfo[i].info.y +
-          " städas inte." +
-          "<br><br>";
-      } else {
-        document.getElementById("result").innerHTML +=
-          activeCleaningInfo[i].info.infoText +
-          " Vid koordinaterna:  " +
-          activeCleaningInfo[i].info.x +
-          ", " +
-          activeCleaningInfo[i].info.y;
-
-        // Adding a new button for every coordinate combination on the same street.
-        var inputTag = document.createElement("div");
-        inputTag.innerHTML =
-          "<input type = 'button' value = 'Lägg till!' onClick = 'createAnEvent(activeCleaningInfo[" +
-          i +
-          "].info.startTime, activeCleaningInfo[" +
-          i +
-          "].info.endTime, activeCleaningInfo[" +
-          i +
-          "].info.x, activeCleaningInfo[" +
-          i +
-          "].info.y, activeCleaningInfo[" +
-          i +
-          "].info.endDate, activeCleaningInfo[" +
-          i +
-          "].info.oddEven)'>";
-
-        document.getElementById("result").appendChild(inputTag);
-        document.getElementById("result").innerHTML += "<br>";
-      }
-      /*document.getElementById("result").innerHTML +=
-      "För mer information om din gata kontakta parkering göteborg" + "<br>";*/
-      //document.getElementById("add").style.display = "block";
-    }
-  } else {
+  if (activeCleaningInfo.length <= 0) {
+   
     document.getElementById("result").innerHTML +=
       "" + input + " kan inte hittas i datan." + "<br>";
   }
-  console.log(activeCleaningInfo[0].info.oddEven);
+
   return false;
 }
 
@@ -562,6 +587,36 @@ function ResidentialData() {
   window.open(
     "https://data.goteborg.se/ParkingService/v2.1/ResidentialParkings/{9ed683b1-845e-41d2-bc44-fc871065c08b}?latitude={LATITUDE}&longitude={LONGITUDE}&radius={RADIUS}&format={FORMAT}"
   );
+}
+
+// Outlook sign in button disappears onclick and outlook sign out appears.
+function disappear() {
+  sIn = document.getElementById("OSI");
+  sIn.style.visibility = "hidden";
+  sOut = document.getElementById("OSO");
+  sOut.style.visibility = "visible";
+}
+// Outlook sign out button disappears onclick and outlook sign in appears.
+function appear() {
+  sIn = document.getElementById("OSI");
+  sIn.style.visibility = "visible";
+  sOut = document.getElementById("OSO");
+  sOut.style.visibility = "hidden";
+}
+
+// Google sign in button disappears onclick and Google sign out appears.
+function gDisappear() {
+  sIn = document.getElementById("signin");
+  sIn.style.visibility = "hidden";
+  sOut = document.getElementById("gSignOut");
+  sOut.style.visibility = "visible";
+}
+// Google sign out button disappears onclick and Google sign in appears.
+function gAppear() {
+  sIn = document.getElementById("signin");
+  sIn.style.visibility = "visible";
+  sOut = document.getElementById("gSignOut");
+  sOut.style.visibility = "hidden";
 }
 
 

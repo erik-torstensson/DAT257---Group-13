@@ -344,11 +344,17 @@ button:disabled{
   height: 50px;
   width: 50px;
   border-radius: 50%;
+  margin-right:5px;
 
 }
 
 #navigationImgButton:hover{
   box-shadow: 0 0 3px #ddd;
+}
+
+#navigationImgButton:active{
+  height: 47px;
+  width: 47px;
 }
 
 #night_img{

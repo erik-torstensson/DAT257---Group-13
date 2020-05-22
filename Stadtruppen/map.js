@@ -1,5 +1,6 @@
 //Variables
 var visibleMarkers = []; //global array for visable markers on map
+var markerCluster; //global marker cluster
 var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
@@ -28,8 +29,8 @@ const CLUSTER_OPTIONS = { //The different cluster icons
 
 //reset the map
 function resetMap() {
-  initGoogleMaps();
-  script.initGothenburgMap(residentialParkingWithCleaning);
+  clearAllMarkersAndClusters();
+  addMarkersFromParkingList(residentialParkingWithCleaning);
 }
 
 function initGoogleMaps() {
@@ -89,7 +90,6 @@ function initGothenburgMap(parkingsList) {
     });
     //console.log(map.getCenter().toString());
     addMarkersFromParkingList(parkingsList);
-    var markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating a map clusterer
     putUserLocOnMap();
     addNavigationButtonOnMap();
   };
@@ -128,7 +128,7 @@ function addMarkersFromParkingList(parkingsList){
     visibleMarkers.push(marker);
     bounds.extend(marker.position);  //put this (lat,long) in bounds, for auto-center and auto-zoom
   }
-
+  markerCluster = new MarkerClusterer(map, visibleMarkers, CLUSTER_OPTIONS); //Creating marker clusters
   map.fitBounds(bounds);   // auto-zoom
   map.panToBounds(bounds); // auto-center
 }
@@ -151,6 +151,7 @@ function isYellowPark(i){
 }
 
 // This function get the needed information about parking to show it in the pop-up info window
+
 function createInfoContent(parking) {
   var contentString = '<div id="content_infowindow">'; //container for all content in infowindow
   contentString +=        '<div id="street-name-div">' + parking.info.streetName + '</div>';
@@ -188,23 +189,28 @@ function createInfoContent(parking) {
                         'max 14 dygn ' +
                      '</div>';
   } else {
-    contentString += minutesToReadableTime(parking.timeLeft); //time left info
+    contentString += createHTMLForCleaningOrNightParking(parking); //time left info
   }
 
-  if(parking.info.startTime != null){
+// Add a button to add parking reminder to GOOGLE CALENDAR
+  if(parking.timeLeft < 20160){
     contentString +=
-        "<button onclick='createAnEvent("+'"'+parking.info.startTime +'"'+ ", "
-        +'"'+ parking.info.endTime +'"'+ ", " + parking.info.x +", "
+        "<button onclick='createGoogleEvent("+'"'+calendarEventTime(parking.timeLeft) +'"'+ ", "
+        +'"'+ calendarEventTime(parking.timeLeft+60) +'"'+ ", " + parking.info.x +", "
         + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
-        +'"'+ parking.info.oddEven +'"'+ ")'> Lägg till! </button>";
-  }else{
-    contentString +=
-        "<button disabled> Lägg till! </button>";
+        +'"'+ parking.info.streetName +'"'+ ")'> Google! </button>";
   }
-  if(parking.info.startTime != null){
-    contentString += "<button onclick= 'getCloseParkings("+ '"' + parking + '"' + ")'>hej</button> ";  
-  }
- 
+
+// Add a button to add parking reminder to OUTLOOK CALENDAR
+// Due to problems with timezones; added 120 to get to right timezone.
+if(parking.timeLeft < 20160){ //20160min = Two weeks
+  contentString +=
+      "<button onclick='createOutlookEvent("+'"'+calendarEventTime(parking.timeLeft+120) +'"'+ ", "
+      +'"'+ calendarEventTime(parking.timeLeft+60+120) +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
+      + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
+      +'"'+ parking.info.oddEven +'"'+ ")'> Outlook! </button>";
+ }
+
   contentString += '</div>'; //end content_infowindow
 
   return contentString;
@@ -222,10 +228,10 @@ function closeOtherInfo(InfoObj) {
   }
 }
 
-function clearAllMarkers(){
+function clearAllMarkersAndClusters(){
+  markerCluster.setMap(null); //hides the cluster from map
   for(var i=0; i<visibleMarkers.length; i++){
-    var marker = visibleMarkers[i];
-    marker.setMap(null);
+    visibleMarkers[i].setMap(null);
   }
   visibleMarkers=[]; //make the global array empty
 }
@@ -252,6 +258,8 @@ function closestPark(parkIndex){
   return index;
 }
 
+var userLocationMarker;
+
 /*
 adds a location-marker at (lat,long) on the map.
 if it already exist an old marker, it will remove this one first.
@@ -264,7 +272,8 @@ function addGeolocMarker(lat,long){
 
   var icon = {
         url: USER_ICON, // url
-        scaledSize: new google.maps.Size(80, 80) // size
+        scaledSize: new google.maps.Size(80, 80), // size
+        anchor: new google.maps.Point(40,40) //anchorpoint in middle of img
     };
   var marker = new google.maps.Marker({
     position: new google.maps.LatLng(lat, long),
@@ -310,8 +319,9 @@ on click: it updates the user location and adds a new marker at the position.
     img.alt = "navigation icon"
     controlDiv.appendChild(img);
 
-    img.addEventListener('click', function() {
+    img.addEventListener('click', function() { //Action Listener for Navigation Button
           putUserLocOnMap();
+          zoomInOnUser();
         });
 
     controlDiv.index = 1;
@@ -370,4 +380,10 @@ function getDistance(lat1,lon1,lat2,lon2) {
 
 function deg2rad(deg) {
   return deg * (Math.PI/180)
+
+function zoomInOnUser(){
+  if(userLocationMarker != undefined){
+    map.setCenter(userLocationMarker.position);
+    map.setZoom(16);
+  }
 }
