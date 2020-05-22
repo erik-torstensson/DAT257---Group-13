@@ -28,6 +28,7 @@ const CLUSTER_OPTIONS = { //The different cluster icons
 
 //reset the map
 function resetMap() {
+  clearAllMarkersAndClusters();
   addMarkersFromParkingList(residentialParkingWithCleaning);
 }
 
