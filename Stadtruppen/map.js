@@ -5,6 +5,7 @@ var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
+const PARKING = "Resources/Parking.png"
 const USER_ICON = "Resources/currentLocation_icon.png"
 const NAVIGATION_ICON = "Resources/navigation_icon.png"
 const NIGHT_ICON = "Resources/nighticon.png"
@@ -14,17 +15,8 @@ const CLUSTER_OPTIONS = { //The different cluster icons
       height: 32,
       url: "Resources/m1.png",
       width: 32
-    },
-    {
-      height: 32,
-      url: "Resources/m2.png",
-      width: 32
-    },
-    {
-      height: 32,
-      url: "Resources/m3.png",
-      width: 32
-    }]}
+  }]
+}
 
 //reset the map
 function resetMap() {
