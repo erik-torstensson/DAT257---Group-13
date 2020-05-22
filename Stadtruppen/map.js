@@ -188,7 +188,7 @@ function createInfoContent(parking, ChangePark, i) {
                         'max 14 dygn ' +
                      '</div>';
   } else {
-    contentString += minutesToReadableTime(parking.timeLeft); //time left info
+    contentString += createHTMLForCleaningOrNightParking(parking); //time left info
   }
 
 
