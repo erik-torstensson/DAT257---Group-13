@@ -95,7 +95,7 @@ function addMarkersFromParkingList(parkingsList){
   var ChangePark;
   var icon;
   for (var i = 0; i < parkingsList.length; i++) {
-    icon = getMarkerIcon(i);
+    icon = getMarkerIcon(parkingsList[i].timeLeft);
     ChangePark = !isGreenPark(i);
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(
@@ -128,21 +128,21 @@ function addMarkersFromParkingList(parkingsList){
   map.panToBounds(bounds); // auto-center
 }
 //Returns which icon the marker will have based on the availablity
-function getMarkerIcon(i){
-    if(isGreenPark(i)){
+function getMarkerIcon(time){
+    if(isGreenPark(time)){
         return GREEN_PARKING;
-    }else if(isYellowPark(i)) {
+    }else if(isYellowPark(time)) {
         return YELLOW_PARKING;
     }
     return RED_PARKING;// RED Illegal parking
 }
 //Check if the park is available for more than 24 hours. Green
-function isGreenPark(i){
-  return residentialParkingWithCleaning[i].timeLeft > 1440;
+function isGreenPark(time){
+  return time > 1440;
 }
 //Check if the park is available for more than 30 minutes. Yellow
-function isYellowPark(i){
-  return residentialParkingWithCleaning[i].timeLeft > 30;
+function isYellowPark(time){
+  return time > 30;
 }
 
 // This function get the needed information about parking to show it in the pop-up info window
@@ -204,7 +204,7 @@ function createInfoContent(parking, ChangePark, i) {
   }
 
 // Add a button to add parking reminder to GOOGLE CALENDAR
-  if(parking.timeLeft < 20160){
+  if(parking.timeLeft < 20160 && parking.timeLeft>61){
     contentString += 
     '<div style="text-align: center; margin-top:5px;"> '+
     'Lägg till påminnelse! ' +
@@ -219,7 +219,7 @@ function createInfoContent(parking, ChangePark, i) {
 // Add a button to add parking reminder to OUTLOOK CALENDAR
 // Due to problems with timezones; added 120 to get to right timezone.
 
-if(parking.timeLeft < 20160){ //20160min = Two weeks
+if(parking.timeLeft < 20160 && parking.timeLeft>61){ //20160min = Two weeks
   contentString +=
       "<img src='Resources/oCalendar.png' border='1' style=' cursor: pointer;height:30px;width:37.5px;'onclick='createOutlookEvent("+'"'+calendarEventTime(parking.timeLeft+120) +'"'+ ", "
       +'"'+ calendarEventTime(parking.timeLeft+60+120) +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
