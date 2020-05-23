@@ -115,7 +115,7 @@ function nightParkingAvailble(startDate) {
           dateToMove.setHours(15);
           dateToMove.setMinutes(0);
           //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM 
-          return dateToMove.toLocaleString().substr(0, 15);
+          return dateToMove.toLocaleString().substr(0, 16);
         }
       } 
       if (isPublicSunday(i)){
@@ -126,7 +126,7 @@ function nightParkingAvailble(startDate) {
           dateToMove.setHours(18);
           dateToMove.setMinutes(0);
           //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM 
-          return dateToMove.toLocaleString().substr(0, 15);
+          return dateToMove.toLocaleString().substr(0, 16);
         } 
       }
     }
