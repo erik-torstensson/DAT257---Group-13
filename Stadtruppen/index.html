@@ -61,11 +61,10 @@
           onreadystatechange="if (this.readyState === 'complete') this.onload()"
   ></script>
 </head>
-<h1>Stadtruppens stora städsök</h1>
+<h1>Boendeparkeringssök Göteborg</h1>
 <body>
 <p>
-  Skriv in din gata i textfältet så kommer information med städtider för den
-  gatan. Informationen hämtas från öppen data tillhandahållen av Göteborgs
+  Informationen hämtas från öppen data tillhandahållen av Göteborgs
   stad.
 </p>
 
@@ -130,44 +129,27 @@
         data-theme="dark"
         style="position:fixed;top:20px;right:20px; "
 ></div>
-<input
-        type="button"
-        value= "Google Sign out"
-        onclick="signOut(), gAppear()"
-        id="gSignOut"
-        style="position:fixed;top:20px;right:20px;visibility:hidden;"
-/>
-<!--
-<input
-        type="button"
-        value="Cleaning Data"
-        onclick="CleaningData()"
-        id="Button"
-        style="position:fixed;top:100px;right:20px;"
+
+<img
+
+      src="Resources/loggaut_erikapproved.png"
+      id="gSignOut"
+      onclick="signOut(), gAppear()"
+      style= "position:fixed;top:20px;right:20px;visibility:hidden;width:120px;height:36px;cursor: pointer;"
 />
 
-  <input
-        type="button"
-        value="Residential Data"
-        onclick="ResidentialData()"
-        id="Button2"
-        style="position:fixed;top:140px;right:20px;"
+  <img
+      src="Resources/loggain_outlook.png"
+      id="OSI"
+      onclick="signIn()"
+      id="OSI"
+      style="position:fixed;top:70px;right:20px;width:120px;height:36px;cursor: pointer;"
 />
--->
-
-  <input
-  type="button"
-  value="Outlook Sign in"
-  onclick="signIn()"
-  id="OSI"
-  style="position:fixed;top:70px;right:20px;"
-/>
-<input
-        type="button"
-        value="Outlook Sign out"
+<img
+        src="Resources/loggaut_outlook.png"
         onclick="outlookSignOut()"
         id="OSO"
-        style="position:fixed;top:70px;right:20px; visibility:hidden;"
+        style="position:fixed;top:70px;right:20px; visibility:hidden;width:120px;height:36px;cursor: pointer;"
 />
 <!--
 
