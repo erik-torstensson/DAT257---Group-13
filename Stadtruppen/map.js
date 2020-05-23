@@ -168,10 +168,18 @@ function createInfoContent(parking, ChangePark, i) {
 
   //Parking not allowed (red parking)
   if(parking.timeLeft == 0){
-    if(parking.night_parking){
+    if(parking.night_parking){ //If it is a night parking
+      var today = new Date(Date.now());
+      //today.setHours(today.getHours()+4);
 
-    }
-    if(parking.info.endTime){
+      contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
+      '<div>' + '<b> Förbudet upphör: <b> <br>' +
+      // End time has the format "yyyy-mm-ddThh:mm:ss" 
+      // Replace the T with a space
+      // Remove the last two digits since they represent the seconds
+      nightParkingAvailble(today) +'</br>'+
+      '</div>';
+    } else if(parking.info.endTime){
       contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
       '<div>' + '<b> Förbudet upphör: <b> <br>' +
       // End time has the format "yyyy-mm-ddThh:mm:ss" 
