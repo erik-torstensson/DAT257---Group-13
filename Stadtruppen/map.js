@@ -5,26 +5,20 @@ var map; //global variable to reach the map from everywhere
 const GREEN_PARKING = "Resources/YesParking.png"
 const YELLOW_PARKING = "Resources/MaybeParking.png"
 const RED_PARKING = "Resources/NoParking.png"
+const PARKING = "Resources/Parking.png"
 const USER_ICON = "Resources/currentLocation_icon.png"
 const NAVIGATION_ICON = "Resources/navigation_icon.png"
 const NIGHT_ICON = "Resources/nighticon.png"
 
 const CLUSTER_OPTIONS = { //The different cluster icons
   styles: [{
-      height: 32,
-      url: "Resources/m1.png",
-      width: 32
-    },
-    {
-      height: 32,
-      url: "Resources/m2.png",
-      width: 32
-    },
-    {
-      height: 32,
-      url: "Resources/m3.png",
-      width: 32
-    }]}
+      height: 40,
+      url: "Resources/clusterIcon.png",
+      width: 40
+  }],
+  gridSize: 55,
+  minimumClusterSize: 3 
+}
 
 //reset the map
 function resetMap() {
@@ -174,10 +168,28 @@ function createInfoContent(parking, ChangePark, i) {
 
   //Parking not allowed (red parking)
   if(parking.timeLeft == 0){
-    contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
-                    '<div>' + '<b> Förbudet upphör: </b> <br>' +
-                    'X' + 'dagar ' +'X'+'h ' +'X'+'min'+ //put in real nr as X,X,X
-                    '</div>';
+
+    if(parking.night_parking){ //If it is a night parking
+      var today = new Date(Date.now());
+      //today.setHours(today.getHours()+4);
+
+      contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
+      '<div>' + '<b> Förbudet upphör: <b> <br>' +
+      // End time has the format "yyyy-mm-ddThh:mm:ss" 
+      // Replace the T with a space
+      // Remove the last two digits since they represent the seconds
+      nightParkingAvailble(today) +'</br>'+
+      '</div>';
+    } else if(parking.info.endTime){
+      contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
+      '<div>' + '<b> Förbudet upphör: <b> <br>' +
+      // End time has the format "yyyy-mm-ddThh:mm:ss" 
+      // Replace the T with a space
+      // Remove the last two digits since they represent the seconds
+      parking.info.endTime.replace(new RegExp('T'), ' ').substr(0, 16) +'</br>'+
+      '</div>';
+    }
+
   }else if(parking.timeLeft > (60*24*365)){
   //more than a year, always ok to park but maximum 14 days
     contentString += '<h3 style = "color : green; margin-block-end: 0.2em;">'+
@@ -191,15 +203,6 @@ function createInfoContent(parking, ChangePark, i) {
     contentString += createHTMLForCleaningOrNightParking(parking); //time left info
   }
 
-
-  /*
-   * Lets have this as a comment until the new button is implemented
-   * it's easier to see how the info window will look like :)
-  if (ChangePark){
-    contentString += "<h3>Den närmsta lediga parkering finns på " +
-    residentialParkingWithCleaning[closestPark(i)].info.streetName + "</h3>";
-  }
-  */
 // Add a button to add parking reminder to GOOGLE CALENDAR
   if(parking.timeLeft < 20160){
     contentString += 

@@ -102,6 +102,38 @@ function timeToLeaveNightParking(startDate) {
   return -1;
 }
 
+function nightParkingAvailble(startDate) {
+  var startHour = startDate.getHours();
+  var startDate = convertToDate(startDate); //converts to same format as in the json object
+  var dateToMove = new Date();
+  for (var i = 0; i < json_swedishDays.dagar.length; i++) {
+    //search for startDate
+    if (json_swedishDays.dagar[i].datum === startDate) {
+      if (isPublicSaturday(i)) {
+      // SATURDAY (day before red day)
+        if(startHour < 15){
+          dateToMove.setHours(15);
+          dateToMove.setMinutes(0);
+          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM 
+          return dateToMove.toLocaleString().substr(0, 15);
+        }
+      } 
+      if (isPublicSunday(i)){
+        dateToMove = nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
+        return dateToMove;
+      }else{
+        if (startHour < 18) {
+          dateToMove.setHours(18);
+          dateToMove.setMinutes(0);
+          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM 
+          return dateToMove.toLocaleString().substr(0, 15);
+        } 
+      }
+    }
+  }
+}
+
+
 function isPublicSunday(index) {
   var keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
   var publicSundayKey = keys[3]; //3d key "röd dag:"
