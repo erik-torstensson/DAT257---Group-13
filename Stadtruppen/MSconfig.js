@@ -5,7 +5,7 @@
 const msalConfig = {
   auth: {
     clientId: '69d2caaa-830b-44e2-9586-dc1c0ee2332a',
-    redirectUri: 'https://dat257-group13.glitch.me/Stadtruppen/'
+    redirectUri: 'http://localhost:8000'
   },
   cache: {
     cacheLocation: "sessionStorage",
