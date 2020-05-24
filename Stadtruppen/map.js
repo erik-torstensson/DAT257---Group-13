@@ -211,7 +211,7 @@ function createInfoContent(parking, ChangePark, i) {
     '</div>'
       
     contentString +=
-        "<div style='text-align:left;display:flex;flex-direction: row;justify-content: space-evenly;margin-top:3px;'> <img src='Resources/gCalendar.png' border='1' style='cursor: pointer;height:30px;width:37.5px;'onclick='createGoogleEvent("+'"'+calendarEventTime(parking.timeLeft) +'"'+ ", "
+        "<div style='text-align:left;display:flex;flex-direction: row;justify-content: space-evenly;margin-top:3px;'> <img src='Resources/GoogleC.png' id='CalenderButton' title=\"Google Calendar\" style=''onclick='createGoogleEvent("+'"'+calendarEventTime(parking.timeLeft) +'"'+ ", "
         +'"'+ calendarEventTime(parking.timeLeft+60) +'"'+ ", " + parking.info.x +", "
         + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
         +'"'+ parking.info.streetName +'"'+ ")'> </img>";
@@ -221,7 +221,7 @@ function createInfoContent(parking, ChangePark, i) {
 
 if(parking.timeLeft < 20160 && parking.timeLeft>61){ //20160min = Two weeks
   contentString +=
-      "<img src='Resources/oCalendar.png' border='1' style=' cursor: pointer;height:30px;width:37.5px;'onclick='createOutlookEvent("+'"'+calendarEventTime(parking.timeLeft+120) +'"'+ ", "
+      "<img src='Resources/OutlookC.png' id='CalenderButton' title=\"Outlook Calendar\" style=' 'onclick='createOutlookEvent("+'"'+calendarEventTime(parking.timeLeft+120) +'"'+ ", "
       +'"'+ calendarEventTime(parking.timeLeft+60+120) +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
       + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
       +'"'+ parking.info.oddEven +'"'+ ")'> </img> </div>";
