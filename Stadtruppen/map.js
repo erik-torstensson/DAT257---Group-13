@@ -167,7 +167,7 @@ function createInfoContent(parking, ChangePark, i) {
 
 
   //Parking not allowed (red parking)
-  if(parking.timeLeft == 0){
+  if(parking.timeLeft < 1){
 
     if(parking.night_parking){ //If it is a night parking
       var today = new Date(Date.now());
