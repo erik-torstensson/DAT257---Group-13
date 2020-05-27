@@ -125,21 +125,35 @@ Week 6: 11/5 - 17/5
 
 What is:
 Under denna vecka fortsatte arbetet med att implementera outlook i produkten, då vi blev påminnda av vår stakeholder att många använder
-outlook via arbetet och det finns därmed rätt många som hade uppskattat att det fanns till både google calendar och outlook. 
-Vi har även genomfört en kundundersökning, vi har dock inte analyserat resultatet ännu..........
-
-KPI To be contiuned....
+outlook via arbetet och det finns därmed rätt många som hade uppskattat att det fanns till både google calendar och outlook.
+Strukturerade även upp koden, delade upp funktionalitet till olika js-filer. etc. 
+Vi har även genomfört en kundundersökning, vi har dock inte analyserat resultatet ännu men efter en snabb titt på datan så verkar vi vara
+på rätt spår!
+Vi har även implementerat ett nytt reviewsystem, där vi tydliggjort vad man ska titta på under en review. Detta har även blivit en ny KPI som
+nyttjas. KPI:n tar räknar hur många pull requests som inte håller kvaliteten för att kunna mergas till mastern. Förhoppningsvis ska detta
+höja kvaliteten på koden, och förståbarheten. 
 
 What might or should be:
 
+Vet inte riktigt vad vi behöver jobba eller sträva mot. Tycker att vi har rätt bra flyt och alla medlemmar jobbar på med sitt. Vi har anpassat
+antalet gruppmöten efter typen av arbetsbörda (stora/små tasks). 
+
 Feedback to reduce the gap:
+... 
+
 
 Week 7: 18/5 - 24/5
 
 What is:
+Sista veckan innan presentationen... Denna vecka hade vi bestämt oss för att inte implementera nya saker utan finslipa existerande funktioner
+och fixa till utseednet på hemsidan. Blev en del buggfixande vid sammanslagningen av många nya funktioner. Då tasksen var rätt många och små
+så kände vi att vi behövde planera in fler möten under veckan, dels för att se om någon behövde hjälp alternativt något att göra
+då det upptäcktes en del buggar under veckans gång. Initiella planen var att dela upp oss, så att vissa skulle jobba med GUI och andra börjar
+med final reflection. Blev inte riktigt så, jag och Jakob började i alla fall på rapporten när vi fick tid över men annars blev det mycket småpill.
 
 What might or should be:
-
+-
 Feedback to reduce the gap:
+. :)
 
 TODO nästa vecka. Dela upp oss, vissa jobbar vidare med GUI och andra börjar behandla rapporten...
