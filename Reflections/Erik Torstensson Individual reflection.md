@@ -49,3 +49,12 @@ Samarbete och lärande har fungerat väl mellan gruppens medlemmar. För att spr
 Sprintplaneringen och sprint review är tillfällen där jag och andra kan bidra mycket med scrum eller agilt arbere. Under dessa möten kan man bidra mot scrum tillsammmans med resterande gruppmedlemmar och scrum mastern.
 
 Jag har gjort det som vi tilldelat i början av sprintplaneringen. Denna veckan fungerade detta väldigt bra när det gäller effort, det var en stressig vecka för många medlemmar på grund av andra kurser och dylikt. Utifrån detta var det bra att vi ändå kunnde klara vår sprint och bidra till produkten.
+
+# Week 7
+Right now in the end of this project I know a lot more about scrum and agile programming. I have learned from my teammates and from course "litterature" as well as other sources online. If I where to do another project using scrum och agile programming I would make sure to learn more about the different roles of scrum. This would be done by really trying out the different roles, something I haven't had the chance to do in this project.
+
+I think you need to stay open and listen to your teammates in order to help them when they need help. Right now I think this has worked out great and I want to continue with this if I was to make another project.
+
+I this last sprint I contributed to scrum in the same ways as before, using our scrum board, breaking down tasks and writing user stories. This is something I want to continue doing in the same way, but continuing learning more about scrum and in that way developing my skills.
+
+I have contributed to the deliverables by programming the tasks I was assigned on the scrum board, writing some of the final presentation and performing the introdutary part of the presentation. I feel like I have spent the time I was supposed to and I feel like more effort might have contributed to unnecessary stress.
