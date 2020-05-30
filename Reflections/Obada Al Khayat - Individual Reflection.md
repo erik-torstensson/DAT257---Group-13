@@ -56,6 +56,17 @@ In our meeting with Kim, Jonas och Lisa, they suggested adding a highlight/borde
 
 # Week 6 
 
+
+Anas and I worked on a new function that recommends nearby parking; we started working on the backend. Still don't know exactly when the user can use it and how from the front; this will be discussed in the next sprint. 
+
+Its been a couple of weeks since we started having a new scrum master every sprint, and the meetings work very well now, way better than before. It's more productive and structured. 
+
 ----------------
 
 # Week 7
+
+Our primary focus this week was on fixing known bugs and improving the GUI. We didn't want to start with a new feature since it's our last sprint, and we already reached our minimum viable product.
+
+I worked on general GUI improvements, such as uniforming the fonts, and that all clickable buttons have the same "hover" effect. 
+
+----------------
