@@ -113,7 +113,8 @@ function addMarkersFromParkingList(parkingsList){
     });
 
 
-    var infoContent = createInfoContent(parkingsList[i], ChangePark, i);
+    //var infoContent = createInfoContent(parkingsList[i], ChangePark, i);
+    var infoContent = getInfoWindowContent(parkingsList[i]);
 
     const infowindow = new google.maps.InfoWindow({
       content: infoContent,
@@ -151,17 +152,79 @@ function isYellowPark(i){
   return residentialParkingWithCleaning[i].timeLeft > 30;
 }
 
+function getInfoWindowContent(parking){
+  var contentContainer = document.createElement('div'); //parent to all content elements
+
+  var streetName_div = document.createElement('div'); //streetName (heading of info window)
+  streetName_div.id= "street-name-div";
+  streetName_div.innerHTML = parking.info.streetName;
+  contentContainer.appendChild(streetName_div);
+
+  if(parking.night_parking == true){
+    var night_div = document.createElement('div'); //parent div for all night content
+    night_div.className="nightParking-flex-box";
+
+    var night_img = document.createElement('img'); //night icon
+    night_img.id="night_img";
+    night_img.src=NIGHT_ICON;
+    night_img.alt="moon";
+
+    night_div.appendChild(night_img);
+    night_div.innerHTML+='Nattparkering';
+
+    contentContainer.appendChild(night_div);
+  }
+
+  var hr = document.createElement('hr'); //horisontal line in same color as marker
+  hr.className = get_hr_StyleClass(parking);
+  contentContainer.appendChild(hr);
+
+  var info_div = document.createElement('div'); //container for info (zone and nr of parkings)
+  info_div.className="info-top";
+  info_div.innerHTML+= '<b> Zon: ' + '</b> ' + parking.code_resPark +'<br>';
+  info_div.innerHTML+= '<b> Antal platser: </b>' + parking.numOfPlaces ;
+
+  contentContainer.appendChild(info_div);
+
+  //Parking not allowed (red parking)
+  if(parking.timeLeft == 0){
+    var h3 = document.createElement('h3');
+    h3.innerHTML='Parkering förbjuden';
+    h3.style="color : red;";
+
+    var div = document.createElement('div');
+    div.innerHTML+='<b> Förbudet upphör: <b> <br>' +
+    'X' + 'dagar ' +'X'+'h ' +'X'+'min';
+
+    contentContainer.appendChild(div);
+
+
+  }else if(parking.timeLeft > (60*24*365)){
+  //more than a year, always ok to park but maximum 14 days
+    /*contentString += '<h3 style = "color : green; margin-block-end: 0.2em;">'+
+                        'Parkering alltid tillåten!' +
+                     '</h3>' +
+
+                     '<div style="text-align: center; margin-top:5px;"> '+
+                        'max 14 dygn ' +
+                     '</div>';
+                     */
+  } else {
+    /*contentString += minutesToReadableTime(parking.timeLeft); //time left info*/
+  }
+
+  return contentContainer;
+}
+
 // This function get the needed information about parking to show it in the pop-up info window
-
-
 function createInfoContent(parking, ChangePark, i) {
   var contentString = '<div id="content_infowindow">'; //container for all content in infowindow
   contentString +=        '<div id="street-name-div">' + parking.info.streetName + '</div>';
 
   if(parking.night_parking == true){ //add night icon to header_container
-    contentString += '<div class="nightParking-flex-box"> ';
-    contentString +=    '<img id="night_img" src="' + NIGHT_ICON +'" alt="night_parking">';
-    contentString +=    '  Nattparkering </div>';
+      contentString += '<div class="nightParking-flex-box"> ';
+      contentString +=    '<img id="night_img" src="' + NIGHT_ICON +'" alt="night_parking">';
+      contentString +=    '  Nattparkering </div>';
   }
 
   contentString +=      '<hr class=' + get_hr_StyleClass(parking) +'>'; //horizontal line under street name
@@ -341,13 +404,13 @@ on click: it updates the user location and adds a new marker at the position.
 is shown in the markers info window (pop up window).*/
 function get_hr_StyleClass(parking){
   if(parking.timeLeft > 1440){//one day
-    return '"iw_line_green"'; //green style class
+    return "iw_line_green"; //green style class
   }
   else if(parking.timeLeft > 30){ //more than 30 min, but less than 24hrs
-    return '"iw_line_yellow"';
+    return "iw_line_yellow";
   }
   else { //less than 30 min
-    return '"iw_line_red"';
+    return "iw_line_red";
   }
 }
 

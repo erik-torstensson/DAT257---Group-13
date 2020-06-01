@@ -359,8 +359,6 @@ button:disabled{
 #night_img{
   height: 12px;
   width: 12px;
-  position: relative;
-  right: 5px;
 }
 
 hr.iw_line_green{
@@ -418,8 +416,14 @@ hr.iw_line_red{
 .nightParking-flex-box{
   display: flex;
   justify-content: center;
+/*  justify-content: space-between; */
   color: grey;
 }
+
+.nightParking-flex-box > * {
+  margin: 2px 5px; /*vertical horisontal */
+}
+
 
 .small-icon-in-flex-box{
   height: 12px;
