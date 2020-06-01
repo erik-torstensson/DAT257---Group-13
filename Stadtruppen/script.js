@@ -114,10 +114,10 @@ function nightParkingAvailble(startDate) {
         if(startHour < 15){
           dateToMove.setHours(15);
           dateToMove.setMinutes(0);
-          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM 
+          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM
           return dateToMove.toLocaleString().substr(0, 16);
         }
-      } 
+      }
       if (isPublicSunday(i)){
         dateToMove = nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
         return dateToMove;
@@ -125,9 +125,9 @@ function nightParkingAvailble(startDate) {
         if (startHour < 18) {
           dateToMove.setHours(18);
           dateToMove.setMinutes(0);
-          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM 
+          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM
           return dateToMove.toLocaleString().substr(0, 16);
-        } 
+        }
       }
     }
   }
@@ -306,17 +306,17 @@ function createHTMLForCleaningOrNightParking(parking){
 //-----START: TURNING MINUTES UNTIL LEAVE INTO CORRECT FORMAT FOR CALENDAR-------//
 function calendarEventTime(i){
   /*The input i is how many minutes to turn into a format that the calendar functions accept.
-    The function takes a number of minutes into input and turns it into 
-    a number of days hours and minutes. 
+    The function takes a number of minutes into input and turns it into
+    a number of days hours and minutes.
   */
   var left = i%1440
-  var days = (i-left)/1440; 
+  var days = (i-left)/1440;
   i = left;
   left = left%60;
   var hours = (i-left)/60;
 
   var today = new Date(Date.now());
-  today.setDate(today.getDate()+days);  
+  today.setDate(today.getDate()+days);
   today.setHours(today.getHours()+hours);
   today.setMinutes(today.getMinutes()+parseInt(left)+120);
   today.setSeconds(60);
@@ -554,7 +554,7 @@ function search() {
   addMarkersFromParkingList(activeCleaningInfo);
 
   if (activeCleaningInfo.length <= 0) {
-   
+
     document.getElementById("result").innerHTML +=
       "" + input + " kan inte hittas i datan." + "<br>";
   }

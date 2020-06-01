@@ -1,15 +1,12 @@
 body{
-  background-color: #b7dfe7;
-  margin-left:30px;
-  margin-right: 30px;
-  font-family: sans-serif;
+  background-color: #b7dfe7
 }
 html,body{height:100%}
 .clearfix::after{display:block;content:'';clear:both}
 
-.wrap{position:relative;width:100%;height:40%;min-height:450px;background:#b7dfe7;overflow:hidden}
+.wrap{position:relative;width:100%;height:100%;min-height:550px;background:#b7dfe7;overflow:hidden}
 
-.bg_area{position:center;left:0;bottom:0;right:0;text-align:center}
+.bg_area{position:absolute;left:0;bottom:0;right:0;text-align:center}
 .bg_area .bg01 .area{position:relative;float:left;width:640px;height:442px}
 /* background css */
 .bg01 .area .field{position:absolute;left:0;bottom:0;width:100%;height:50px;background:#b0d6b2;z-index:10}
@@ -238,30 +235,14 @@ html,body{height:100%}
 .bg01 .area:not(:nth-child(3n)) .balloon{display:none}
 
 h1 {
-  font-family: sans-serif;
   font-style: italic;
   color: #373fff;
 }
 
-p {
-  font-family: sans-serif;
-  size: 14px;
-}
-
-small{
-  font-family: sans-serif;
-  font-size: 14px;
-}
-
-#forDropDown{
-  font-family: sans-serif;
-  size: 14px;
-}
-
 p2 {
   color:#ff3300;
-  font-family: "sans-serifMS", cursive, sans-serif;
-  font-family: "sans-serif", Helvetica, sans-serif;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-family: "Comic Sans MS", Helvetica, sans-serif;
   font-size: 100px;
 }
 
@@ -297,11 +278,10 @@ input[type=submit] {
   position: relative;
   left: 16px;
   margin: 8px;
-  cursor: pointer;
 }
 input:hover{
-  box-shadow: 0 0 10px DodgerBlue;
-  border-color: rgba(0, 0, 0, 0);
+  box-shadow: 0 0 15px #ffcc00;
+  border-color: rgba(0, 0, 0, 1);
 }
 .autocomplete-items {
   position: absolute;
@@ -331,14 +311,11 @@ input:hover{
 }
 
 #map {
- height:600px;
- margin-top:15px;
- margin-left:20px;
- margin-right:20px ;
- position: fixed;
+ width:100%;
+ height:800px;
 }
 
-button{
+button {
   border:0px solid rgba(0, 0, 0, 1);
   padding: 12px;
   background-color: DodgerBlue;
@@ -346,12 +323,6 @@ button{
   position: relative;
   outline: none;
   border-radius: 4px;
-  margin: 4px 4px 4px 0px;
-}
-
-button:hover{
-  box-shadow: 0 0 10px DodgerBlue;
-  border-color: rgba(0, 0, 0, 1);
 }
 
 button:enabled{
@@ -362,40 +333,6 @@ button:disabled{
   background-color: rgb(160, 165, 170);
 }
 
-#CalenderButton{
-  cursor: pointer;
-  height:32px;
-  width:32px;
-  margin: 4px 1px 8px 1px;
-
-}
-
-#CalenderButton:hover{
-  box-shadow: 0 0 6px #c8e3ff;
-  border-color: rgba(0, 0, 0, 0);
-}
-
-/*Sing in and out buttons*/
-
-#OSI:hover{
-  box-shadow: 0 0 10px #1e90ff;
-  border-color: rgba(0, 0, 0, 1);
-}
-
-#OSO:hover{
-  box-shadow: 0 0 10px DodgerBlue;
-  border-color: rgba(0, 0, 0, 1);
-}
-
-#gSignOut:hover{
-  box-shadow: 0 0 10px DodgerBlue;
-  border-color: rgba(0, 0, 0, 1);
-}
-
-#signin:hover{
-  box-shadow: 0 0 10px DodgerBlue;
-  border-color: rgba(0, 0, 0, 1);
-}
 
 
 .gmnoprint img {
@@ -407,12 +344,11 @@ button:disabled{
   width: 50px;
   border-radius: 50%;
   margin-right:5px;
-  cursor: pointer;
 
 }
 
 #navigationImgButton:hover{
-  box-shadow: 0 0 3px #ffffff;
+  box-shadow: 0 0 3px #ddd;
 }
 
 #navigationImgButton:active{
@@ -423,8 +359,6 @@ button:disabled{
 #night_img{
   height: 12px;
   width: 12px;
-  position: relative;
-  right: 5px;
 }
 
 hr.iw_line_green{
@@ -484,6 +418,11 @@ hr.iw_line_red{
   justify-content: center;
   color: grey;
 }
+
+.nightParking-flex-box > * {
+  margin: 2px 5px; /*vertical horisontal */
+}
+
 
 .small-icon-in-flex-box{
   height: 12px;

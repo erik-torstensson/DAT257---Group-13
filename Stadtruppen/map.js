@@ -17,7 +17,7 @@ const CLUSTER_OPTIONS = { //The different cluster icons
       width: 40
   }],
   gridSize: 55,
-  minimumClusterSize: 3 
+  minimumClusterSize: 3
 }
 
 //reset the map
@@ -107,8 +107,8 @@ function addMarkersFromParkingList(parkingsList){
     });
 
 
-    var infoContent = createInfoContent(parkingsList[i], ChangePark, i);
-
+    //var infoContent = createInfoContent(parkingsList[i], ChangePark, i);
+    var infoContent = getInfoWindowContent(parkingsList[i]);
     const infowindow = new google.maps.InfoWindow({
       content: infoContent,
     });
@@ -145,9 +145,184 @@ function isYellowPark(time){
   return time > 30;
 }
 
+
+
+function getInfoWindowContent(parking){
+  var contentContainer = document.createElement('div'); //parent to all content elements
+
+  var streetName_div = document.createElement('div'); //streetName (heading of info window)
+  streetName_div.id= "street-name-div";
+  streetName_div.innerHTML = parking.info.streetName;
+  contentContainer.appendChild(streetName_div);
+
+  if(parking.night_parking == true){
+    var night_div = document.createElement('div'); //parent div for all night content
+    night_div.className="nightParking-flex-box";
+
+    var night_img = document.createElement('img'); //night icon
+    night_img.id="night_img";
+    night_img.src=NIGHT_ICON;
+    night_img.alt="moon";
+
+    night_div.appendChild(night_img);
+    night_div.innerHTML+='Nattparkering';
+
+    contentContainer.appendChild(night_div);
+  }
+
+  var hr = document.createElement('hr'); //horisontal line in same color as marker
+  hr.className = get_hr_StyleClass(parking);
+  contentContainer.appendChild(hr);
+
+  var info_div = document.createElement('div'); //container for info (zone and nr of parkings)
+  info_div.className="info-top";
+  info_div.innerHTML+= '<b> Zon: ' + '</b> ' + parking.code_resPark +'<br>';
+  info_div.innerHTML+= '<b> Antal platser: </b>' + parking.numOfPlaces ;
+
+  contentContainer.appendChild(info_div);
+
+  //Parking not allowed (red parking)
+  if(parking.timeLeft < 1){
+    var h3 = document.createElement('h3');
+    h3.innerHTML='Parkering förbjuden';
+    h3.style="color : red;";
+
+    var div = document.createElement('div');
+    div.innerHTML+='<b> Förbudet upphör: <b> <br>' +
+    'X' + 'dagar ' +'X'+'h ' +'X'+'min';
+
+    if(parking.night_parking){ //red and night parking
+      var today = new Date(Date.now());
+      div.innerHTML += nightParkingAvailble(today);
+    }else if(parking.info.endTime){ // ?
+      div.innerHTML += parking.info.endTime.replace(new RegExp('T'), ' ').substr(0, 16);
+    }
+
+    contentContainer.appendChild(h3);
+    contentContainer.appendChild(div);
+
+
+  }else if(parking.timeLeft > (60*24*365)){
+  //more than a year, always ok to park but maximum 14 days
+    var h3_ok = document.createElement('h3');
+    h3_ok.style="color : green; margin-block-end: 0.2em;";
+    h3_ok.innerHTML+="Parkering alltid tillåten!";
+
+    var maxTimeInfo_div = document.createElement('div');
+    maxTimeInfo_div.style="text-align: center; margin-top:5px;";
+    maxTimeInfo_div.innerHTML+="max 14 dygn ";
+
+    contentContainer.appendChild(h3_ok);
+    contentContainer.appendChild(maxTimeInfo_div);
+
+  } else { //get availability info
+    var timeInfo_div = getAvailableUntilInfoDiv(parking);
+    contentContainer.appendChild(timeInfo_div);
+  }
+
+
+  // Add a button to add parking reminder to GOOGLE CALENDAR and OutLook
+    if(parking.timeLeft < 20160 && parking.timeLeft>61){
+      var notice_div = document.createElement('div');
+      notice_div.style="text-align: center; margin-top:5px;";
+      notice_div.innerHTML ='Lägg till påminnelse! ';
+      contentContainer.appendChild(notice_div);
+
+
+      var buttonBarDiv =document.createElement('div');
+      buttonBarDiv.style="text-align:left;display:flex;flex-direction: row;justify-content: space-evenly;margin-top:3px;"
+
+    /*   //testa med addEventListener istället.
+    var gcBtn = document.createElement('img');
+      gcBtn.src='Resources/GoogleC.png';
+      gcBtn.id='CalenderButton';
+      gcBtn.title="Google Calendar";
+      gcBtn.onclick=createGoogleEvent(new Date(getMovingDate(parking)).toISOString(),
+                                      new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+60)).toISOString(),
+                                      parking.info.x,
+                                      parking.info.y,
+                                      parking.info.endDate,
+                                      parking.info.streetName);
+
+      buttonBarDiv.appendChild(gcBtn);
+
+      var olBtn = document.createElement('img');
+      olBtn.src='Resources/OutlookC.png';
+      olBtn.id='CalenderButton';
+      olBtn.title="Outlook Calendar";
+
+
+      olBtn.onclick=createOutlookEvent(new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+120)).toISOString(),   //  Due to outlook timezone issues manually adding two hours to fix
+                                       new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+120+60)).toISOString(),   //  Due to outlook timezone issues manually adding two hours to fix
+                                       parking.info.streetName,
+                                       parking.info.y,
+                                       parking.info.endDate,
+                                       parking.info.oddEven);
+
+      buttonBarDiv.appendChild(olBtn);
+      */
+      contentContainer.appendChild(buttonBarDiv);
+    }
+
+  return contentContainer;
+}
+
+
+
+function getAvailableUntilInfoDiv(parking){
+  /*Creates HTML in string format for google maps info window. Assumes
+  that the parking is either night parking or have a cleaning day.
+  */
+  var movingDay = getMovingDate(parking);
+  var movingDate = movingDay.toLocaleDateString(); //YYYY-MM-DD
+  var movingTime = movingDay.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); //HH:MM (not seconds)
+
+  var container = document.createElement('div'); //parent container
+  container.className="info_bottom_inner";
+
+  var text_h3 =document.createElement('h3');
+  text_h3.style="color:green;";
+  text_h3.innerHTML='Parkering tillåten till: ';
+
+  container.appendChild(text_h3);
+
+
+  //date and time to move car
+  if(movingDay.getDate() - today.getDate() == 1){ //if moving day is tomorrow
+    container.innerHTML+='<b>Imorgon ' + movingTime + '</b><br>' + movingDate;
+  } else if(movingDay.getDate() - today.getDate() == 0){ // if moving day today
+    container.innerHTML+='<b>Idag ' + movingTime + '</b><br>' + movingDate;
+  } else{
+    container.innerHTML+='<b>' + movingDate +"  "+ movingTime + '</b>';
+  }
+
+
+  var timeToMovingDay = hrsMinsSecsFrDate(movingDay);
+
+  // Time left in days, hours and minutes
+  if(timeToMovingDay.days == 0){ //if yellow parking(less than 24hrs), make yellow "time-left"-text
+    var yellow_p = document.createElement('p');
+    yellow_p.id="p-iw-timeLeft";
+    yellow_p.style="color: #d8a700;";
+    yellow_p.innerHTML=timeToMovingDay.hours + 'h ' + timeToMovingDay.minutes +'min';
+    container.appendChild(yellow_p);
+  } else { //if green parking
+    var green_p = document.createElement('p');
+    green_p.id="p-iw-timeLeft";
+    green_p.style="color: green;";
+    green_p.innerHTML= timeToMovingDay.days +' dagar '+ timeToMovingDay.hours + 'h ' + timeToMovingDay.minutes +'min';
+    container.appendChild(green_p);
+  }
+
+
+
+
+
+  //console.log(movingDay,parking,timeToMovingDay); //control if movingDay is same as in object
+  return container;
+}
+
 // This function get the needed information about parking to show it in the pop-up info window
-
-
 function createInfoContent(parking, ChangePark, i) {
   var contentString = '<div id="content_infowindow">'; //container for all content in infowindow
   contentString +=        '<div id="street-name-div">' + parking.info.streetName + '</div>';
@@ -175,7 +350,7 @@ function createInfoContent(parking, ChangePark, i) {
 
       contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
       '<div>' + '<b> Förbudet upphör: <b> <br>' +
-      // End time has the format "yyyy-mm-ddThh:mm:ss" 
+      // End time has the format "yyyy-mm-ddThh:mm:ss"
       // Replace the T with a space
       // Remove the last two digits since they represent the seconds
       nightParkingAvailble(today) +'</br>'+
@@ -183,7 +358,7 @@ function createInfoContent(parking, ChangePark, i) {
     } else if(parking.info.endTime){
       contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
       '<div>' + '<b> Förbudet upphör: <b> <br>' +
-      // End time has the format "yyyy-mm-ddThh:mm:ss" 
+      // End time has the format "yyyy-mm-ddThh:mm:ss"
       // Replace the T with a space
       // Remove the last two digits since they represent the seconds
       parking.info.endTime.replace(new RegExp('T'), ' ').substr(0, 16) +'</br>'+
@@ -203,27 +378,29 @@ function createInfoContent(parking, ChangePark, i) {
     contentString += createHTMLForCleaningOrNightParking(parking); //time left info
   }
 
+  /*allt ovanför tillagt*/
+
 // Add a button to add parking reminder to GOOGLE CALENDAR and OutLook
   if(parking.timeLeft < 20160 && parking.timeLeft>61){
-    contentString += 
+    contentString +=
     '<div style="text-align: center; margin-top:5px;"> '+
     'Lägg till påminnelse! ' +
     '</div>'
-      
-    
+
+
     contentString +=
         "<div style='text-align:left;display:flex;flex-direction: row;justify-content: space-evenly;margin-top:3px;'> <img src='Resources/GoogleC.png' id='CalenderButton' title=\"Google Calendar\" style=''onclick='createGoogleEvent("+'"'+new Date(getMovingDate(parking)).toISOString()+'"'+ ", "
         +'"'+ new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+60)).toISOString()+'"'+ ", " + parking.info.x +", "
         + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
         +'"'+ parking.info.streetName +'"'+ ")'> </img>";
-    
-    //  Due to outlook timezone issues manually adding two hours to fix  
+
+    //  Due to outlook timezone issues manually adding two hours to fix
     contentString +=
       "<img src='Resources/OutlookC.png' id='CalenderButton' title=\"Outlook Calendar\" style=' 'onclick='createOutlookEvent("+'"'+new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+120)).toISOString() +'"'+ ", "
       +'"'+ new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+120+60)).toISOString()  +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
       + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
       +'"'+ parking.info.oddEven +'"'+ ")'> </img> </div>";
-    
+
 
   }
 
@@ -351,13 +528,13 @@ on click: it updates the user location and adds a new marker at the position.
 is shown in the markers info window (pop up window).*/
 function get_hr_StyleClass(parking){
   if(parking.timeLeft > 1440){//one day
-    return '"iw_line_green"'; //green style class
+    return "iw_line_green"; //green style class
   }
   else if(parking.timeLeft > 30){ //more than 30 min, but less than 24hrs
-    return '"iw_line_yellow"';
+    return "iw_line_yellow";
   }
   else { //less than 30 min
-    return '"iw_line_red"';
+    return "iw_line_red";
   }
 }
 
