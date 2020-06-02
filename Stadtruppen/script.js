@@ -12,12 +12,6 @@ cleaningZonesRequest.open(
 );
 cleaningZonesRequest.send();
 
-var xml_cleaningZones = getXML_Response(cleaningZonesRequest);
-
-// all nodes that contains a "Streetname"
-var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName");
-
-
 //residentialParkings
 var residentialParkingRequest = new XMLHttpRequest();
 residentialParkingRequest.open(
@@ -26,10 +20,21 @@ residentialParkingRequest.open(
   false //suggestion: have synchronious, we don't need to asynchrinious? we get the data within a second..
 );
 residentialParkingRequest.send();
-var xml_residentialParkings = getXML_Response(residentialParkingRequest);
 
-// all nodes that contains a ResidentialParking tag
-var residentialParkings = xml_residentialParkings.getElementsByTagName("ResidentialParking");
+var xml_cleaningZones = getXML_Response(cleaningZonesRequest);
+var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
+var xml_residentialParkings = getXML_Response(residentialParkingRequest);
+var residentialParkings = xml_residentialParkings.getElementsByTagName("ResidentialParking"); // all nodes that contains a ResidentialParking tag
+
+var today = new Date(Date.now());
+var year = today.getFullYear();
+const json_swedishDays = getJsonResponse(
+  "https://api.dryg.net/dagar/v2.1/" + year
+);
+
+var residentialParkingWithCleaning = fetchResidentialParkingInfo();
+initGoogleMaps(); // initiate google maps
+initGothenburgMap(residentialParkingWithCleaning); //initiate map over residentual parkings in Gothenburg
 
 //get the response of the inserted request, if the request is done, without errors.
 function getXML_Response(request) {
@@ -39,18 +44,11 @@ function getXML_Response(request) {
   }
 }
 
-//-----END: Set up requests for data.gbg-------//
-
-
 
 //-----START: feature-SeePublicHoldiays-------//
-var today = new Date(Date.now());
-var year = today.getFullYear();
-const json_swedishDays = getJsonResponse(
-  "https://api.dryg.net/dagar/v2.1/" + year
-);
 
-var dateToMove = timeToLeaveNightParking(today); //test
+
+
 
 /*
 returns a Date object, of next time this night parking is prohibited
@@ -211,11 +209,12 @@ function getJsonResponse(url) {
   return response;
 }
 
-//-----END: feature-SeePublicHoldiays-------//
 
-
-
-
+/**
+calculates the difference between today and a future date.
+@return Object timeLeftObj - days,hours,minutes,seconds until the date_future occours
+@params Date date_future - a date in the future
+*/
 function hrsMinsSecsFrDate(date_future){
   /*copied from stackoverflow, return an object with remaining time until
   the input date.*/
@@ -292,13 +291,6 @@ function calendarEventTime(i){
   return res;
 }
 
-//-----END: Turn minutes to readable time-------//
-
-
-
-
-var residentialParkingWithCleaning = fetchResidentialParkingInfo();
-
 function fetchResidentialParkingInfo() {
   var residentialParkingWithCleaning = [];
   for (var i = 0; i < residentialParkings.length; i++) {
@@ -359,9 +351,6 @@ function fetchResidentialParkingInfo() {
   }
   return residentialParkingWithCleaning;
 }
-
-initGoogleMaps(); // initiate google maps
-initGothenburgMap(residentialParkingWithCleaning); //initiate map over residentual parkings in Gothenburg
 
 
 //methods for calucating time until input date from today, returns time in minutes
