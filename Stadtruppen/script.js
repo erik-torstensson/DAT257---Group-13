@@ -12,12 +12,6 @@ cleaningZonesRequest.open(
 );
 cleaningZonesRequest.send();
 
-var xml_cleaningZones = getXML_Response(cleaningZonesRequest);
-
-// all nodes that contains a "Streetname"
-var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName");
-
-
 //residentialParkings
 var residentialParkingRequest = new XMLHttpRequest();
 residentialParkingRequest.open(
@@ -26,10 +20,21 @@ residentialParkingRequest.open(
   false //suggestion: have synchronious, we don't need to asynchrinious? we get the data within a second..
 );
 residentialParkingRequest.send();
-var xml_residentialParkings = getXML_Response(residentialParkingRequest);
 
-// all nodes that contains a ResidentialParking tag
-var residentialParkings = xml_residentialParkings.getElementsByTagName("ResidentialParking");
+var xml_cleaningZones = getXML_Response(cleaningZonesRequest);
+var allCleaningZones = xml_cleaningZones.getElementsByTagName("StreetName"); // all nodes that contains a "Streetname"
+var xml_residentialParkings = getXML_Response(residentialParkingRequest);
+var residentialParkings = xml_residentialParkings.getElementsByTagName("ResidentialParking"); // all nodes that contains a ResidentialParking tag
+
+var today = new Date(Date.now());
+var year = today.getFullYear();
+const json_swedishDays = getJsonResponse(
+  "https://api.dryg.net/dagar/v2.1/" + year
+);
+
+var residentialParkingWithCleaning = fetchResidentialParkingInfo();
+initGoogleMaps(); // initiate google maps
+initGothenburgMap(residentialParkingWithCleaning); //initiate map over residentual parkings in Gothenburg
 
 //get the response of the inserted request, if the request is done, without errors.
 function getXML_Response(request) {
@@ -39,18 +44,11 @@ function getXML_Response(request) {
   }
 }
 
-//-----END: Set up requests for data.gbg-------//
-
-
 
 //-----START: feature-SeePublicHoldiays-------//
-var today = new Date(Date.now());
-var year = today.getFullYear();
-const json_swedishDays = getJsonResponse(
-  "https://api.dryg.net/dagar/v2.1/" + year
-);
 
-var dateToMove = timeToLeaveNightParking(today); //test
+
+
 
 /*
 returns a Date object, of next time this night parking is prohibited
@@ -114,10 +112,10 @@ function nightParkingAvailble(startDate) {
         if(startHour < 15){
           dateToMove.setHours(15);
           dateToMove.setMinutes(0);
-          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM 
+          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM
           return dateToMove.toLocaleString().substr(0, 16);
         }
-      } 
+      }
       if (isPublicSunday(i)){
         dateToMove = nextWeekdayOrSaturdayAtNine(i); //next not sunday at 09.00
         return dateToMove;
@@ -125,15 +123,17 @@ function nightParkingAvailble(startDate) {
         if (startHour < 18) {
           dateToMove.setHours(18);
           dateToMove.setMinutes(0);
-          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM 
+          //Remove ss and Pm or am from the format -> dd/mm/yyyy, hh:mm:ss PM
           return dateToMove.toLocaleString().substr(0, 16);
-        } 
+        }
       }
     }
   }
 }
 
-
+/**
+returns true if the day at index is a public sunday
+*/
 function isPublicSunday(index) {
   var keys = Object.keys(json_swedishDays.dagar[0]); //all keys to JSON object
   var publicSundayKey = keys[3]; //3d key "röd dag:"
@@ -144,6 +144,9 @@ function isPublicSunday(index) {
   return false;
 }
 
+/**
+returns true if the day after index is public sunday.
+*/
 function isPublicSaturday(index) {
   //public Saturday = day before a public sunday/red day.
   var isSaturday = isPublicSunday(index + 1); //if its 'red day' tommorrow
@@ -193,7 +196,7 @@ function convertToDate(date) {
   return convertedDate;
 }
 
-/*sends request to url and return the response in JSON*/
+/*sends synchronious request to url and return the response in JSON*/
 function getJsonResponse(url) {
   var response;
   var req = new XMLHttpRequest();
@@ -206,11 +209,12 @@ function getJsonResponse(url) {
   return response;
 }
 
-//-----END: feature-SeePublicHoldiays-------//
 
-
-
-
+/**
+calculates the difference between today and a future date.
+@return Object timeLeftObj - days,hours,minutes,seconds until the date_future occours
+@params Date date_future - a date in the future
+*/
 function hrsMinsSecsFrDate(date_future){
   /*copied from stackoverflow, return an object with remaining time until
   the input date.*/
@@ -264,59 +268,20 @@ function getMovingDate(parking){
 
 
 
-function createHTMLForCleaningOrNightParking(parking){
-  /*Creates HTML in string format for google maps info window. Assumes
-  that the parking is either night parking or have a cleaning day.
-  */
-  var movingDay = getMovingDate(parking)
-  var movingDate = movingDay.toLocaleDateString(); //YYYY-MM-DD
-  var movingTime = movingDay.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); //HH:MM (not seconds)
-
-
-  var movingDayText = '<div class="info_bottom_inner">'; //container for info
-      movingDayText +=  '<h3 style="color:green;">' +
-                            'Parkering tillåten till: '+
-                        '</h3>';
-
-  //date and time to move car
-  if(movingDay.getDate() - today.getDate() == 1){ //if moving day is tomorrow
-    movingDayText +=      '<b>Imorgon ' + movingTime + '</b><br>' + movingDate;
-  } else if(movingDay.getDate() - today.getDate() == 0){ // if moving day today
-    movingDayText +=      '<b>Idag ' + movingTime + '</b><br>' + movingDate;
-  } else{
-    movingDayText +=      '<b>' + movingDate +"  "+ movingTime + '</b>';
-  }
-
-
-  var timeToMovingDay = hrsMinsSecsFrDate(movingDay);
-
-  // Time left in days, hours and minutes
-  if(timeToMovingDay.days == 0){ //if yellow parking, make yellow "time-left"-text
-  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: #d8a700;">' + timeToMovingDay.hours + 'h ' + timeToMovingDay.minutes +'min </p>';
-  } else { //if green parking
-  movingDayText +=        '<p id="p-iw-timeLeft" style = "color: green;">' + timeToMovingDay.days +' dagar '+ timeToMovingDay.hours + 'h ' + timeToMovingDay.minutes +'min </p>';
-  }
-  movingDayText +=    '</div>'; //end : div#info_bottom_inner
-
-  //console.log(movingDay,parking,timeToMovingDay); //control if movingDay is same as in object
-  return movingDayText;
-}
-
-
 //-----START: TURNING MINUTES UNTIL LEAVE INTO CORRECT FORMAT FOR CALENDAR-------//
 function calendarEventTime(i){
   /*The input i is how many minutes to turn into a format that the calendar functions accept.
-    The function takes a number of minutes into input and turns it into 
-    a number of days hours and minutes. 
+    The function takes a number of minutes into input and turns it into
+    a number of days hours and minutes.
   */
   var left = i%1440
-  var days = (i-left)/1440; 
+  var days = (i-left)/1440;
   i = left;
   left = left%60;
   var hours = (i-left)/60;
 
   var today = new Date(Date.now());
-  today.setDate(today.getDate()+days);  
+  today.setDate(today.getDate()+days);
   today.setHours(today.getHours()+hours);
   today.setMinutes(today.getMinutes()+parseInt(left)+120);
   today.setSeconds(60);
@@ -325,13 +290,6 @@ function calendarEventTime(i){
   var res = temp.substring(0,19);
   return res;
 }
-
-//-----END: Turn minutes to readable time-------//
-
-
-
-
-var residentialParkingWithCleaning = fetchResidentialParkingInfo();
 
 function fetchResidentialParkingInfo() {
   var residentialParkingWithCleaning = [];
@@ -393,9 +351,6 @@ function fetchResidentialParkingInfo() {
   }
   return residentialParkingWithCleaning;
 }
-
-initGoogleMaps(); // initiate google maps
-initGothenburgMap(residentialParkingWithCleaning); //initiate map over residentual parkings in Gothenburg
 
 
 //methods for calucating time until input date from today, returns time in minutes
@@ -554,7 +509,7 @@ function search() {
   addMarkersFromParkingList(activeCleaningInfo);
 
   if (activeCleaningInfo.length <= 0) {
-   
+
     document.getElementById("result").innerHTML +=
       "" + input + " kan inte hittas i datan." + "<br>";
   }
@@ -653,3 +608,48 @@ function gAppear() {
 
 
 //-----END: Supporting functions-------//
+
+
+
+
+/**
+initilaze when document is ready
+draws backgorund
+*/
+function init() {
+  //jQuery(document).ready(function(){ //se överst i dokumentet, blir detta samma sak nu?
+  var width = $(window).width(),
+    height = $(window).height();
+
+  //bg
+  var bg_num = 0;
+  function bg01(item) {
+    var N = 640,
+      step = Math.ceil(width / N),
+      html =
+        '<div class="area"><div class="field"></div><div class="load"><div class="line"></div></div><div class="tree tree01"></div><div class="tree tree02"><div class="leaf"></div></div><div class="tree tree03"><div class="leaf"></div></div><div class="tree tree02 pos02"><div class="leaf"></div></div><div class="tree tree03 pos02"><div class="leaf"></div></div><div class="hydrant pos01"><div class="line"></div></div><div class="hydrant pos02"><div class="line"></div></div><div class="back_building building01"></div><div class="back_building building02"></div><div class="back_building building03"></div><div class="back_building building04"></div><div class="sign"><div class="panel pos01"></div><div class="panel pos02"></div><div class="panel pos03"></div></div><div class="traffic_light"><div class="circle red"></div><div class="circle yellow"></div><div class="circle green"></div></div><div class="street_lamp street_lamp01"><div class="light left"></div><div class="light right"></div></div><div class="street_lamp street_lamp02"><div class="light"></div></div><div class="cloud cloud01"><div class="circle circle01"></div><div class="circle circle02"></div></div><div class="cloud cloud02"><div class="circle circle01"></div><div class="circle circle02"></div><div class="circle circle03"></div></div><div class="cloud cloud03"><div class="circle circle01"></div></div><div class="tower tower01"><div class="chimney chimney01"></div><div class="window window01" data-h="0" data-pos="0"></div><div class="window window01" data-h="1" data-pos="1"></div><div class="window window01" data-h="2" data-pos="2"></div><div class="window window01" data-h="0" data-pos="3"></div><div class="window window01" data-h="3" data-pos="4"></div><div class="window window01" data-h="4" data-pos="5"></div><div class="window window01" data-h="0" data-pos="6"></div><div class="window window01" data-h="0" data-pos="7"></div><div class="door door01"></div><div class="stair"><div class="side pos01"><div class="deck"></div></div><div class="side pos02"><div class="deck"></div></div></div></div><div class="tower tower02"><div class="chimney chimney02"></div><div class="window window01" data-h="1" data-pos="0"></div><div class="window window01" data-h="2" data-pos="1"></div><div class="window window01" data-h="0" data-pos="2"></div><div class="window window01" data-h="3" data-pos="3"></div><div class="window window01" data-h="4" data-pos="4"></div><div class="window window01" data-h="0" data-pos="5"></div><div class="window window01" data-h="2" data-pos="6"></div><div class="window window01" data-h="0" data-pos="7"></div><div class="door door02"><div class="deck"></div></div></div><div class="tower tower03"><div class="floor"><div class="chimney chimney01"></div><div class="window window02" data-h="0" data-pos="0"></div><div class="window window02" data-h="1" data-pos="1"></div></div><div class="window window03"><div class="deck"></div></div><div class="door door03"><div class="deck"></div></div></div><div class="tower tower04"><div class="billboard"><div class="deck"></div></div><div class="kiosk"><div class="deck01"></div><div class="deck02"></div><div class="deck03"></div><div class="deck04"></div></div><div class="door door01"></div></div><div class="tower tower05"><div class="chimney chimney01"></div><div class="window window01" data-h="5" data-pos="0"></div><div class="window window01" data-h="0" data-pos="1"></div><div class="window window01" data-h="6" data-pos="2"></div><div class="window window04" data-s="0" data-pos="3"></div><div class="window window04" data-s="1" data-pos="4"></div><div class="kiosk"><div class="deck01"></div><div class="deck02"></div><div class="deck03"></div><div class="deck04"></div></div><div class="door door01"></div></div><div class="balloon balloon01"><div class="deck"></div></div><div class="balloon balloon02"><div class="deck"></div></div></div>';
+    if (item.lenght !== 0) {
+      if (step !== bg_num) {
+        bg_num = step;
+        item.html("");
+        item.width(N * step);
+        for (var i = 0; i < step; i += 1) {
+          item.append(html);
+        }
+        return;
+      }
+    }
+  }
+  bg01($(".bg_area .bg01"));
+
+  var resizeTimer;
+  $(window).resize(function(e) {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      width = $(window).width();
+
+      bg01($(".bg_area .bg01"));
+    }, 250);
+  });
+  //});
+}

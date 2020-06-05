@@ -17,10 +17,12 @@ const CLUSTER_OPTIONS = { //The different cluster icons
       width: 40
   }],
   gridSize: 55,
-  minimumClusterSize: 3 
+  minimumClusterSize: 3
 }
 
-//reset the map
+/**
+clears the map and adds new markers and cluster for all parkings
+*/
 function resetMap() {
   clearAllMarkersAndClusters();
   addMarkersFromParkingList(residentialParkingWithCleaning);
@@ -36,44 +38,7 @@ function initGoogleMaps() {
   document.head.appendChild(script); // Append the 'script' element to 'head'
 }
 
-//initilaze when document is ready
-function init() {
-  //jQuery(document).ready(function(){ //se överst i dokumentet, blir detta samma sak nu?
-  var width = $(window).width(),
-    height = $(window).height();
 
-  //bg
-  var bg_num = 0;
-  function bg01(item) {
-    var N = 640,
-      step = Math.ceil(width / N),
-      html =
-        '<div class="area"><div class="field"></div><div class="load"><div class="line"></div></div><div class="tree tree01"></div><div class="tree tree02"><div class="leaf"></div></div><div class="tree tree03"><div class="leaf"></div></div><div class="tree tree02 pos02"><div class="leaf"></div></div><div class="tree tree03 pos02"><div class="leaf"></div></div><div class="hydrant pos01"><div class="line"></div></div><div class="hydrant pos02"><div class="line"></div></div><div class="back_building building01"></div><div class="back_building building02"></div><div class="back_building building03"></div><div class="back_building building04"></div><div class="sign"><div class="panel pos01"></div><div class="panel pos02"></div><div class="panel pos03"></div></div><div class="traffic_light"><div class="circle red"></div><div class="circle yellow"></div><div class="circle green"></div></div><div class="street_lamp street_lamp01"><div class="light left"></div><div class="light right"></div></div><div class="street_lamp street_lamp02"><div class="light"></div></div><div class="cloud cloud01"><div class="circle circle01"></div><div class="circle circle02"></div></div><div class="cloud cloud02"><div class="circle circle01"></div><div class="circle circle02"></div><div class="circle circle03"></div></div><div class="cloud cloud03"><div class="circle circle01"></div></div><div class="tower tower01"><div class="chimney chimney01"></div><div class="window window01" data-h="0" data-pos="0"></div><div class="window window01" data-h="1" data-pos="1"></div><div class="window window01" data-h="2" data-pos="2"></div><div class="window window01" data-h="0" data-pos="3"></div><div class="window window01" data-h="3" data-pos="4"></div><div class="window window01" data-h="4" data-pos="5"></div><div class="window window01" data-h="0" data-pos="6"></div><div class="window window01" data-h="0" data-pos="7"></div><div class="door door01"></div><div class="stair"><div class="side pos01"><div class="deck"></div></div><div class="side pos02"><div class="deck"></div></div></div></div><div class="tower tower02"><div class="chimney chimney02"></div><div class="window window01" data-h="1" data-pos="0"></div><div class="window window01" data-h="2" data-pos="1"></div><div class="window window01" data-h="0" data-pos="2"></div><div class="window window01" data-h="3" data-pos="3"></div><div class="window window01" data-h="4" data-pos="4"></div><div class="window window01" data-h="0" data-pos="5"></div><div class="window window01" data-h="2" data-pos="6"></div><div class="window window01" data-h="0" data-pos="7"></div><div class="door door02"><div class="deck"></div></div></div><div class="tower tower03"><div class="floor"><div class="chimney chimney01"></div><div class="window window02" data-h="0" data-pos="0"></div><div class="window window02" data-h="1" data-pos="1"></div></div><div class="window window03"><div class="deck"></div></div><div class="door door03"><div class="deck"></div></div></div><div class="tower tower04"><div class="billboard"><div class="deck"></div></div><div class="kiosk"><div class="deck01"></div><div class="deck02"></div><div class="deck03"></div><div class="deck04"></div></div><div class="door door01"></div></div><div class="tower tower05"><div class="chimney chimney01"></div><div class="window window01" data-h="5" data-pos="0"></div><div class="window window01" data-h="0" data-pos="1"></div><div class="window window01" data-h="6" data-pos="2"></div><div class="window window04" data-s="0" data-pos="3"></div><div class="window window04" data-s="1" data-pos="4"></div><div class="kiosk"><div class="deck01"></div><div class="deck02"></div><div class="deck03"></div><div class="deck04"></div></div><div class="door door01"></div></div><div class="balloon balloon01"><div class="deck"></div></div><div class="balloon balloon02"><div class="deck"></div></div></div>';
-    if (item.lenght !== 0) {
-      if (step !== bg_num) {
-        bg_num = step;
-        item.html("");
-        item.width(N * step);
-        for (var i = 0; i < step; i += 1) {
-          item.append(html);
-        }
-        return;
-      }
-    }
-  }
-  bg01($(".bg_area .bg01"));
-
-  var resizeTimer;
-  $(window).resize(function(e) {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function() {
-      width = $(window).width();
-
-      bg01($(".bg_area .bg01"));
-    }, 250);
-  });
-  //});
-}
 
 function initGothenburgMap(parkingsList) {
   window.initMap = function() {
@@ -88,7 +53,10 @@ function initGothenburgMap(parkingsList) {
   };
 }
 
-
+/**
+add markers from a list of parking objects.
+markers oncklick: shows info pop up window
+*/
 function addMarkersFromParkingList(parkingsList){
   var bounds = new google.maps.LatLngBounds(); //bounds: for auto-center and auto-zoom
   var InfoObj = []; // empty array for info window
@@ -107,8 +75,8 @@ function addMarkersFromParkingList(parkingsList){
     });
 
 
-    var infoContent = createInfoContent(parkingsList[i], ChangePark, i);
-
+    //var infoContent = createInfoContent(parkingsList[i], ChangePark, i);
+    var infoContent = getInfoWindowContent(parkingsList[i]);
     const infowindow = new google.maps.InfoWindow({
       content: infoContent,
     });
@@ -127,6 +95,7 @@ function addMarkersFromParkingList(parkingsList){
   map.fitBounds(bounds);   // auto-zoom
   map.panToBounds(bounds); // auto-center
 }
+
 //Returns which icon the marker will have based on the availablity
 function getMarkerIcon(time){
     if(isGreenPark(time)){
@@ -145,96 +114,10 @@ function isYellowPark(time){
   return time > 30;
 }
 
-// This function get the needed information about parking to show it in the pop-up info window
 
-
-function createInfoContent(parking, ChangePark, i) {
-  var contentString = '<div id="content_infowindow">'; //container for all content in infowindow
-  contentString +=        '<div id="street-name-div">' + parking.info.streetName + '</div>';
-
-  if(parking.night_parking == true){ //add night icon to header_container
-    contentString += '<div class="nightParking-flex-box"> ';
-    contentString +=    '<img id="night_img" src="' + NIGHT_ICON +'" alt="night_parking">';
-    contentString +=    '  Nattparkering </div>';
-  }
-
-  contentString +=      '<hr class=' + get_hr_StyleClass(parking) +'>'; //horizontal line under street name
-
-  contentString +=      '<div class="info-top"> '; //container for zone and nr of parkings
-  contentString +=          '<b> Zon: ' + '</b> ' + parking.code_resPark +'<br>' ; //Zone
-  contentString +=          '<b> Antal platser: </b>' + parking.numOfPlaces ; //antal platser
-  contentString +=      '</div>'; //end:info_top
-
-
-  //Parking not allowed (red parking)
-  if(parking.timeLeft < 1){
-
-    if(parking.night_parking){ //If it is a night parking
-      var today = new Date(Date.now());
-      //today.setHours(today.getHours()+4);
-
-      contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
-      '<div>' + '<b> Förbudet upphör: <b> <br>' +
-      // End time has the format "yyyy-mm-ddThh:mm:ss" 
-      // Replace the T with a space
-      // Remove the last two digits since they represent the seconds
-      nightParkingAvailble(today) +'</br>'+
-      '</div>';
-    } else if(parking.info.endTime){
-      contentString +='<h3 style = "color : red;">  Parkering förbjuden</h3>' +
-      '<div>' + '<b> Förbudet upphör: <b> <br>' +
-      // End time has the format "yyyy-mm-ddThh:mm:ss" 
-      // Replace the T with a space
-      // Remove the last two digits since they represent the seconds
-      parking.info.endTime.replace(new RegExp('T'), ' ').substr(0, 16) +'</br>'+
-      '</div>';
-    }
-
-  }else if(parking.timeLeft > (60*24*365)){
-  //more than a year, always ok to park but maximum 14 days
-    contentString += '<h3 style = "color : green; margin-block-end: 0.2em;">'+
-                        'Parkering alltid tillåten!' +
-                     '</h3>' +
-
-                     '<div style="text-align: center; margin-top:5px;"> '+
-                        'max 14 dygn ' +
-                     '</div>';
-  } else {
-    contentString += createHTMLForCleaningOrNightParking(parking); //time left info
-  }
-
-// Add a button to add parking reminder to GOOGLE CALENDAR and OutLook
-  if(parking.timeLeft < 20160 && parking.timeLeft>61){
-    contentString += 
-    '<div style="text-align: center; margin-top:5px;"> '+
-    'Lägg till påminnelse! ' +
-    '</div>'
-      
-    
-    contentString +=
-        "<div style='text-align:left;display:flex;flex-direction: row;justify-content: space-evenly;margin-top:3px;'> <img src='Resources/GoogleC.png' id='CalenderButton' title=\"Google Calendar\" style=''onclick='createGoogleEvent("+'"'+new Date(getMovingDate(parking)).toISOString()+'"'+ ", "
-        +'"'+ new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+60)).toISOString()+'"'+ ", " + parking.info.x +", "
-        + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
-        +'"'+ parking.info.streetName +'"'+ ")'> </img>";
-    
-    //  Due to outlook timezone issues manually adding two hours to fix  
-    contentString +=
-      "<img src='Resources/OutlookC.png' id='CalenderButton' title=\"Outlook Calendar\" style=' 'onclick='createOutlookEvent("+'"'+new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+120)).toISOString() +'"'+ ", "
-      +'"'+ new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+120+60)).toISOString()  +'"'+ ", "+'"'+ parking.info.streetName +'"'+", "
-      + parking.info.y + ", " +'"'+ parking.info.endDate +'"'+ ", "
-      +'"'+ parking.info.oddEven +'"'+ ")'> </img> </div>";
-    
-
-  }
-
-
-
-  contentString += '</div>'; //end content_infowindow
-
-  return contentString;
-}
-
-// This function closes the current info window when clicking on a new marker
+/**
+close the current info window when clicking on a new marker
+*/
 function closeOtherInfo(InfoObj) {
   if (InfoObj.length > 0) {
     /* detach the info-window from the marker ... undocumented in the API docs */
@@ -246,6 +129,9 @@ function closeOtherInfo(InfoObj) {
   }
 }
 
+/**
+clear all markers and cluster from google map
+*/
 function clearAllMarkersAndClusters(){
   markerCluster.setMap(null); //hides the cluster from map
   for(var i=0; i<visibleMarkers.length; i++){
@@ -255,7 +141,9 @@ function clearAllMarkersAndClusters(){
 }
 
 
-//A function that calculates the distance with each parking to find the closeset one.
+/**
+calculates the distance with each parking to find the closeset one.
+*/
 function closestPark(parkIndex){
   var x = residentialParkingWithCleaning[parkIndex].info.x;
   var y = residentialParkingWithCleaning[parkIndex].info.y;
@@ -278,7 +166,7 @@ function closestPark(parkIndex){
 
 var userLocationMarker;
 
-/*
+/**
 adds a location-marker at (lat,long) on the map.
 if it already exist an old marker, it will remove this one first.
 */
@@ -302,10 +190,10 @@ function addGeolocMarker(lat,long){
   userLocationMarker = marker;
 }
 
-/*
-gets geolocation and adds a marker at that position. If this functions is
-called more than one, it will also remove the old position, if the user has
-moved
+/**
+gets geolocation from browser and adds a marker at that position.
+If this functions is called more than once, it will also remove the old position,
+if the user has moved
 */
 function putUserLocOnMap(){
     navigator.geolocation.getCurrentPosition(
@@ -351,19 +239,224 @@ on click: it updates the user location and adds a new marker at the position.
 is shown in the markers info window (pop up window).*/
 function get_hr_StyleClass(parking){
   if(parking.timeLeft > 1440){//one day
-    return '"iw_line_green"'; //green style class
+    return "iw_line_green"; //green style class
   }
   else if(parking.timeLeft > 30){ //more than 30 min, but less than 24hrs
-    return '"iw_line_yellow"';
+    return "iw_line_yellow";
   }
   else { //less than 30 min
-    return '"iw_line_red"';
+    return "iw_line_red";
   }
 }
 
+/**
+if a user location is present, the map will zoom in on that position.
+*/
 function zoomInOnUser(){
   if(userLocationMarker != undefined){
     map.setCenter(userLocationMarker.position);
     map.setZoom(16);
   }
+}
+
+
+                /*  ---------------------------------
+      below: all functions that creates htlm content for pop-up info window
+                    ---------------------------------  */
+
+/**
+creates html content for google maps infoWindow.
+it will show:
+  - red/yellow//green parking
+  - streetname
+  - nightparking info (if night parking)
+  - date and time to move vehicle (if green parking)
+  - date and time when you can park again (if red parking)
+  - time left in days, hours, min.
+*/
+function getInfoWindowContent(parking){
+  var contentContainer = document.createElement('div'); //parent to all content elements
+
+  var streetName_div = document.createElement('div'); //streetName (heading of info window)
+  streetName_div.id= "street-name-div";
+  streetName_div.innerHTML = parking.info.streetName;
+  contentContainer.appendChild(streetName_div);
+
+  if(parking.night_parking == true){ //night icon and text
+    var nightInfoDiv = getNightInfoDiv();
+    contentContainer.appendChild(nightInfoDiv);
+  }
+
+  var hr = document.createElement('hr'); //horisontal line in same color as marker
+  hr.className = get_hr_StyleClass(parking);
+  contentContainer.appendChild(hr);
+
+  var info_div = document.createElement('div'); //container for info (zone and nr of parkings)
+  info_div.className="info-top";
+  info_div.innerHTML+= '<b> Zon: ' + '</b> ' + parking.code_resPark +'<br>';
+  info_div.innerHTML+= '<b> Antal platser: </b>' + parking.numOfPlaces ;
+
+  contentContainer.appendChild(info_div);
+
+  //Parking not allowed (red parking)
+  if(parking.timeLeft < 1){
+    var h3 = document.createElement('h3');
+    h3.innerHTML='Parkering förbjuden';
+    h3.style="color : red;";
+
+    var div = document.createElement('div');
+    div.style="text-align: center;"
+    div.innerHTML+='<b> Förbudet upphör: <b> <br>';
+
+    if(parking.night_parking){ //red and night parking
+      var today = new Date(Date.now());
+      div.innerHTML += nightParkingAvailble(today); //date when night parking is free to park again
+    }else if(parking.info.endTime){ // ?
+      div.innerHTML += parking.info.endTime.replace(new RegExp('T'), ' ').substr(0, 16);
+    }
+
+    contentContainer.appendChild(h3);
+    contentContainer.appendChild(div);
+
+
+  }else if(parking.timeLeft > (60*24*365)){
+  //more than a year, always ok to park but maximum 14 days
+    var h3_ok = document.createElement('h3');
+    h3_ok.style="color : green; margin-block-end: 0.2em;";
+    h3_ok.innerHTML+="Parkering alltid tillåten!";
+
+    var maxTimeInfo_div = document.createElement('div');
+    maxTimeInfo_div.style="text-align: center; margin-top:5px;";
+    maxTimeInfo_div.innerHTML+="max 14 dygn ";
+
+    contentContainer.appendChild(h3_ok);
+    contentContainer.appendChild(maxTimeInfo_div);
+
+  } else { //get availability info
+    var timeInfo_div = getAvailableUntilInfoDiv(parking);
+    contentContainer.appendChild(timeInfo_div);
+  }
+
+
+  // Add a button to add parking reminder to GOOGLE CALENDAR and OutLook
+    if(parking.timeLeft < 20160 && parking.timeLeft>61){
+      var notice_div = document.createElement('div');
+      notice_div.style="text-align: center; margin-top:5px;";
+      notice_div.innerHTML ='Lägg till påminnelse! ';
+      contentContainer.appendChild(notice_div);
+
+      var calBtns = createButtonBarCalenders(parking);
+      contentContainer.appendChild(calBtns);
+    }
+
+  return contentContainer;
+}
+
+function getNightInfoDiv(parking){
+  var night_div = document.createElement('div'); //parent div for all night content
+  night_div.className="nightParking-flex-box";
+
+  var night_img = document.createElement('img'); //night icon
+  night_img.id="night_img";
+  night_img.src=NIGHT_ICON;
+  night_img.alt="moon";
+
+  night_div.appendChild(night_img);
+  night_div.innerHTML+='Nattparkering';
+
+  return night_div;
+}
+
+/*
+returns a <div> that contains buttons for calendars.
+onclick: creates an event when the car must be moved, or throws an alert that
+the user need to be logged in.
+*/
+function createButtonBarCalenders(parking){
+  var buttonBarDiv =document.createElement('div');
+  buttonBarDiv.style="text-align:left;display:flex;flex-direction: row;justify-content: space-evenly;margin-top:3px;";
+
+
+  var gcBtn = document.createElement('img');
+    gcBtn.src='Resources/GoogleC.png';
+    gcBtn.id='CalenderButton';
+    gcBtn.title="Google Calendar";
+    gcBtn.onclick=function(){
+                    createGoogleEvent(new Date(getMovingDate(parking)).toISOString(),
+                    new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+60)).toISOString(),
+                    parking.info.x,
+                    parking.info.y,
+                    parking.info.endDate,
+                    parking.info.streetName);
+                  };
+
+  buttonBarDiv.appendChild(gcBtn);
+
+
+  var olBtn = document.createElement('img');
+    olBtn.src='Resources/OutlookC.png';
+    olBtn.id='CalenderButton';
+    olBtn.title="Outlook Calendar";
+
+
+    olBtn.onclick=function(){
+                    createOutlookEvent(new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+120)).toISOString(),   //  Due to outlook timezone issues manually adding two hours to fix
+                    new Date(getMovingDate(parking).setMinutes(getMovingDate(parking).getMinutes()+120+60)).toISOString(),   //  Due to outlook timezone issues manually adding two hours to fix
+                    parking.info.streetName,
+                    parking.info.y,
+                    parking.info.endDate,
+                    parking.info.oddEven);
+                  };
+
+  buttonBarDiv.appendChild(olBtn);
+  return buttonBarDiv;
+}
+
+
+
+/**
+@returns <div> that contains:
+   a date, when the next parking restrictions occours
+   coloured days, hours, min left until the above date.
+*/
+function getAvailableUntilInfoDiv(parking){
+
+  var movingDay = getMovingDate(parking);
+  var movingDate = movingDay.toLocaleDateString(); //YYYY-MM-DD
+  var movingTime = movingDay.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); //HH:MM (not seconds)
+
+  var container = document.createElement('div'); //parent container
+  container.className="info_bottom_inner";
+
+  var text_h3 =document.createElement('h3');
+  text_h3.style="color:green;";
+  text_h3.innerHTML='Parkering tillåten till: ';
+
+  container.appendChild(text_h3);
+
+
+  //date and time to move car
+  if(movingDay.getDate() - today.getDate() == 1){ //if moving day is tomorrow
+    container.innerHTML+='<b>Imorgon ' + movingTime + '</b><br>' + movingDate;
+  } else if(movingDay.getDate() - today.getDate() == 0){ // if moving day today
+    container.innerHTML+='<b>Idag ' + movingTime + '</b><br>' + movingDate;
+  } else{
+    container.innerHTML+='<b>' + movingDate +"  "+ movingTime + '</b>';
+  }
+
+
+  var timeToMovingDay = hrsMinsSecsFrDate(movingDay);
+
+// Time left in days, hours and minutes
+  var timeLeft_p = document.createElement('p');
+  timeLeft_p.id="p-iw-timeLeft";
+  timeLeft_p.innerHTML=timeToMovingDay.hours + 'h ' + timeToMovingDay.minutes +'min';
+  timeLeft_p.style="color: green;";
+
+  if(timeToMovingDay.days == 0){ //if less than 24hrs, make yellow text
+    timeLeft_p.style="color: #d8a700;";
+  }
+    container.appendChild(timeLeft_p);
+  //console.log(movingDay,parking,timeToMovingDay); //control if movingDay is same as in object
+  return container;
 }
